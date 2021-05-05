@@ -22,35 +22,35 @@ public class LearnerProfile extends Auditable<String> {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long learnerprofilefactid;
+	private long learnerprofileid;
 	@Column(name = "personid")
-	private long personid;
+	private Long personid;
 	@Column(name = "learneraddressid")
-	private long learneraddressid;
+	private Long learneraddressid;
 	@Column(name = "contactinformationid")
-	private long contactinformationid;
+	private Long contactinformationid;
 	@Column(name = "employmentid")
-	private long employmentid;
+	private Long employmentid;
 	@Column(name = "positionid")
-	private long  positionid;
+	private Long  positionid;
 	@Column(name = "citizenshipid")
-	private long citizenshipid;
+	private Long citizenshipid;
 	@Column(name = "studentid")
-	private long studentid;
+	private Long studentid;
 	@Column(name = "courseid")
-	private long courseid;
+	private Long courseid;
 	@Column(name = "courseaccreditationid")
-	private long courseaccreditationid;	
+	private Long courseaccreditationid;	
 	@Column(name = "competencyid")
-	private long competencyid;
+	private Long competencyid;
 	@Column(name = "credentialid")
-	private long credentialid;
+	private Long credentialid;
 	@Column(name = "organizationid")
-	private long organizationid;
+	private Long organizationid;
 	@Column(name = "organizationaddressid")
-	private long organizationaddressid;
+	private Long organizationaddressid;
 	@Column(name = "accreditationid")
-	private long accreditationid;
+	private Long accreditationid;
 	@Column(name = "activitystatus")
 	private String activitystatus;
 	@Column(name = "recordstatus")
