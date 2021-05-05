@@ -77,10 +77,16 @@ public class ELRRStageController {
 						
 						//Verb v = new Verb("http://nelakurti.com/xapi/interacted");
 						//statementResult = statementClient.filterByVerb(v).limitResults(10).getStatements();
-						Actor a = new Agent();
+
+						log.info("Electronicmailaddress : "+courseIdentifier);
+					    System.out.println("Electronicmailaddress: "+getLastToken(mbox,":"));
+					    ContactInformation contactInformation = contactInformationSvc.getContactInformationByElectronicmailaddress(getLastToken(mbox,":"));
+						log.info("PersonId : "+contactInformation.getPersonid());
+					    System.out.println("PersonId : "+contactInformation.getPersonid());
+					    //Selecting base don Mbox value
+					    Actor a = new Agent();
 						a.setMbox(mbox);
 						StatementResult result = statementClient.filterByActor(a).limitResults(10).getStatements();
-						
 						System.out.println(statementResult.getStatements());
 						for (Statement statement : result.getStatements()) {
 								System.out.println("Actor: "+statement.getActor());
@@ -91,8 +97,7 @@ public class ELRRStageController {
 								System.out.println("Result: "+statement.getResult());
 								System.out.println("Attachments: "+statement.getAttachments());
 								Calendar statementTimestamp = javax.xml.bind.DatatypeConverter.parseDateTime(statement.getTimestamp());
-								System.out.println(date.compareTo(statementTimestamp) < 0);
-								System.out.println("End Of Statement ------ ");
+								System.out.println("Statement Date:"+statementTimestamp);
 								if(statement.getObject()!=null && "Activity".equalsIgnoreCase(statement.getObject().getObjectType())) {
 									Activity activity = (Activity) statement.getObject();
 									courseIdentifier= getLastToken(activity.getId(),"/");
@@ -102,21 +107,20 @@ public class ELRRStageController {
 								    log.info("after decoding courseIdentifier : "+courseIdentifier);
 								    System.out.println("after decoding  courseIdentifier: "+courseIdentifier);
 									verb=getLastToken(statement.getVerb().getId(),"/");
-									log.info("verb : "+verb);
-								    System.out.println("verb: "+verb);
-									break;
+									log.info("verb after tokenizer: "+verb);
+								    System.out.println("verb after tokenizer: "+verb);
+								    Course course = courseSvc.getCourseByCourseidentifier(courseIdentifier);
+									LearnerProfile learnerProfile = new LearnerProfile();
+									learnerProfile.setCourseid(course.getCourseid());
+									learnerProfile.setPersonid(contactInformation.getPersonid());
+									learnerProfile.setActivitystatus(verb);
+									learnerProfileSvc.save(learnerProfile);
+
 								}
 								
 							}	
 							log.info("End Of All Statements ################ ");
 						    System.out.println("End Of All Statements ################ ");
-							Course course = courseSvc.getCourseByCourseidentifier(courseIdentifier);
-						    ContactInformation contactInformation = contactInformationSvc.getContactInformationByElectronicmailaddress(mbox);
-							LearnerProfile learnerProfile = new LearnerProfile();
-							learnerProfile.setCourseid(course.getCourseid());
-							learnerProfile.setPersonid(contactInformation.getPersonid());
-							learnerProfile.setActivitystatus(verb);
-							learnerProfileSvc.save(learnerProfile);
 							response ="xAPI data loaded to ELRR Stage Database";
 				} catch (UnsupportedEncodingException e) {
 					

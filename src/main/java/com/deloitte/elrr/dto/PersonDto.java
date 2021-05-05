@@ -48,7 +48,7 @@ public class PersonDto implements Serializable{
 	private String preferredName;
 	private String humanResourceIdentifier;
 	private String personnelIdentificationSystem;
-	@JsonFormat(pattern = "dd/MM/yyyy")
+	@JsonFormat(pattern = "MM/dd/yyyy")
 	private Date  birthdate;
 	private String sex;
 	private String primaryLanguage;
