@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="Competency")
+@Table(name="COMPETENCY")
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Getter 

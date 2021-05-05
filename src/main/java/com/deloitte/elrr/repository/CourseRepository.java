@@ -7,5 +7,7 @@ import com.deloitte.elrr.entity.Course;
 
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long>{
+	
+	public Course findIdByCourseidentifier(final String courseidentifier);
 
 }

@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="organization")
+@Table(name="ORGANIZATION")
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Getter 

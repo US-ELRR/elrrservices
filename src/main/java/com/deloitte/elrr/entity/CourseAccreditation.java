@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="Accreditation")
+@Table(name="COURSEACCREDITATION")
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Getter 

@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="learnerprofile")
+@Table(name="LEARNERPROFILE")
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Getter 
@@ -52,7 +52,7 @@ public class LearnerProfile extends Auditable<String> {
 	@Column(name = "accreditationid")
 	private long accreditationid;
 	@Column(name = "activitystatus")
-	private long activitystatus;
+	private String activitystatus;
 	@Column(name = "recordstatus")
 	private String recordstatus;          
 }

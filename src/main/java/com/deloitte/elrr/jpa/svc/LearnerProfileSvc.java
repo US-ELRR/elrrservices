@@ -16,15 +16,15 @@ import com.deloitte.elrr.repository.LearnerProfileRepository;
 
 @Service
 public class LearnerProfileSvc implements CommonSvc<LearnerProfile, Long> {
-	private final LearnerProfileRepository learnerProfileFactRepository;
+	private final LearnerProfileRepository learnerProfileRepository;
 
-	public LearnerProfileSvc(final LearnerProfileRepository learnerProfileFactRepository) {
-		this.learnerProfileFactRepository = learnerProfileFactRepository;
+	public LearnerProfileSvc(final LearnerProfileRepository learnerProfileRepository) {
+		this.learnerProfileRepository = learnerProfileRepository;
 	}
 
 	@Override
 	public CrudRepository<LearnerProfile, Long> getRepository() {
-		return this.learnerProfileFactRepository;
+		return this.learnerProfileRepository;
 	}
 
 	@Override

@@ -36,5 +36,10 @@ public class CourseSvc implements CommonSvc<Course, Long> {
 	public Course save(Course course) {
 		return CommonSvc.super.save(course);
 	}
+	
+	public Course getCourseByCourseidentifier(String courseidentifier)
+	{
+		return this.courseRepository.findIdByCourseidentifier(courseidentifier);
+	}
 
 }

@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="person")
+@Table(name="PERSON")
 //, schema="CMTR")
 @RequiredArgsConstructor
 @AllArgsConstructor

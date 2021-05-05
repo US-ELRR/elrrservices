@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="Employment")
+@Table(name="EMPLOYMENT")
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Getter 

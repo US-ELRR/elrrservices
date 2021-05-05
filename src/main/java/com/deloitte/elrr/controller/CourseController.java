@@ -4,9 +4,7 @@
 package com.deloitte.elrr.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -29,7 +27,7 @@ import com.deloitte.elrr.dto.CourseDto;
 import com.deloitte.elrr.entity.Course;
 import com.deloitte.elrr.exception.ResourceNotFoundException;
 import com.deloitte.elrr.jpa.svc.CourseSvc;
-import com.deloitte.elrr.jpa.svc.PersonSvc;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
