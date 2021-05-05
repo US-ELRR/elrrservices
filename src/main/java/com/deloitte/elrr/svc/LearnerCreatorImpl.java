@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.deloitte.elrr.entity.Competency;
+import com.deloitte.elrr.entity.ContactInformation;
 import com.deloitte.elrr.entity.Course;
 import com.deloitte.elrr.entity.Employment;
 import com.deloitte.elrr.entity.Learner;
@@ -17,6 +18,7 @@ import com.deloitte.elrr.entity.Organization;
 import com.deloitte.elrr.entity.Person;
 import com.deloitte.elrr.entity.Personnel;
 import com.deloitte.elrr.repository.CompetencyRepository;
+import com.deloitte.elrr.repository.ContactInformationRepository;
 import com.deloitte.elrr.repository.CourseRepository;
 import com.deloitte.elrr.repository.EmploymentRepository;
 import com.deloitte.elrr.repository.LearnerProfileRepository;
@@ -38,7 +40,8 @@ public class LearnerCreatorImpl implements LearnerCreatorSvc{
 	private OrganizationRepository organizationRepository;
 	@Autowired
 	private LearnerProfileRepository learnerProfileRepository;
-	
+	@Autowired
+	private ContactInformationRepository contactInformationRepository;
 	@Override
 	public Learner learnerCreator(String personId) {
 		
@@ -88,8 +91,22 @@ public class LearnerCreatorImpl implements LearnerCreatorSvc{
  		
 		personnel.setPerson(person.get());
 		personnel.setOrganization(organization1.get());
+		personnel.setContactInformation(getContactInformation(personId));
 		personnel.setEmployment(getEmployeeList(profiles));
 		return personnel;
+	}
+
+	private ContactInformation getContactInformation(String id) {
+		Long personId = Long.valueOf(id);
+		ContactInformation contactInformation=null;
+		//TODO instead of doing findAll, query directly on personId
+		List<ContactInformation> list = contactInformationRepository.findAll();
+		List<ContactInformation> contactList = list.stream().filter(e-> e.getPersonid() == personId).collect(Collectors.toList());
+ 		if (contactList.size() > 0) {
+ 			contactInformation = contactList.get(0);
+ 		}
+ 		return contactInformation;
+ 			
 	}
 
 	private List<Employment> getEmployeeList(List<LearnerProfile> profiles) {

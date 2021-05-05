@@ -28,7 +28,7 @@ public class HomeController {
 	@Autowired
 	private LearnerCreatorSvc learnerCreatorSvc;
 	
-	@RequestMapping(value = "/learner", method = RequestMethod.POST, produces = {"application/json"})
+	@RequestMapping(value = "/learner", method = RequestMethod.GET, produces = {"application/json"})
 	public Learner getLearner(@RequestParam(required = false) String userName, @RequestParam(required = false) String password) {
 		log.info(userName +"_"+ password);
 		

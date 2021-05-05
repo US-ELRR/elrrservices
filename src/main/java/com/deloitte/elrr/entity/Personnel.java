@@ -15,6 +15,7 @@ public class  Personnel{
 
 	private Person person;
 	private Organization organization;
+	private ContactInformation contactInformation;
 	private List<Employment> employment;
 
 		
