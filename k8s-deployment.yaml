@@ -1,0 +1,48 @@
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  creationTimestamp: null 
+  name: elrrdemo-deployment
+  labels:
+    app: elrrdemo
+spec:
+  selector:
+    matchLabels:
+      app: elrrdemo
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      creationTimestamp: null  
+      labels:
+        app: elrrdemo
+    spec:
+      containers:
+        - name: elrrdemo
+          image: docker.io/mohannelakurti/newrepository:elrrdemo
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 1
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elrrdemo
+spec:
+  selector:
+    app: elrrdemo
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: NodePort
