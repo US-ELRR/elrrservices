@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.deloitte.elrr.dto.LearnerDTO;
 import com.deloitte.elrr.entity.Learner;
 import com.deloitte.elrr.svc.LearnerCreatorSvc;
 
@@ -21,24 +22,25 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("api")
 @Slf4j
 public class HomeController {
-	
+
 	@Autowired
 	ModelMapper mapper;
-	
+
 	@Autowired
 	private LearnerCreatorSvc learnerCreatorSvc;
-	
+
 	@RequestMapping(value = "/learner", method = RequestMethod.GET, produces = {"application/json"})
-	public Learner getLearner(@RequestParam(required = false) String userName, @RequestParam(required = false) String password) {
+	public LearnerDTO getLearner(@RequestParam(required = false) String userName, @RequestParam(required = false) String password) {
+
 		log.info(userName +"_"+ password);
-		
+
 		Learner learner = new Learner();
-		learner = learnerCreatorSvc.learnerCreator(userName);
-		
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");  
-		LocalDateTime now = LocalDateTime.now();  
-		log.info(dtf.format(now));  
-		
-		return learner;
+		LearnerDTO learnerDTO = learnerCreatorSvc.learnerCreator(userName);
+
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
+		LocalDateTime now = LocalDateTime.now();
+		log.info(dtf.format(now));
+
+		return learnerDTO;
 	}
 }
