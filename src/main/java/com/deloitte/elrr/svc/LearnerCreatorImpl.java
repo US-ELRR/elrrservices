@@ -121,9 +121,11 @@ public class LearnerCreatorImpl implements LearnerCreatorSvc{
 
 		 List<CompetencyDto>  list = new ArrayList<CompetencyDto>();
 		 for (LearnerProfile profile:profiles) {
+			 if (profile.getCompetencyid() != null) {
 			 Optional<Competency> competency = competencyRepository.findById(profile.getCompetencyid());
 			 CompetencyDto dto = mapper.map(competency.get(), CompetencyDto.class);
 			 list.add(dto);
+			 }
 		 }
 		return list;
 	}
