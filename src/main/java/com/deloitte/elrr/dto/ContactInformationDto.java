@@ -31,29 +31,15 @@ public class ContactInformationDto implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private long competencyid;
-	private String competencyframeworktitle;	
-	private String competencyframeworkversion;
-	private String competencyframeworkidentifier;
-	private String competencyframeworkdescription;
-	private String competencyframeworksubject;
-	@JsonFormat(pattern = "dd/MM/yyyy")
-	private Date competencyframeworkvalidstartdate;
-	@JsonFormat(pattern = "dd/MM/yyyy")
-	private Date competencyframeworkvalidenddate;
-	private String competencydefinitionidentifier;
-	private String competencydefinitionidentifierurl;
-	private String competencytaxonomyid;
-	@JsonFormat(pattern = "dd/MM/yyyy")
-	private Date competencydefinitionvalidstartdate;
-	@JsonFormat(pattern = "dd/MM/yyyy")
-	private Date competencydefinitionvalideenddate;
-	private String competencydefinitionparentidentifier;
-	private String competencydefinitionparenturl;
-	private String competencydescriptionparentcode;
-	private String competencydefinitioncode;
-	private String competencydefinitionstatement;	
-	private String competencydefinitiontypeurl;	
-	private String competencydefinitiontype;	
+	private long contactinformationid;
+	private long personid;
+	private String contactinformation;
+	private String telephonenumber;
+	private String isprimaryindicator;
+	private String telephonetype;
+	private String electronicmailaddress;
+	private String electronicmailaddresstype;
+	private String emergencycontact;
 	private String recordstatus;
+
 }
