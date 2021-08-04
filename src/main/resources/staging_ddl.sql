@@ -16,6 +16,14 @@ CREATE TABLE STAGE.CONFIGURATION (
 	email varchar(255) NULL,
 	orgname varchar(255) NULL,
 	phone varchar(255) NULL,
+	primarycontact varchar(255) NULL,
+	primaryemail varchar(255) NULL,
+	primaryorgname varchar(255) NULL,
+	primaryphone varchar(255) NULL,
+	secondarycontact varchar(255) NULL,
+	secondaryemail varchar(255) NULL,
+	secondaryorgname varchar(255) NULL,
+	secondaryphone varchar(255) NULL,
 	CONSTRAINT configuration_pkey PRIMARY KEY (configurationid)
 );
 
