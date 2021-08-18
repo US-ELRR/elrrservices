@@ -30,7 +30,7 @@ public class RoleRelationsSvc implements CommonSvc<RoleRelations, Long> {
 
 	@Override
 	public Long getId(RoleRelations role) {
-		return role.getId();
+		return role.getRolerelationsid();
 	}
 
 	@Override

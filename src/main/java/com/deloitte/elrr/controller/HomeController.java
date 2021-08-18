@@ -45,7 +45,7 @@ public class HomeController {
 		return learnerDTO;
 	}
 	
-	@RequestMapping(value = "/learnerSnapshot", method = RequestMethod.GET, produces = {"application/json"})
+	@RequestMapping(value = "/sysadmin", method = RequestMethod.GET, produces = {"application/json"})
 	public LearnerSnapshotDTO getLearnerSnapshot() {
 	
 		LearnerSnapshotDTO snapshotDTO = learnerCreatorSvc.getSnapshot();

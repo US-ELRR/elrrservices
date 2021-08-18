@@ -30,9 +30,6 @@ public class Configuration extends Auditable<String> {
 	@Column(name = "configurationvalue")
 	private String configurationvalue;
 	
-	@Column(name = "recordstatus")
-	private String recordstatus;
-	
 	@Column(name = "frequency")
 	private String frequency;
 	
@@ -42,27 +39,28 @@ public class Configuration extends Auditable<String> {
 	@Column(name = "primarycontact")
 	private String primarycontact;
 	
-	@Column(name = "primaryorgname")
-	private String primaryorgname;
-	
 	@Column(name = "primaryemail")
 	private String primaryemail;
+	
+	@Column(name = "primaryorgname")
+	private String primaryorgname;
 	
 	@Column(name = "primaryphone")
 	private String primaryphone;
 	
+	
 	@Column(name = "secondarycontact")
 	private String secondarycontact;
-	
-	@Column(name = "secondaryorgname")
-	private String secondaryorgname;
 	
 	@Column(name = "secondaryemail")
 	private String secondaryemail;
 	
+	@Column(name = "secondaryorgname")
+	private String secondaryorgname;
+	
 	@Column(name = "secondaryphone")
 	private String secondaryphone;
 	
-	
-	 
+	@Column(name = "recordstatus")
+	private String recordstatus;
 }
