@@ -10,7 +10,7 @@ For building and running the elrrdataservices you need:
 # Deploying the application on Docker 
 The easiest way to deploy the sample application to Docker is to follow below steps:
 - mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
-- docker build --build-arg JAR_FILE="./target/elrrexternalservices-0.0.1-SNAPSHOT.jar" --file Dockerfile -t <docker_hub>/test:elrrservices-dck-img
+- docker build --build-arg JAR_FILE="./target/elrrservices-0.0.1-SNAPSHOT.jar" --file Dockerfile -t <docker_hub>/test:elrrservices-dck-img
 - docker run -p Port:Port -t <docker_hub>/test:elrrservices-dck-img
 
 # Running the application locally
