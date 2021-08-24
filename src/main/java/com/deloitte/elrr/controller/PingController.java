@@ -18,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
  * @author mnelakurti
  *
  */
-@CrossOrigin(origins = {"http://localhost:3001", "http://localhost:5000"})
 @RestController
 @Slf4j
 public class PingController {

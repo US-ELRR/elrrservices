@@ -9,7 +9,12 @@ import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.env.Environment;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.CorsRegistration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.deloitte.elrr.repository.CompetencyRepository;
 import com.deloitte.elrr.repository.CourseRepository;
@@ -24,9 +29,27 @@ import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties
 @EnableEncryptableProperties
 public class DemoApplication implements CommandLineRunner{
 
+	@Autowired
+    private Environment env;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);
 	}
+	
+	@SuppressWarnings("deprecation")
+	@Bean
+	    public WebMvcConfigurer corsConfigurer() {
+	        return new WebMvcConfigurerAdapter() {
+	            @Override
+	            public void addCorsMappings(CorsRegistry registry) {
+	                String urls = env.getProperty("cors.urls");
+	                CorsRegistration reg = registry.addMapping("/api/**");
+	                for(String url: urls.split(",")) {
+	                    reg.allowedOrigins(url);
+	                }
+	            }
+	        };
+	}   
 
 	@Autowired
 	private CourseRepository courseRepository;

@@ -57,7 +57,7 @@ public class EmploymentDto implements Serializable {
 
 	private String employed;
 
-	private String primarycarrercategory;
+	private String primarycareercategory;
 
 	private String secondcarrercategory;
 
