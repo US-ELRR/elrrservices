@@ -1,8 +1,8 @@
 # elrrservices
-Elrr Services for the ELRR Staging Database
+Elrr services which provide a mechanism to synchronize the data in the ELRR with the data in the local learning systems 
 
 # Requirements
-For building and running the elrrdataservices you need:
+For building and running the elrrservices you need:
 - JDK 1.8
 - Maven 3
 # Build the application
