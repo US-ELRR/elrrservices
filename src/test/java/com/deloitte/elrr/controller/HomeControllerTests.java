@@ -12,14 +12,14 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.deloitte.elrr.DemoApplication;
+import com.deloitte.elrr.ElrrApplication;
 import com.deloitte.elrr.entity.Competency;
 import com.deloitte.elrr.entity.Course;
 import com.deloitte.elrr.entity.Learner;
 import com.deloitte.elrr.entity.Personnel;
 import com.deloitte.elrr.svc.LearnerCreatorSvc;
 
-@SpringBootTest(classes = DemoApplication.class)
+@SpringBootTest(classes = ElrrApplication.class)
 @RunWith(SpringRunner.class)
 class HomeControllerTests {
 

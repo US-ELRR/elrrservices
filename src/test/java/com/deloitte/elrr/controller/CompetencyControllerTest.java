@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.deloitte.elrr.DemoApplication;
+import com.deloitte.elrr.ElrrApplication;
 import com.deloitte.elrr.dto.CompetencyDto;
 import com.deloitte.elrr.entity.Competency;
 import com.deloitte.elrr.jpa.svc.CompetencySvc;
@@ -38,7 +38,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author mnelakurti
  *
  */
-@SpringBootTest(classes = DemoApplication.class)
+@SpringBootTest(classes = ElrrApplication.class)
 @RunWith(SpringRunner.class)
 public class CompetencyControllerTest {
 	

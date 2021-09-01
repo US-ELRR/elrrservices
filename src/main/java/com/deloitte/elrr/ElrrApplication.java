@@ -22,10 +22,10 @@ import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties
 @ComponentScan({"com.deloitte.elrr"})
 @Import({JacksonAutoConfiguration.class})
 @EnableEncryptableProperties
-public class DemoApplication implements CommandLineRunner{
+public class ElrrApplication implements CommandLineRunner{
 
 	public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
+		SpringApplication.run(ElrrApplication.class, args);
 	}
 
 	@Autowired
