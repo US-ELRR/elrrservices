@@ -22,6 +22,7 @@ import com.deloitte.elrr.svc.LearnerCreatorSvc;
 
 import lombok.extern.slf4j.Slf4j;
 
+@CrossOrigin(origins = {"http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:3001", "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:5000"})
 @RestController
 @RequestMapping("api")
 @Slf4j
