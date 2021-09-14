@@ -10,13 +10,13 @@
 		<relativePath /> 
 	</parent>
 	<groupId>com.deloitte</groupId>
-	<artifactId>elrrdataservices</artifactId>
+	<artifactId>elrrservices</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>elrr</name>
-	<description>ELRR Data Services</description>
+	<description>ELRR Services</description>
 	<properties>
-		<java.version>14</java.version>
-		<docker.image.prefix>elrrdataservices</docker.image.prefix>
+		<java.version>8</java.version>
+		<docker.image.prefix>elrrservices</docker.image.prefix>
 		<jacoco.version>0.8.6</jacoco.version>
 	</properties>
 
