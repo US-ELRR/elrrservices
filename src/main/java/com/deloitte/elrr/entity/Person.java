@@ -67,9 +67,9 @@ public class Person extends Auditable<String> {
 				+ ",lastName=" + lastname + ",  namePrefix=" + nameprefix + ",   titleAffixcode=" + titleaffixcode
 				+ ",qualificationAffixcode=" + qualificationaffixcode + ",maidenName="
 				+ maidenname + ",preferredName=" + preferredname + ", humanResourceIdentifier="
-				+ humanresourceidentifier + ",        	personnelIdentificationSystem=" + personnelidentificationsystem
-				+ ",  	birthdate=" + birthdate + ", sex=" + sex + ", primaryLanguage=" + primarylanguage
-				+ ",       militaryVeteranindicator=" + militaryveteranindicator + ",       	recordStatus="
+				+ humanresourceidentifier + ",  personnelIdentificationSystem=" + personnelidentificationsystem
+				+ ",birthdate=" + birthdate + ", sex=" + sex + ", primaryLanguage=" + primarylanguage
+				+ ",       militaryVeteranindicator=" + militaryveteranindicator + ", recordStatus="
 				+ recordstatus + "]";
 	}
 	

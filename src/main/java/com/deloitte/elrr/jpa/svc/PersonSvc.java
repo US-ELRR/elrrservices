@@ -9,12 +9,15 @@ import org.springframework.stereotype.Service;
 import com.deloitte.elrr.entity.Person;
 import com.deloitte.elrr.repository.PersonalRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author mnelakurti
  *
  */
 
 @Service
+@Slf4j
 public class PersonSvc implements CommonSvc<Person, Long> {
 	private final PersonalRepository personalRepository;
 
@@ -34,7 +37,7 @@ public class PersonSvc implements CommonSvc<Person, Long> {
 
 	@Override
 	public Person save(Person person) {
-		System.out.println(person);
+		log.info(""+person);
 		return CommonSvc.super.save(person);
 	}
 

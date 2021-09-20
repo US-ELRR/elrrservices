@@ -9,16 +9,19 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author mnelakurti
  *
  */
+@Slf4j
 public class DateUtility {
 
 		private static String dateFormat = "yyyy-MM-dd";
 		private static String dateFormatUx = "dd-MMM-yyyy";
 		
-		public static int getYearIndex(String courseDateStr,int renewal,String renewalStartDateStr,String renewalEndDateStr) throws Exception{
+		public static int getYearIndex(String courseDateStr,int renewal,String renewalStartDateStr) throws ParseException{
 			SimpleDateFormat formatDate = new SimpleDateFormat(dateFormat);
 			Date courseDate = formatDate.parse(courseDateStr);
 			GregorianCalendar courseDateGC = new GregorianCalendar();
@@ -36,12 +39,12 @@ public class DateUtility {
 			return  -1;
 		}
 
-		public static String getDate(Date date) throws ParseException {
+		public static String getDate(Date date){
 			SimpleDateFormat formatDate = new SimpleDateFormat(dateFormat);
 			return formatDate.format(date);
 		}
 
-		public static Date getCurrentDate() throws ParseException {
+		public static Date getCurrentDate() {
 			GregorianCalendar cal = new GregorianCalendar();
 			return cal.getTime();
 		}
@@ -53,7 +56,7 @@ public class DateUtility {
 			return formatUXDate.format(date);
 		}
 
-		public static String getUXDate(Date date) throws ParseException {
+		public static String getUXDate(Date date)  {
 			SimpleDateFormat formatUXDate = new SimpleDateFormat(dateFormatUx);
 			return formatUXDate.format(date);
 		}
@@ -72,7 +75,7 @@ public class DateUtility {
 			return formatUXDate.format(calDate.getTime());
 		}
 
-		public static String addUXDate(Date date, int year) throws ParseException {
+		public static String addUXDate(Date date, int year) {
 			return getUXTime(year, date);
 		}
 
@@ -127,11 +130,10 @@ public class DateUtility {
 			endDate.add(Calendar.DATE, 1);
 			double endYr = endDate.get(Calendar.YEAR);
 			double endMonth = endDate.get(Calendar.MONTH);
-			double endDay = endDate.get(Calendar.DAY_OF_MONTH);
-
+			
 			double startYr = startDate.get(Calendar.YEAR);
 			double startMonth = startDate.get(Calendar.MONTH);
-			double startDay = startDate.get(Calendar.DAY_OF_MONTH);
+			
 
 			diff = (endYr - startYr) + (endMonth - startMonth) / 12;
 
@@ -143,9 +145,9 @@ public class DateUtility {
 
 			double diff = getDateRange(getDate("2019-02-01"), getDate("2021-01-31"));
 			
-			int idx = getYearIndex("2020-05-30", 2,"2020-01-01","2022-01-31");
-			System.out.println(diff);
-			System.out.println(idx);
+			int idx = getYearIndex("2020-05-30", 2,"2022-01-31");
+			log.info(""+diff);
+			log.info(""+idx);
 
 		}
 

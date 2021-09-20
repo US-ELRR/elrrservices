@@ -24,7 +24,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class ELRRExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<?> recordNotFoundException(ResourceNotFoundException ex, WebRequest request) {
+	public ResponseEntity<ELRRErrorDetails> recordNotFoundException(ResourceNotFoundException ex, WebRequest request) {
 		ELRRErrorDetails errorDetails = new ELRRErrorDetails(new Date(), ex.getMessage(), request.getDescription(false),
 				null);
 		return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
@@ -43,7 +43,7 @@ public class ELRRExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<?> elrrExcpetionHandler(Exception ex, WebRequest request) {
+	public ResponseEntity<ELRRErrorDetails> elrrExcpetionHandler(Exception ex, WebRequest request) {
 		ELRRErrorDetails errorDetails = new ELRRErrorDetails(new Date(), ex.getMessage(), request.getDescription(false),
 				null);
 		return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);

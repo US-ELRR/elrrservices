@@ -4,13 +4,13 @@
 package com.deloitte.elrr.entity;
 
 import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -22,7 +22,7 @@ import lombok.Setter;
 /**
  * @author mnelakurti
  * 
- * This Entity class is 
+ *         This Entity class is
  *
  */
 
@@ -33,7 +33,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public abstract class Auditable<U> {
-
 
 	@Column(name = "inserteddate", updatable = false)
 	@CreationTimestamp

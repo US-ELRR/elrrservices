@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,7 +34,7 @@ public class LearnersController {
 
 	@Autowired
 	private LearnerCreatorSvc learnerCreatorSvc;
-	@RequestMapping(value = "/learners", method = RequestMethod.GET, produces = {"application/json"})
+	@GetMapping(value = "/learners", produces = {"application/json"})
 	public ResponseEntity<Object> getLearner(@RequestParam(required = false) String fromDate,
 			@RequestParam(required = false) String endDate, 
 			@RequestParam(required = false) String orgName, @RequestParam(required = false) String[] responseEntities,
@@ -108,7 +109,7 @@ public class LearnersController {
 			}
 			for (String str: responseEntities) {
 				log.info("str "+str);
-				if (!((str.equals("COURSE" ) || str.equals("COMPETENCY")))) {
+				if (!(str.equals("COURSE" ) || str.equals("COMPETENCY"))) {
 					ElrrException exception = new ElrrException();
 					exception.setFailureType(FailureType.Validation);
 					exception.setFieldName("responseEntities");

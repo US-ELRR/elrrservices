@@ -4,11 +4,6 @@
 package com.deloitte.elrr.dto;
 
 import java.io.Serializable;
-import java.util.List;
-
-import com.deloitte.elrr.entity.Employment;
-import com.deloitte.elrr.entity.Organization;
-import com.deloitte.elrr.entity.Person;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,7 +22,6 @@ import lombok.Setter;
 @Setter
 public class OrganizationDto implements Serializable {
 
-
 	/**
 	 * 
 	 */
@@ -43,5 +37,5 @@ public class OrganizationDto implements Serializable {
 	private String organizationdescription;
 	private String parentorganization;
 	private String recordstatus;
-	
+
 }

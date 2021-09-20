@@ -7,7 +7,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
 import com.deloitte.elrr.entity.Accreditation;
-import com.deloitte.elrr.entity.Competency;
 import com.deloitte.elrr.repository.AccreditationRepository;
 
 /**

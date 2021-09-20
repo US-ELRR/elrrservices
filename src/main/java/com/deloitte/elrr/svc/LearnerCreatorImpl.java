@@ -94,7 +94,7 @@ public class LearnerCreatorImpl implements LearnerCreatorSvc {
 		learnerDTO.setRole(getRole(rolesRelationsList));
 		List<Learner> assignedList = new ArrayList<>();
 		for (RoleRelations roleRelations : rolesRelationsList) {
-			String id1 = new Long(roleRelations.getChildPersonid()).toString();
+			String id1 = Long.toString(roleRelations.getChildPersonid());
 			Learner learner1 = getLearner(id1);
 			assignedList.add(learner1);
 		}
@@ -104,9 +104,10 @@ public class LearnerCreatorImpl implements LearnerCreatorSvc {
 
 	private String getRole(List<RoleRelations> rolesRelationsList) {
 		String roleName = "LEARNER";
-		if (rolesRelationsList.size() > 0) {
+		if (rolesRelationsList.isEmpty()) {
 			Optional<Role> role = roleRepository.findById(rolesRelationsList.get(0).getParentRoleid());
-			roleName = role.get().getRoleName();
+			if(role.isPresent())
+				roleName = role.get().getRoleName();
 		}
 
 		return roleName.trim();
@@ -133,11 +134,13 @@ public class LearnerCreatorImpl implements LearnerCreatorSvc {
 
 	private List<CompetencyDto> getCompetencies(List<LearnerProfile> profiles) {
 
-		List<CompetencyDto> list = new ArrayList<CompetencyDto>();
+		List<CompetencyDto> list = new ArrayList<>();
 		for (LearnerProfile profile : profiles) {
 			if (profile.getCompetencyid() != null) {
 				Optional<Competency> competency = competencyRepository.findById(profile.getCompetencyid());
-				CompetencyDto dto = mapper.map(competency.get(), CompetencyDto.class);
+				CompetencyDto dto = null;
+				if(competency.isPresent())
+					dto = mapper.map(competency.get(), CompetencyDto.class);
 				list.add(dto);
 			}
 		}
@@ -146,10 +149,12 @@ public class LearnerCreatorImpl implements LearnerCreatorSvc {
 
 	private List<CourseDto> getCourses(List<LearnerProfile> profiles) {
 
-		List<CourseDto> list = new ArrayList<CourseDto>();
+		List<CourseDto> list = new ArrayList<>();
 		for (LearnerProfile profile : profiles) {
 			Optional<Course> course = courseRepository.findById(profile.getCourseid());
-			CourseDto courseDto = mapper.map(course.get(), CourseDto.class);
+			CourseDto courseDto =null;
+			if(course.isPresent())
+				courseDto = mapper.map(course.get(), CourseDto.class);
 			list.add(courseDto);
 		}
 		return list;
@@ -157,11 +162,9 @@ public class LearnerCreatorImpl implements LearnerCreatorSvc {
 
 	private List<LearnerProfile> getLearnerProfiles(String id) {
 		Long personId = Long.valueOf(id);
-		// TODO instead of doing findAll, query directly on personId
 		List<LearnerProfile> list = learnerProfileRepository.findAll();
-		List<LearnerProfile> profileList = list.stream().filter(e -> e.getPersonid() == personId)
+		return  list.stream().filter(e -> e.getPersonid().equals(personId))
 				.collect(Collectors.toList());
-		return profileList;
 
 	}
 
@@ -171,12 +174,15 @@ public class LearnerCreatorImpl implements LearnerCreatorSvc {
 		OrganizationDto organizationDto = new OrganizationDto();
 		// PersonDto personDto = new PersonDto();
 		Optional<Person> person = this.personalRepository.findById(Long.valueOf(personId));
-		if (profiles != null && profiles.size() > 0) {
+		if (profiles != null && profiles.isEmpty()) {
 			Optional<Organization> organization1 = this.organizationRepository
 					.findById(profiles.get(0).getOrganizationid());
-			organizationDto = mapper.map(organization1.get(), OrganizationDto.class);
+			if (organization1.isPresent())
+				organizationDto = mapper.map(organization1.get(), OrganizationDto.class);
 		}
-		PersonDto personDto = mapper.map(person.get(), PersonDto.class);
+		PersonDto personDto = null;
+		if(person.isPresent())
+			personDto = mapper.map(person.get(), PersonDto.class);
 
 		// PersonDto personDto = mapper.map(person.get(), PersonDto.class);
 		personnel.setPerson(personDto);
@@ -191,14 +197,13 @@ public class LearnerCreatorImpl implements LearnerCreatorSvc {
 		Long personId = Long.valueOf(id);
 		ContactInformation contactInformation = new ContactInformation();
 		ContactInformationDto contactInformationDto = new ContactInformationDto();
-		// TODO instead of doing findAll, query directly on personId
 		List<ContactInformation> list = contactInformationRepository.findAll();
 		log.info("contact list " + list);
-		if (list != null && list.size() > 0) {
+		if (list.isEmpty()) {
 			List<ContactInformation> contactList = list.stream().filter(e -> e.getPersonid() == personId)
 					.collect(Collectors.toList());
 			log.info("contactList is " + contactList.size());
-			if (contactList.size() > 0) {
+			if (contactList.isEmpty()) {
 				contactInformation = contactList.get(0);
 			}
 			log.info("contactInformation " + contactInformation.getContactinformationid());
@@ -210,11 +215,13 @@ public class LearnerCreatorImpl implements LearnerCreatorSvc {
 	}
 
 	private List<EmploymentDto> getEmployeeList(List<LearnerProfile> profiles) {
-		List<EmploymentDto> list = new ArrayList<EmploymentDto>();
-		if (profiles != null && profiles.size() > 0) {
+		List<EmploymentDto> list = new ArrayList<>();
+		if (profiles != null && profiles.isEmpty()) {
 			for (LearnerProfile profile : profiles) {
 				Optional<Employment> employment1 = this.employmentRepository.findById(profile.getEmploymentid());
-				EmploymentDto employmentDto = mapper.map(employment1.get(), EmploymentDto.class);
+				EmploymentDto employmentDto =null;
+				if(employment1.isPresent())
+				 employmentDto = mapper.map(employment1.get(), EmploymentDto.class);
 				list.add(employmentDto);
 			}
 		}
@@ -279,7 +286,6 @@ public class LearnerCreatorImpl implements LearnerCreatorSvc {
 
 	private List<LearnerProfile> findLearnerProfiles(Date startDate, Date endDate, String orgName) {
 		
-		//TODO these two will be one method where repository will provide based on where condition
 		List<LearnerProfile> learnerProfiles = learnerProfileRepository.findAll();
 		List<LearnerProfile> list = filterProfiles(learnerProfiles, startDate, endDate, orgName);
 		log.info("filtered List  " + list.size());
@@ -289,21 +295,18 @@ public class LearnerCreatorImpl implements LearnerCreatorSvc {
 
 	/*
 	 * Will retrieve all learner profiles based on the date range and orgName
-	 * TODO some of this code will be part of the where condition
 	 */
 	private List<LearnerProfile> filterProfiles(List<LearnerProfile> learnerProfiles, Date startDate, Date endDate,
 			String orgName) {
-		List<LearnerProfile> list = new ArrayList<LearnerProfile>();
+		List<LearnerProfile> list = new ArrayList<>();
 		long orgId = getOrgIdByName(orgName);
 		List<Long> persons = new ArrayList<>();
 		for (LearnerProfile profile : learnerProfiles) {
 			boolean isBetweenDates = isBetweenDates(profile, startDate, endDate);
-			if (isBetweenDates && isBelongsOrg(profile, orgId)) {
-				//remove duplicates by personId
-				if (!persons.contains(profile.getPersonid())) {
+			//remove duplicates by personId
+			if (isBetweenDates && isBelongsOrg(profile, orgId)&&!persons.contains(profile.getPersonid())) {
 					list.add(profile);
 					persons.add(profile.getPersonid());
-				} 
 			}
 		}
 		
@@ -345,7 +348,6 @@ public class LearnerCreatorImpl implements LearnerCreatorSvc {
 	}
 
 	/*
-	 * TODO this will be part of the repository where condition
 	 * This method will filter records by dates between
 	 */
 
@@ -362,21 +364,14 @@ public class LearnerCreatorImpl implements LearnerCreatorSvc {
 		return false;
 	}
 
-	/*
-	 * TODO this will be part of the repository where condition
-	 * This method will filter records by organization
-	 */
+	
 	private boolean isBelongsOrg(LearnerProfile profile, long orgId) {
 
-		if (profile.getOrganizationid() == orgId)
-			return true;
-		return false;
+		return profile.getOrganizationid() == orgId;
 	}
 
 	@Override
 	public LearnerSnapshotDTO getSnapshot() {
-		// TODO Auto-generated method stub
-		
 		learnerProfileRepository.count();
 		LearnerSnapshotDTO snapshot = new LearnerSnapshotDTO();
 		snapshot.setTotalLearnerProfiles(learnerProfileRepository.count());

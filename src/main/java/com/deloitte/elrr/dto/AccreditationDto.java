@@ -5,13 +5,7 @@ package com.deloitte.elrr.dto;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
-import javax.persistence.Column;
-
-import com.deloitte.elrr.entity.Employment;
-import com.deloitte.elrr.entity.Organization;
-import com.deloitte.elrr.entity.Person;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;

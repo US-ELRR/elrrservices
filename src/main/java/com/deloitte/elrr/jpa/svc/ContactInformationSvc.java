@@ -7,7 +7,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
 import com.deloitte.elrr.entity.ContactInformation;
-import com.deloitte.elrr.entity.Course;
 import com.deloitte.elrr.repository.ContactInformationRepository;
 
 /**
@@ -31,15 +30,14 @@ public class ContactInformationSvc implements CommonSvc<ContactInformation, Long
 	@Override
 	public Long getId(ContactInformation courseaccreditation) {
 		return courseaccreditation.getContactinformationid();
-		}
+	}
 
 	@Override
 	public ContactInformation save(ContactInformation contactInformation) {
 		return CommonSvc.super.save(contactInformation);
 	}
-	
-	public ContactInformation getContactInformationByElectronicmailaddress(String courseidentifier)
-	{
+
+	public ContactInformation getContactInformationByElectronicmailaddress(String courseidentifier) {
 		return this.contactInformationRepository.findIdByElectronicmailaddress(courseidentifier);
 	}
 

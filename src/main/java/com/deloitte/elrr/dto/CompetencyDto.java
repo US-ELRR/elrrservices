@@ -6,8 +6,6 @@ package com.deloitte.elrr.dto;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
@@ -27,14 +25,13 @@ import lombok.Setter;
 @Setter
 public class CompetencyDto implements Serializable {
 
-
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private long competencyid;
-	private String competencyframeworktitle;	
+	private String competencyframeworktitle;
 	private String competencyframeworkversion;
 	private String competencyframeworkidentifier;
 	private String competencyframeworkdescription;
@@ -54,9 +51,9 @@ public class CompetencyDto implements Serializable {
 	private String competencydefinitionparenturl;
 	private String competencydescriptionparentcode;
 	private String competencydefinitioncode;
-	private String competencydefinitionstatement;	
-	private String competencydefinitiontypeurl;	
-	private String competencydefinitiontype;	
+	private String competencydefinitionstatement;
+	private String competencydefinitiontypeurl;
+	private String competencydefinitiontype;
 	private String recordstatus;
-	
+
 }

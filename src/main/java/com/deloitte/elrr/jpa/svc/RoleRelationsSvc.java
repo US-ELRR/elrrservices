@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.deloitte.elrr.entity.RoleRelations;
 import com.deloitte.elrr.repository.RoleRelationsRepository;
-import com.deloitte.elrr.repository.RoleRepository;
 
 /**
  * @author mnelakurti

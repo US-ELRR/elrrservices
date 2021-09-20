@@ -1,7 +1,5 @@
 package com.deloitte.elrr.dto;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -15,14 +13,12 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-public class ImportsDTO implements Serializable {
+public class ImportsDTO  {
 
 	String importsName;
-	/*String importsEndPoint;
-	Timestamp importsDate;
-	int totalRecords;
-	int failedRecords;
-	int successRecords;
-	String status;*/
+	/*
+	 * String importsEndPoint; Timestamp importsDate; int totalRecords; int
+	 * failedRecords; int successRecords; String status;
+	 */
 	List<ImportsDetailsDTO> detailsList;
 }

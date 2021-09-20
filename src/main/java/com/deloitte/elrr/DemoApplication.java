@@ -44,9 +44,11 @@ public class DemoApplication implements CommandLineRunner{
 	            public void addCorsMappings(CorsRegistry registry) {
 	                String urls = env.getProperty("cors.urls");
 	                CorsRegistration reg = registry.addMapping("/api/**");
-	                for(String url: urls.split(",")) {
-	                    reg.allowedOrigins(url);
-	                }
+	                if(urls!=null) {
+		                for(String url: urls.split(",")) {
+		                    reg.allowedOrigins(url);
+		                }
+	            	} 
 	            }
 	        };
 	}   

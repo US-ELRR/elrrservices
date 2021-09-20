@@ -5,13 +5,7 @@ package com.deloitte.elrr.dto;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
-import javax.persistence.Column;
-
-import com.deloitte.elrr.entity.Employment;
-import com.deloitte.elrr.entity.Organization;
-import com.deloitte.elrr.entity.Person;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
@@ -30,7 +24,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CourseAccreditationDto implements Serializable {
-	         
+
 	/**
 	 * 
 	 */
@@ -38,7 +32,7 @@ public class CourseAccreditationDto implements Serializable {
 	private long courseaccreditationid;
 	private String accreditedby;
 	private String accreditationtype;
-	private String  accreditationadminprocess;
+	private String accreditationadminprocess;
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date accreditationawarddate;
 	private Date accreditationexpirationdate;

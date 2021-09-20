@@ -52,9 +52,9 @@ public class CourseController {
 		try {
 			List<CourseDto> courseList = new ArrayList<>();
 			if (courseId == null) {
-				Iterable<Course> Courses = courseSvc.findAll();
+				Iterable<Course> courses = courseSvc.findAll();
 
-				for (Course course : Courses) {
+				for (Course course : courses) {
 					CourseDto courseDto = mapper.map(course, CourseDto.class);
 					courseList.add(courseDto);
 				}

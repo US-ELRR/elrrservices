@@ -1,6 +1,5 @@
 package com.deloitte.elrr.dto;
 
-import java.util.Date;
 import java.util.List;
 
 import com.deloitte.elrr.entity.Learner;

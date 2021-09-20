@@ -1,7 +1,5 @@
 package com.deloitte.elrr.entity;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,15 +13,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="CONTACTINFORMATION")
+@Table(name = "CONTACTINFORMATION")
 //, schema="CMTR")
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Getter 
+@Getter
 @Setter
 public class ContactInformation extends Auditable<String> {
-	
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long contactinformationid;
