@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.deloitte.elrr.controller;
 
@@ -34,108 +34,141 @@ import lombok.extern.slf4j.Slf4j;
  * @author mnelakurti
  *
  */
-@CrossOrigin(origins = {"http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:3001", "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:5000"})
+@CrossOrigin(origins = {
+        "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:3001",
+        "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:5000" })
 @RestController
 @RequestMapping("api")
 @Slf4j
 public class LearnerProfileController {
+    /**
+     *
+     */
+    @Autowired
+    private LearnerProfileSvc learnerProfileFactSvc;
+    /**
+     *
+     */
+    @Autowired
+    private ModelMapper mapper;
+    /**
+     *
+     * @param personid
+     * @return ResponseEntity<List<LearnerProfileDto>>
+     * @throws ResourceNotFoundException
+     */
+    @GetMapping("/learnerprofilefact")
+    public ResponseEntity<List<LearnerProfileDto>> getAllCourseAccreditations(
+            @RequestParam(value = "id", required = false) final Long personid)
+            throws ResourceNotFoundException {
+        try {
+            List<LearnerProfileDto> courseAccreditationList = new ArrayList<>();
+            if (personid == null) {
+                Iterable<LearnerProfile> courseAccreditations
+                = learnerProfileFactSvc.findAll();
 
-	@Autowired
-	private LearnerProfileSvc learnerProfileFactSvc;
+                for (LearnerProfile courseAccreditation
+                        : courseAccreditations) {
+                    LearnerProfileDto learnerProfileFactDto = mapper
+                            .map(courseAccreditation, LearnerProfileDto.class);
+                    courseAccreditationList.add(learnerProfileFactDto);
+                }
+            } else {
+                LearnerProfile accreditation = learnerProfileFactSvc
+                        .get(personid)
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "LearnerProfile not found for this id :: "
+                                        + personid));
+                LearnerProfileDto learnerProfileFactDto = mapper
+                        .map(accreditation, LearnerProfileDto.class);
+                courseAccreditationList.add(learnerProfileFactDto);
 
-	@Autowired
-	private ModelMapper mapper;
+            }
 
-	@GetMapping("/learnerprofilefact")
-	public ResponseEntity<List<LearnerProfileDto>> getAllCourseAccreditations(
-			@RequestParam(value = "id", required = false) Long personid) throws ResourceNotFoundException {
-		try {
-			List<LearnerProfileDto> courseAccreditationList = new ArrayList<>();
-			if (personid == null) {
-				Iterable<LearnerProfile> courseAccreditations = learnerProfileFactSvc.findAll();
+            if (courseAccreditationList.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            } else {
+                return ResponseEntity.ok(courseAccreditationList);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    /**
+     *
+     * @param personid
+     * @return ResponseEntity<LearnerProfileDto>
+     * @throws ResourceNotFoundException
+     */
+    @GetMapping("/learnerprofilefact/{id}")
+    public ResponseEntity<LearnerProfileDto> getCourseAccreditationById(
+            @PathVariable(value = "id") final Long personid)
+            throws ResourceNotFoundException {
+        LearnerProfile learnerProfileFact = learnerProfileFactSvc.get(personid)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "LearnerProfile not found for this id :: " + personid));
+        LearnerProfileDto learnerProfileFactDto = mapper.map(learnerProfileFact,
+                LearnerProfileDto.class);
+        return ResponseEntity.ok().body(learnerProfileFactDto);
+    }
+    /**
+     *
+     * @param learnerProfileFactDto
+     * @return ResponseEntity<LearnerProfileDto>
+     */
+    @PostMapping("/learnerprofilefact")
+    public ResponseEntity<LearnerProfileDto> createCourseAccreditation(
+            @Valid @RequestBody final LearnerProfileDto learnerProfileFactDto) {
+        log.info("create LearnerProfile:........." + learnerProfileFactDto);
+        LearnerProfile learnerProfileFact = mapper.map(learnerProfileFactDto,
+                LearnerProfile.class);
+        log.info("create learnerprofilefact:........." + learnerProfileFact);
+        mapper.map(learnerProfileFactSvc.save(learnerProfileFact),
+                LearnerProfileDto.class);
+        return new ResponseEntity<>(learnerProfileFactDto, HttpStatus.CREATED);
+    }
+    /**
+     *
+     * @param personid
+     * @param learnerProfileFactDto
+     * @return ResponseEntity<LearnerProfileDto>
+     * @throws ResourceNotFoundException
+     */
+    @PutMapping("/learnerprofilefact/{id}")
+    public ResponseEntity<LearnerProfileDto> updateCourseAccreditation(
+            @PathVariable(value = "id") final long personid,
+            @Valid @RequestBody final LearnerProfileDto learnerProfileFactDto)
+            throws ResourceNotFoundException {
+        LearnerProfile learnerProfileFact = learnerProfileFactSvc.get(personid)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "LearnerProfile not found for this id to update :: "
+                                + personid));
+        log.info("Update LearnerProfile:........." + learnerProfileFactDto);
+        // Assigning values from request
+        mapper.map(learnerProfileFactDto, learnerProfileFact);
+        // Reset Id / Primary key from query parameter
+        learnerProfileFact.setPersonid(personid);
+        log.info("Update Acceditation:........." + personid);
+        return ResponseEntity
+                .ok(mapper.map(learnerProfileFactSvc.save(learnerProfileFact),
+                        LearnerProfileDto.class));
 
-				for (LearnerProfile courseAccreditation : courseAccreditations) {
-					LearnerProfileDto learnerProfileFactDto = mapper.map(courseAccreditation,
-							LearnerProfileDto.class);
-					courseAccreditationList.add(learnerProfileFactDto);
-				}
-			} else {
-				LearnerProfile accreditation = learnerProfileFactSvc.get(personid)
-						.orElseThrow(() -> new ResourceNotFoundException(
-								"LearnerProfile not found for this id :: " + personid));
-				LearnerProfileDto learnerProfileFactDto = mapper.map(accreditation, LearnerProfileDto.class);
-				courseAccreditationList.add(learnerProfileFactDto);
+    }
+    /**
+     *
+     * @param personid
+     * @return ResponseEntity<HttpStatus>
+     */
+    @DeleteMapping("/learnerprofilefact/{id}")
+    public ResponseEntity<HttpStatus> deleteCourseAccreditation(
+            @PathVariable(value = "id") final Long personid) {
+        try {
+            log.info("Deleting  LearnerProfile:........." + personid);
+            learnerProfileFactSvc.delete(personid);
+            return ResponseEntity.ok(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-			}
-
-			if (courseAccreditationList.isEmpty())
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			else
-				return ResponseEntity.ok(courseAccreditationList);
-
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@GetMapping("/learnerprofilefact/{id}")
-	public ResponseEntity<LearnerProfileDto> getCourseAccreditationById(@PathVariable(value = "id") Long personid)
-			throws ResourceNotFoundException {
-		LearnerProfile learnerProfileFact = learnerProfileFactSvc.get(personid).orElseThrow(
-				() -> new ResourceNotFoundException("LearnerProfile not found for this id :: " + personid));
-		LearnerProfileDto learnerProfileFactDto = mapper.map(learnerProfileFact, LearnerProfileDto.class);
-		return ResponseEntity.ok().body(learnerProfileFactDto);
-	}
-
-	@PostMapping("/learnerprofilefact")
-	public ResponseEntity<LearnerProfileDto> createCourseAccreditation(
-			@Valid @RequestBody LearnerProfileDto learnerProfileFactDto) {
-		log.info("create LearnerProfile:........." + learnerProfileFactDto);
-		LearnerProfile learnerProfileFact = mapper.map(learnerProfileFactDto, LearnerProfile.class);
-		log.info("create learnerprofilefact:........." + learnerProfileFact);
-		mapper.map(learnerProfileFactSvc.save(learnerProfileFact), LearnerProfileDto.class);
-		return new ResponseEntity<>(learnerProfileFactDto, HttpStatus.CREATED);
-	}
-
-	@PutMapping("/learnerprofilefact/{id}")
-	public ResponseEntity<LearnerProfileDto> updateCourseAccreditation(@PathVariable(value = "id") long personid,
-			@Valid @RequestBody LearnerProfileDto learnerProfileFactDto) throws ResourceNotFoundException {
-		LearnerProfile learnerProfileFact = learnerProfileFactSvc.get(personid)
-				.orElseThrow(() -> new ResourceNotFoundException(
-						"LearnerProfile not found for this id to update :: " + personid));
-		log.info("Update LearnerProfile:........." + learnerProfileFactDto);
-		// Assigning values from request
-		mapper.map(learnerProfileFactDto, learnerProfileFact);
-		// Reset Id / Primary key from query parameter
-		learnerProfileFact.setPersonid(personid);
-		log.info("Update Acceditation:........." + personid);
-		return ResponseEntity
-				.ok(mapper.map(learnerProfileFactSvc.save(learnerProfileFact), LearnerProfileDto.class));
-
-	}
-
-	@DeleteMapping("/learnerprofilefact/{id}")
-	public ResponseEntity<HttpStatus> deleteCourseAccreditation(@PathVariable(value = "id") Long personid) {
-		try {
-			log.info("Deleting  LearnerProfile:........." + personid);
-			learnerProfileFactSvc.delete(personid);
-			return ResponseEntity.ok(HttpStatus.NO_CONTENT);
-		} catch (Exception e) {
-			return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	// Don't want to expose this method as it will allow to delete all the
-	// accreditation
-	// records
-	/*
-	 * @DeleteMapping("/accreditation") public ResponseEntity<HttpStatus>
-	 * deleteAllpersons() { try {
-	 * log.info("Deleting  All LearnerProfile:.........");
-	 * accreditationSvc.deleteAll(); return new
-	 * ResponseEntity<>(HttpStatus.NO_CONTENT); } catch (Exception e) { return new
-	 * ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); }
-	 * 
-	 * }
-	 */
 }

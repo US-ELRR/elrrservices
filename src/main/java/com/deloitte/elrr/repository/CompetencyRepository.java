@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.deloitte.elrr.entity.Competency;
 
 @Repository
-public interface CompetencyRepository  extends JpaRepository<Competency, Long>{
+public interface CompetencyRepository  extends JpaRepository<Competency, Long> {
 
 }

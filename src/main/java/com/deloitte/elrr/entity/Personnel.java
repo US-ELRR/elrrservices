@@ -9,19 +9,33 @@ import lombok.Setter;
 
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Getter 
+@Getter
 @Setter
-public class  Personnel{
+public class Personnel {
+    /**
+    *
+    */
 
-	private Person person;
-	private Organization organization;
-	private ContactInformation contactInformation;
-	private List<Employment> employment;
+    private Person person;
+    /**
+    *
+    */
+    private Organization organization;
+    /**
+    *
+    */
+    private ContactInformation contactInformation;
+    /**
+    *
+    */
+    private List<Employment> employment;
 
-		
-	@Override
-	public String toString() {
-		return "Personnel [personal=" + person + ", organization=" + organization + ", employment=" + employment
-				+ "]";
-	}
+    /**
+     *
+     */
+    @Override
+    public String toString() {
+        return "Personnel [personal=" + person + ", organization="
+                + organization + ", employment=" + employment + "]";
+    }
 }

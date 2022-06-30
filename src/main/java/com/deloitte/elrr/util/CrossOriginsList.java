@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.deloitte.elrr.util;
 
@@ -15,11 +15,13 @@ import org.springframework.web.bind.annotation.CrossOrigin;
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
+@Target({ ElementType.METHOD })
 @CrossOrigin
 public @interface CrossOriginsList {
-
-    public String[] crossOrigins() default  {
-    	"http://localhost:3001","http://localhost:5000"
-    };
+    /**
+     *
+     * @return String[]
+     */
+    String[] crossOrigins() default { "http://localhost:3001",
+            "http://localhost:5000" };
 }

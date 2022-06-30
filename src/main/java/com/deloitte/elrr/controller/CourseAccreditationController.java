@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.deloitte.elrr.controller;
 
@@ -34,108 +34,149 @@ import lombok.extern.slf4j.Slf4j;
  * @author mnelakurti
  *
  */
-@CrossOrigin(origins = {"http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:3001", "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:5000"})
+@CrossOrigin(origins = {
+        "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:3001",
+        "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:5000" })
 @RestController
 @RequestMapping("api")
 @Slf4j
 public class CourseAccreditationController {
+    /**
+     *
+     */
+    @Autowired
+    private CourseAccreditationSvc courseAccreditationSvc;
+    /**
+     *
+     */
+    @Autowired
+    private ModelMapper mapper;
+    /**
+     *
+     * @param courseAccreditationid
+     * @return ResponseEntity<List<CourseAccreditationDto>>
+     * @throws ResourceNotFoundException
+     */
+    @GetMapping("/courseaccreditation")
+    public ResponseEntity<List<CourseAccreditationDto>>
+        getAllCourseAccreditations(@RequestParam(value = "id", required = false)
+        final Long courseAccreditationid)
+        throws ResourceNotFoundException {
+        try {
+            List<CourseAccreditationDto> courseAccreditationList
+                    = new ArrayList<>();
+            if (courseAccreditationid == null) {
+                Iterable<CourseAccreditation> courseAccreditations
+                        = courseAccreditationSvc.findAll();
 
-	@Autowired
-	private CourseAccreditationSvc courseAccreditationSvc;
+                for (CourseAccreditation courseAccreditation
+                        : courseAccreditations) {
+                    CourseAccreditationDto courseAccreditationDto = mapper.map(
+                            courseAccreditation, CourseAccreditationDto.class);
+                    courseAccreditationList.add(courseAccreditationDto);
+                }
+            } else {
+                CourseAccreditation accreditation = courseAccreditationSvc
+                        .get(courseAccreditationid)
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "CourseAccreditation not found for this id :: "
+                                        + courseAccreditationid));
+                CourseAccreditationDto courseAccreditationDto = mapper
+                        .map(accreditation, CourseAccreditationDto.class);
+                courseAccreditationList.add(courseAccreditationDto);
 
-	@Autowired
-	private ModelMapper mapper;
+            }
 
-	@GetMapping("/courseaccreditation")
-	public ResponseEntity<List<CourseAccreditationDto>> getAllCourseAccreditations(
-			@RequestParam(value = "id", required = false) Long courseAccreditationid) throws ResourceNotFoundException {
-		try {
-			List<CourseAccreditationDto> courseAccreditationList = new ArrayList<>();
-			if (courseAccreditationid == null) {
-				Iterable<CourseAccreditation> courseAccreditations = courseAccreditationSvc.findAll();
+            if (courseAccreditationList.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            } else {
+                return ResponseEntity.ok(courseAccreditationList);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    /**
+     *
+     * @param courseAccreditationid
+     * @return ResponseEntity<CourseAccreditationDto>
+     * @throws ResourceNotFoundException
+     */
+    @GetMapping("/courseaccreditation/{id}")
+    public ResponseEntity<CourseAccreditationDto> getCourseAccreditationById(
+            @PathVariable(value = "id") final Long courseAccreditationid)
+            throws ResourceNotFoundException {
+        CourseAccreditation acceditation = courseAccreditationSvc
+                .get(courseAccreditationid)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "CourseAccreditation not found for this id :: "
+                                + courseAccreditationid));
+        CourseAccreditationDto courseAccreditationDto = mapper.map(acceditation,
+                CourseAccreditationDto.class);
+        return ResponseEntity.ok().body(courseAccreditationDto);
+    }
+    /**
+     *
+     * @param courseAccreditationDto
+     * @return ResponseEntity<CourseAccreditationDto>
+     */
+    @PostMapping("/courseaccreditation")
+    public ResponseEntity<CourseAccreditationDto> createCourseAccreditation(
+    @Valid @RequestBody final CourseAccreditationDto courseAccreditationDto) {
+        log.info("create CourseAccreditation:........."
+                + courseAccreditationDto);
+        CourseAccreditation courseAccreditation = mapper
+                .map(courseAccreditationDto, CourseAccreditation.class);
+        log.info("create courseaccreditation:........." + courseAccreditation);
+        mapper.map(courseAccreditationSvc.save(courseAccreditation),
+                CourseAccreditationDto.class);
+        return new ResponseEntity<>(courseAccreditationDto, HttpStatus.CREATED);
+    }
+    /**
+     *
+     * @param courseAccreditationid
+     * @param courseAccreditationDto
+     * @return ResponseEntity<CourseAccreditationDto>
+     * @throws ResourceNotFoundException
+     */
+    @PutMapping("/courseaccreditation/{id}")
+    public ResponseEntity<CourseAccreditationDto> updateCourseAccreditation(
+            @PathVariable(value = "id") final long courseAccreditationid,
+        @Valid @RequestBody final CourseAccreditationDto courseAccreditationDto)
+            throws ResourceNotFoundException {
+        CourseAccreditation courseAccreditation = courseAccreditationSvc
+                .get(courseAccreditationid)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                    "CourseAccreditation not found for this id to update :: "
+                                + courseAccreditationid));
+        log.info("Update CourseAccreditation:........."
+                + courseAccreditationDto);
+        // Assigning values from request
+        mapper.map(courseAccreditationDto, courseAccreditation);
+        // Reset Id / Primary key from query parameter
+        courseAccreditation.setCourseaccreditationid(courseAccreditationid);
+        log.info("Update Acceditation:........." + courseAccreditation);
+        return ResponseEntity
+                .ok(mapper.map(courseAccreditationSvc.save(courseAccreditation),
+                        CourseAccreditationDto.class));
 
-				for (CourseAccreditation courseAccreditation : courseAccreditations) {
-					CourseAccreditationDto courseAccreditationDto = mapper.map(courseAccreditation,
-							CourseAccreditationDto.class);
-					courseAccreditationList.add(courseAccreditationDto);
-				}
-			} else {
-				CourseAccreditation accreditation = courseAccreditationSvc.get(courseAccreditationid)
-						.orElseThrow(() -> new ResourceNotFoundException(
-								"CourseAccreditation not found for this id :: " + courseAccreditationid));
-				CourseAccreditationDto courseAccreditationDto = mapper.map(accreditation, CourseAccreditationDto.class);
-				courseAccreditationList.add(courseAccreditationDto);
+    }
+    /**
+     *
+     * @param courseAccreditationid
+     * @return ResponseEntity<HttpStatus>
+     */
+    @DeleteMapping("/courseaccreditation/{id}")
+    public ResponseEntity<HttpStatus> deleteCourseAccreditation(
+            @PathVariable(value = "id") final Long courseAccreditationid) {
+        try {
+            log.info("Deleting  CourseAccreditation:........."
+                    + courseAccreditationid);
+            courseAccreditationSvc.delete(courseAccreditationid);
+            return ResponseEntity.ok(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-			}
-
-			if (courseAccreditationList.isEmpty())
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			else
-				return ResponseEntity.ok(courseAccreditationList);
-
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@GetMapping("/courseaccreditation/{id}")
-	public ResponseEntity<CourseAccreditationDto> getCourseAccreditationById(@PathVariable(value = "id") Long courseAccreditationid)
-			throws ResourceNotFoundException {
-		CourseAccreditation acceditation = courseAccreditationSvc.get(courseAccreditationid).orElseThrow(
-				() -> new ResourceNotFoundException("CourseAccreditation not found for this id :: " + courseAccreditationid));
-		CourseAccreditationDto courseAccreditationDto = mapper.map(acceditation, CourseAccreditationDto.class);
-		return ResponseEntity.ok().body(courseAccreditationDto);
-	}
-
-	@PostMapping("/courseaccreditation")
-	public ResponseEntity<CourseAccreditationDto> createCourseAccreditation(
-			@Valid @RequestBody CourseAccreditationDto courseAccreditationDto) {
-		log.info("create CourseAccreditation:........." + courseAccreditationDto);
-		CourseAccreditation courseAccreditation = mapper.map(courseAccreditationDto, CourseAccreditation.class);
-		log.info("create courseaccreditation:........." + courseAccreditation);
-		mapper.map(courseAccreditationSvc.save(courseAccreditation), CourseAccreditationDto.class);
-		return new ResponseEntity<>(courseAccreditationDto, HttpStatus.CREATED);
-	}
-
-	@PutMapping("/courseaccreditation/{id}")
-	public ResponseEntity<CourseAccreditationDto> updateCourseAccreditation(@PathVariable(value = "id") long courseAccreditationid,
-			@Valid @RequestBody CourseAccreditationDto courseAccreditationDto) throws ResourceNotFoundException {
-		CourseAccreditation courseAccreditation = courseAccreditationSvc.get(courseAccreditationid)
-				.orElseThrow(() -> new ResourceNotFoundException(
-						"CourseAccreditation not found for this id to update :: " + courseAccreditationid));
-		log.info("Update CourseAccreditation:........." + courseAccreditationDto);
-		// Assigning values from request
-		mapper.map(courseAccreditationDto, courseAccreditation);
-		// Reset Id / Primary key from query parameter
-		courseAccreditation.setCourseaccreditationid(courseAccreditationid);
-		log.info("Update Acceditation:........." + courseAccreditation);
-		return ResponseEntity
-				.ok(mapper.map(courseAccreditationSvc.save(courseAccreditation), CourseAccreditationDto.class));
-
-	}
-
-	@DeleteMapping("/courseaccreditation/{id}")
-	public ResponseEntity<HttpStatus> deleteCourseAccreditation(@PathVariable(value = "id") Long courseAccreditationid) {
-		try {
-			log.info("Deleting  CourseAccreditation:........." + courseAccreditationid);
-			courseAccreditationSvc.delete(courseAccreditationid);
-			return ResponseEntity.ok(HttpStatus.NO_CONTENT);
-		} catch (Exception e) {
-			return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	// Don't want to expose this method as it will allow to delete all the
-	// accreditation
-	// records
-	/*
-	 * @DeleteMapping("/accreditation") public ResponseEntity<HttpStatus>
-	 * deleteAllpersons() { try {
-	 * log.info("Deleting  All CourseAccreditation:.........");
-	 * accreditationSvc.deleteAll(); return new
-	 * ResponseEntity<>(HttpStatus.NO_CONTENT); } catch (Exception e) { return new
-	 * ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); }
-	 * 
-	 * }
-	 */
 }

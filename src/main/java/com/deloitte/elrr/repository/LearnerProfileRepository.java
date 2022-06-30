@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.deloitte.elrr.entity.LearnerProfile;
 
 @Repository
-public interface LearnerProfileRepository  extends JpaRepository<LearnerProfile, Long>{
+public interface LearnerProfileRepository
+        extends JpaRepository<LearnerProfile, Long> {
 
 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.deloitte.elrr.entity.Accreditation;
 
 @Repository
-public interface AccreditationRepository  extends JpaRepository<Accreditation, Long>{
+public interface AccreditationRepository
+        extends JpaRepository<Accreditation, Long> {
 
 }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.deloitte.elrr.jpa.svc;
 
@@ -16,25 +16,38 @@ import com.deloitte.elrr.repository.LearnerProfileRepository;
 
 @Service
 public class LearnerProfileSvc implements CommonSvc<LearnerProfile, Long> {
-	private final LearnerProfileRepository learnerProfileRepository;
-
-	public LearnerProfileSvc(final LearnerProfileRepository learnerProfileRepository) {
-		this.learnerProfileRepository = learnerProfileRepository;
-	}
-
-	@Override
-	public CrudRepository<LearnerProfile, Long> getRepository() {
-		return this.learnerProfileRepository;
-	}
-
-	@Override
-	public Long getId(LearnerProfile learnerProfileFact) {
-		return learnerProfileFact.getPersonid();
-		}
-
-	@Override
-	public LearnerProfile save(LearnerProfile learnerProfileFact) {
-		return CommonSvc.super.save(learnerProfileFact);
-	}
+    /**
+     *
+     */
+    private final LearnerProfileRepository learnerProfileRepository;
+    /**
+     *
+     * @param argsLearnerProfileRepository
+     */
+    public LearnerProfileSvc(
+            final LearnerProfileRepository argsLearnerProfileRepository) {
+        this.learnerProfileRepository = argsLearnerProfileRepository;
+    }
+    /**
+     *
+     */
+    @Override
+    public CrudRepository<LearnerProfile, Long> getRepository() {
+        return this.learnerProfileRepository;
+    }
+    /**
+     *
+     */
+    @Override
+    public Long getI(final LearnerProfile learnerProfileFact) {
+        return learnerProfileFact.getPersonid();
+    }
+    /**
+     *
+     */
+    @Override
+    public LearnerProfile save(final LearnerProfile learnerProfileFact) {
+        return CommonSvc.super.save(learnerProfileFact);
+    }
 
 }

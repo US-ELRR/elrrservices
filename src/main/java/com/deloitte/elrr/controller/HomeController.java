@@ -16,29 +16,44 @@ import com.deloitte.elrr.svc.LearnerCreatorSvc;
 
 import lombok.extern.slf4j.Slf4j;
 
-@CrossOrigin(origins = {"http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:3001", "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:5000"})
+@CrossOrigin(origins = {
+        "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:3001",
+        "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:5000" })
 @RestController
 @RequestMapping("api")
 @Slf4j
 public class HomeController {
-	
-	@Autowired
-	ModelMapper mapper;
-	
-	@Autowired
-	private LearnerCreatorSvc learnerCreatorSvc;
-	
-	@RequestMapping(value = "/learner", method = RequestMethod.GET, produces = {"application/json"})
-	public Learner getLearner(@RequestParam(required = false) String userName, @RequestParam(required = false) String password) {
-		log.info(userName +"_"+ password);
-		
-		Learner learner = new Learner();
-		learner = learnerCreatorSvc.learnerCreator(userName);
-		
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");  
-		LocalDateTime now = LocalDateTime.now();  
-		log.info(dtf.format(now));  
-		
-		return learner;
-	}
+    /**
+     *
+     */
+    @Autowired
+    private ModelMapper mapper;
+    /**
+     *
+     */
+    @Autowired
+    private LearnerCreatorSvc learnerCreatorSvc;
+    /**
+     *
+     * @param userName
+     * @param password
+     * @return Learner
+     */
+    @RequestMapping(value = "/learner", method = RequestMethod.GET, produces = {
+            "application/json" })
+    public Learner getLearner(@RequestParam(required = false)
+        final String userName, @RequestParam(required = false)
+        final String password) {
+        log.info(userName + "_" + password);
+
+        Learner learner = null;
+        learner = learnerCreatorSvc.learnerCreator(userName);
+
+        DateTimeFormatter dtf = DateTimeFormatter
+                .ofPattern("HH:mm:ss dd/MM/yyyy");
+        LocalDateTime now = LocalDateTime.now();
+        log.info(dtf.format(now));
+        log.info("" + learner);
+        return learner;
+    }
 }

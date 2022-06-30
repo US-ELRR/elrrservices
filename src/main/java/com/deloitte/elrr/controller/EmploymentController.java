@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.deloitte.elrr.controller;
 
@@ -34,101 +34,135 @@ import lombok.extern.slf4j.Slf4j;
  * @author mnelakurti
  *
  */
-@CrossOrigin(origins = {"http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:3001", "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:5000"})
+@CrossOrigin(origins = {
+        "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:3001",
+        "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:5000" })
 @RestController
 @RequestMapping("api")
 @Slf4j
 public class EmploymentController {
+    /**
+     *
+     */
+    @Autowired
+    private EmploymentSvc employmentSvc;
+    /**
+     *
+     */
+    @Autowired
+    private ModelMapper mapper;
+    /**
+     *
+     * @param employmentid
+     * @return ResponseEntity<List<EmploymentDto>>
+     * @throws ResourceNotFoundException
+     */
+    @GetMapping("/employment")
+    public ResponseEntity<List<EmploymentDto>> getAllEmployments(
+        @RequestParam(value = "id", required = false) final Long employmentid)
+            throws ResourceNotFoundException {
+        try {
+            List<EmploymentDto> employmentList = new ArrayList<>();
+            if (employmentid == null) {
+                Iterable<Employment> employments = employmentSvc.findAll();
 
-	@Autowired
-	private EmploymentSvc employmentSvc;
+                for (Employment employment : employments) {
+                    EmploymentDto employmentDto = mapper.map(employment,
+                            EmploymentDto.class);
+                    employmentList.add(employmentDto);
+                }
+            } else {
+                Employment employment = employmentSvc.get(employmentid)
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "Employment not found for this id :: "
+                                        + employmentid));
+                EmploymentDto employmentDto = mapper.map(employment,
+                        EmploymentDto.class);
+                employmentList.add(employmentDto);
 
-	@Autowired
-	private ModelMapper mapper;
+            }
 
-	@GetMapping("/employment")
-	public ResponseEntity<List<EmploymentDto>> getAllEmployments(@RequestParam(value = "id", required = false) Long employmentid)
-			throws ResourceNotFoundException {
-		try {
-			List<EmploymentDto> employmentList = new ArrayList<>();
-			if (employmentid == null) {
-				Iterable<Employment> employments = employmentSvc.findAll();
+            if (employmentList.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            } else {
+                return ResponseEntity.ok(employmentList);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    /**
+     *
+     * @param employmentid
+     * @return ResponseEntity<EmploymentDto>
+     * @throws ResourceNotFoundException
+     */
+    @GetMapping("/employment/{id}")
+    public ResponseEntity<EmploymentDto> getEmploymentById(
+            @PathVariable(value = "id") final Long employmentid)
+            throws ResourceNotFoundException {
+        Employment employment = employmentSvc.get(employmentid)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Employment not found for this id :: " + employmentid));
+        EmploymentDto employmentDto = mapper.map(employment,
+                EmploymentDto.class);
+        return ResponseEntity.ok().body(employmentDto);
+    }
+    /**
+     *
+     * @param employmentDto
+     * @return ResponseEntity<EmploymentDto>
+     */
+    @PostMapping("/employment")
+    public ResponseEntity<EmploymentDto> createEmployment(
+            @Valid @RequestBody final EmploymentDto employmentDto) {
+        log.info("create Employment:........." + employmentDto);
+        Employment employment = mapper.map(employmentDto, Employment.class);
+        log.info("create Employment:........." + employment);
+        mapper.map(employmentSvc.save(employment), EmploymentDto.class);
+        return new ResponseEntity<>(employmentDto, HttpStatus.CREATED);
+    }
+    /**
+     *
+     * @param employmentid
+     * @param employmentDto
+     * @return ResponseEntity<EmploymentDto>
+     * @throws ResourceNotFoundException
+     */
+    @PutMapping("/employment/{id}")
+    public ResponseEntity<EmploymentDto> updateEmployment(
+            @PathVariable(value = "id") final long employmentid,
+            @Valid @RequestBody final EmploymentDto employmentDto)
+            throws ResourceNotFoundException {
+        Employment employment = employmentSvc.get(employmentid)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Employment not found for this id to update :: "
+                                + employmentid));
+        log.info("Update Employment:........." + employmentDto);
+        // Assigning values from request
+        mapper.map(employmentDto, employment);
+        // Reset Id / Primary key from query parameter
+        employment.setEmploymentid(employmentid);
+        log.info("Update Employment:........." + employment);
+        return ResponseEntity.ok(mapper.map(employmentSvc.save(employment),
+                EmploymentDto.class));
 
-				for (Employment employment : employments) {
-					EmploymentDto employmentDto = mapper.map(employment, EmploymentDto.class);
-					employmentList.add(employmentDto);
-				}
-			} else {
-				Employment employment = employmentSvc.get(employmentid).orElseThrow(
-						() -> new ResourceNotFoundException("Employment not found for this id :: " + employmentid));
-				EmploymentDto employmentDto = mapper.map(employment, EmploymentDto.class);
-				employmentList.add(employmentDto);
+    }
+    /**
+     *
+     * @param employmentid
+     * @return ResponseEntity<HttpStatus>
+     */
+    @DeleteMapping("/employment/{id}")
+    public ResponseEntity<HttpStatus> deleteEmployment(
+            @PathVariable(value = "id") final Long employmentid) {
+        try {
+            log.info("Deleting  Employment:........." + employmentid);
+            employmentSvc.delete(employmentid);
+            return ResponseEntity.ok(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-			}
-
-			if (employmentList.isEmpty())
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			else
-				return ResponseEntity.ok(employmentList);
-
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@GetMapping("/employment/{id}")
-	public ResponseEntity<EmploymentDto> getEmploymentById(@PathVariable(value = "id") Long employmentid)
-			throws ResourceNotFoundException {
-		Employment employment = employmentSvc.get(employmentid)
-				.orElseThrow(() -> new ResourceNotFoundException("Employment not found for this id :: " + employmentid));
-		EmploymentDto employmentDto = mapper.map(employment, EmploymentDto.class);
-		return ResponseEntity.ok().body(employmentDto);
-	}
-
-	@PostMapping("/employment")
-	public ResponseEntity<EmploymentDto> createEmployment(@Valid @RequestBody EmploymentDto employmentDto) {
-		log.info("create Employment:........." + employmentDto);
-		Employment employment = mapper.map(employmentDto, Employment.class);
-		log.info("create Employment:........." + employment);
-		mapper.map(employmentSvc.save(employment), EmploymentDto.class);
-		return new ResponseEntity<>(employmentDto, HttpStatus.CREATED);
-	}
-
-	@PutMapping("/employment/{id}")
-	public ResponseEntity<EmploymentDto> updateEmployment(@PathVariable(value = "id") long employmentid,
-			@Valid @RequestBody EmploymentDto employmentDto) throws ResourceNotFoundException {
-		Employment employment = employmentSvc.get(employmentid).orElseThrow(
-				() -> new ResourceNotFoundException("Employment not found for this id to update :: " + employmentid));
-		log.info("Update Employment:........." + employmentDto);
-		// Assigning values from request
-		mapper.map(employmentDto, employment);
-		//Reset Id / Primary key from query parameter
-		employment.setEmploymentid(employmentid);
-		log.info("Update Employment:........." + employment);
-		return ResponseEntity.ok(mapper.map(employmentSvc.save(employment), EmploymentDto.class));
-
-	}
-
-	@DeleteMapping("/employment/{id}")
-	public ResponseEntity<HttpStatus> deleteEmployment(@PathVariable(value = "id") Long employmentid) {
-		try {
-			log.info("Deleting  Employment:........." + employmentid);
-			employmentSvc.delete(employmentid);
-			return ResponseEntity.ok(HttpStatus.NO_CONTENT);
-		} catch (Exception e) {
-			return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	// Don't want to expose this method as it will allow to delete all the employment
-	// records
-	/*
-	 * @DeleteMapping("/employment") public ResponseEntity<HttpStatus>
-	 * deleteAllpersons() { try { log.info("Deleting  All Employment:.........");
-	 * employmentSvc.deleteAll(); return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
-	 * catch (Exception e) { return new
-	 * ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); }
-	 * 
-	 * }
-	 */
 }

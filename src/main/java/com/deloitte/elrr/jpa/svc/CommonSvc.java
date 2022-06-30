@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.deloitte.elrr.jpa.svc;
 
@@ -12,48 +12,82 @@ import com.deloitte.elrr.exception.RuntimeServiceException;
 
 /**
  * @author mnelakurti
- *
+ * @param <T>
+ * @param <I>
  */
-public interface CommonSvc<T, ID extends Serializable> {
-	public default Iterable<T> findAll() {
-		return getRepository().findAll();
-	}
+public interface CommonSvc<T, I extends Serializable> {
+    /**
+     *
+     * @return Iterable<T>
+     */
+    default Iterable<T> findAll() {
+        return getRepository().findAll();
+    }
+    /**
+     *
+     * @param i
+     * @return Optional<T>
+     */
+    default Optional<T> get(I i) {
+        return getRepository().findById(i);
+    }
+    /**
+     *
+     * @param entity
+     * @return T
+     */
+    default T save(T entity) {
+        return getRepository().save(entity);
+    }
+    /**
+     *
+     * @param entities
+     * @return Iterable<T>
+     */
+    default Iterable<T> saveAll(Iterable<T> entities) {
+        return getRepository().saveAll(entities);
+    }
+    /**
+     *
+     * @param i
+     */
+    default void delete(I i) {
+        if (getRepository().existsById(i)) {
+            getRepository().deleteById(i);
+        } else {
+            throw new RuntimeServiceException(
+                    " Id not found for delete : " + i);
+        }
+    }
+    /**
+     *
+     */
+    default void deleteAll() {
+        getRepository().deleteAll();
 
-	public default Optional<T> get(ID id) {
-		return getRepository().findById(id);
-	}
+    }
+    /**
+     *
+     * @param entity
+     */
+    default void update(T entity) {
+        if (getRepository().existsById(getI(entity))) {
+            getRepository().save(entity);
+        } else {
 
-	public default T save(T entity) {
-		return getRepository().save(entity);
-	}
-
-	public default Iterable<T> saveAll(Iterable<T> entities) {
-		return getRepository().saveAll(entities);
-	}
-
-	public default void delete(ID id) {
-		if (getRepository().existsById(id)) {
-			getRepository().deleteById(id);
-		} else {
-			throw new RuntimeServiceException(" Id not found for delete : " + id);
-		}
-	}
-
-	public default void deleteAll() {
-		getRepository().deleteAll();
-		
-	}
-
-	public default void update(T entity) {
-		if (getRepository().existsById(getId(entity))) {
-			getRepository().save(entity);
-		} else {
-
-			throw new RuntimeServiceException("Not found record in DB to update: " + entity);
-		}
-	}
-
-	public ID getId(T entity);
-
-	public CrudRepository<T, ID> getRepository();
+            throw new RuntimeServiceException(
+                    "Not found record in DB to update: " + entity);
+        }
+    }
+    /**
+     *
+     * @param entity
+     * @return Id
+     */
+    I getI(T entity);
+    /**
+     *
+     * @return CrudRepository<T, ID>
+     */
+    CrudRepository<T, I> getRepository();
 }

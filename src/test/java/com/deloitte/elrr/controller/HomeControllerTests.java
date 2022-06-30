@@ -1,46 +1,162 @@
 package com.deloitte.elrr.controller;
 
-import static org.mockito.Mockito.when;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.deloitte.elrr.ElrrApplication;
 import com.deloitte.elrr.entity.Competency;
 import com.deloitte.elrr.entity.Course;
 import com.deloitte.elrr.entity.Learner;
+import com.deloitte.elrr.entity.Person;
 import com.deloitte.elrr.entity.Personnel;
-import com.deloitte.elrr.svc.LearnerCreatorSvc;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-@SpringBootTest(classes = ElrrApplication.class)
-@RunWith(SpringRunner.class)
-class HomeControllerTests {
+@WebMvcTest(HomeController.class)
+class HomeControllerTests extends CommonControllerTest {
 
-	@Mock
-	LearnerCreatorSvc userCreatorSvc;
-	@InjectMocks
-	HomeController homeController;
-	
-	@Test
-	void HomeControllerGetUsersTests() {
-		String personId= "100";
-		Learner learner = new Learner();
-		Personnel personnel= new Personnel();
-		List<Course> courses = new ArrayList<>();
-		List<Competency> competencies = new ArrayList<>();
-		Learner mockLearner = new Learner();
-		mockLearner.setPersonnel(personnel);
-		mockLearner.setCourses(courses);
-		mockLearner.setCompetencies(competencies);
-		when(userCreatorSvc.learnerCreator(personId)).thenReturn(mockLearner);
-		learner = homeController.getLearner("Mohan","password");
-		assert(learner.equals(mockLearner));
-	}
+    /**
+     *
+     */
+    @MockBean
+    private ModelMapper mapper;
+
+    /**
+     *
+     */
+    @Autowired
+    private MockMvc mockMvc;
+
+    /**
+    *
+    */
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    /**
+     *
+     * @param obj
+     * @return String
+     * @throws JsonProcessingException
+     */
+    public static String asJsonString(final Object obj)
+            throws JsonProcessingException {
+
+        return new ObjectMapper().writeValueAsString(obj);
+
+    }
+
+    /**
+     *
+     */
+    @Test
+    void getLearnerByIdTest() throws Exception {
+
+        //Mockito.doReturn(getLearnerList())
+        //        .when(getLearnerCreatorSvc().learnerCreator("test"));
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/learner?param1=test&param2=test")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+    }
+
+    /**
+     *
+     */
+    @Test
+    void getLearnerByIdErrorTest() throws Exception {
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/learner?param1=test&param2=test")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+    }
+
+    /**
+     *
+     */
+    @Test
+    void getLearnerByIdParameterTest() throws Exception {
+
+        //Mockito.doReturn(getLearnerList())
+        //        .when(getLearnerCreatorSvc().learnerCreator("test"));
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/learner?id=1").accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+    }
+
+    /**
+     *
+     * @return Iterable<LearnerDto>
+     */
+    private static Learner getLearnerList() {
+        Learner learner = new Learner();
+        learner.setCourses(getCourseList());
+        learner.setCompetencies(getCompetencyList());
+        learner.setPersonnel(getPersonnelList());
+        return learner;
+    }
+
+    /**
+     *
+     * @return Iterable<CompetencyDto>
+     */
+    private static List<Competency> getCompetencyList() {
+        List<Competency> competencyList = new ArrayList<>();
+        Competency competency = new Competency();
+        competency.setCompetencyid(1L);
+        competencyList.add(competency);
+
+        return competencyList;
+    }
+
+    /**
+     *
+     * @return Iterable<CourseDto>
+     */
+    private static List<Course> getCourseList() {
+        List<Course> courseList = new ArrayList<>();
+        Course course = new Course();
+        course.setCourseid(1L);
+        courseList.add(course);
+        return courseList;
+    }
+
+    /**
+     *
+     * @return Iterable<CourseDto>
+     */
+    private static Personnel getPersonnelList() {
+        Personnel personnel = new Personnel();
+        Person person = new Person();
+        person.setPersonid(1L);
+        personnel.setPerson(person);
+        return personnel;
+    }
+
 }

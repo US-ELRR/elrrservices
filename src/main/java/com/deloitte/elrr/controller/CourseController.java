@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.deloitte.elrr.controller;
 
@@ -34,101 +34,130 @@ import lombok.extern.slf4j.Slf4j;
  * @author mnelakurti
  *
  */
-@CrossOrigin(origins = {"http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:3001", "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:5000"})
+@CrossOrigin(origins = {
+        "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:3001",
+        "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:5000" })
 @RestController
 @RequestMapping("api")
 @Slf4j
 public class CourseController {
+    /**
+     *
+     */
+    @Autowired
+    private CourseSvc courseSvc;
+    /**
+     *
+     */
+    @Autowired
+    private ModelMapper mapper;
+    /**
+     *
+     * @param courseId
+     * @return ResponseEntity<List<CourseDto>>
+     * @throws ResourceNotFoundException
+     */
+    @GetMapping("/course")
+    public ResponseEntity<List<CourseDto>> getAllCourses(
+            @RequestParam(value = "id", required = false) final Long courseId)
+            throws ResourceNotFoundException {
+        try {
+            List<CourseDto> courseList = new ArrayList<>();
+            if (courseId == null) {
+                Iterable<Course> courses = courseSvc.findAll();
 
-	@Autowired
-	private CourseSvc courseSvc;
+                for (Course course : courses) {
+                    CourseDto courseDto = mapper.map(course, CourseDto.class);
+                    courseList.add(courseDto);
+                }
+            } else {
+                Course course = courseSvc.get(courseId)
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "Course not found for this id :: " + courseId));
+                CourseDto courseDto = mapper.map(course, CourseDto.class);
+                courseList.add(courseDto);
 
-	@Autowired
-	private ModelMapper mapper;
+            }
 
-	@GetMapping("/course")
-	public ResponseEntity<List<CourseDto>> getAllCourses(@RequestParam(value = "id", required = false) Long courseId)
-			throws ResourceNotFoundException {
-		try {
-			List<CourseDto> courseList = new ArrayList<>();
-			if (courseId == null) {
-				Iterable<Course> Courses = courseSvc.findAll();
+            if (courseList.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            } else {
+                return ResponseEntity.ok(courseList);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    /**
+     *
+     * @param courseId
+     * @return ResponseEntity<CourseDto>
+     * @throws ResourceNotFoundException
+     */
+    @GetMapping("/course/{id}")
+    public ResponseEntity<CourseDto> getCourseById(
+            @PathVariable(value = "id") final Long courseId)
+            throws ResourceNotFoundException {
+        Course course = courseSvc.get(courseId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Course not found for this id :: " + courseId));
+        CourseDto courseDto = mapper.map(course, CourseDto.class);
+        return ResponseEntity.ok().body(courseDto);
+    }
+    /**
+     *
+     * @param courseDto
+     * @return ResponseEntity<CourseDto>
+     */
+    @PostMapping("/course")
+    public ResponseEntity<CourseDto> createCourse(
+            @Valid @RequestBody final CourseDto courseDto) {
+        log.info("create Course:........." + courseDto);
+        Course course = mapper.map(courseDto, Course.class);
+        log.info("create Course:........." + course);
+        mapper.map(courseSvc.save(course), CourseDto.class);
+        return new ResponseEntity<>(courseDto, HttpStatus.CREATED);
+    }
+    /**
+     *
+     * @param courseId
+     * @param courseDto
+     * @return ResponseEntity<CourseDto>
+     * @throws ResourceNotFoundException
+     */
+    @PutMapping("/course/{id}")
+    public ResponseEntity<CourseDto> updateCourse(
+            @PathVariable(value = "id") final long courseId,
+            @Valid @RequestBody final CourseDto courseDto)
+            throws ResourceNotFoundException {
+        Course course = courseSvc.get(courseId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Course not found for this id to update :: "
+                                + courseId));
+        log.info("Update Course:........." + courseDto);
+        // Assigning values from request
+        mapper.map(courseDto, course);
+        // Reset Id / Primary key from query parameter
+        course.setCourseid(courseId);
+        log.info("Update Course:........." + course);
+        return ResponseEntity
+                .ok(mapper.map(courseSvc.save(course), CourseDto.class));
 
-				for (Course course : Courses) {
-					CourseDto courseDto = mapper.map(course, CourseDto.class);
-					courseList.add(courseDto);
-				}
-			} else {
-				Course course = courseSvc.get(courseId).orElseThrow(
-						() -> new ResourceNotFoundException("Course not found for this id :: " + courseId));
-				CourseDto courseDto = mapper.map(course, CourseDto.class);
-				courseList.add(courseDto);
-
-			}
-
-			if (courseList.isEmpty())
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			else
-				return ResponseEntity.ok(courseList);
-
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@GetMapping("/course/{id}")
-	public ResponseEntity<CourseDto> getCourseById(@PathVariable(value = "id") Long courseId)
-			throws ResourceNotFoundException {
-		Course course = courseSvc.get(courseId)
-				.orElseThrow(() -> new ResourceNotFoundException("Course not found for this id :: " + courseId));
-		CourseDto courseDto = mapper.map(course, CourseDto.class);
-		return ResponseEntity.ok().body(courseDto);
-	}
-
-	@PostMapping("/course")
-	public ResponseEntity<CourseDto> createCourse(@Valid @RequestBody CourseDto courseDto) {
-		log.info("create Course:........." + courseDto);
-		Course course = mapper.map(courseDto, Course.class);
-		log.info("create Course:........." + course);
-		mapper.map(courseSvc.save(course), CourseDto.class);
-		return new ResponseEntity<>(courseDto, HttpStatus.CREATED);
-	}
-
-	@PutMapping("/course/{id}")
-	public ResponseEntity<CourseDto> updateCourse(@PathVariable(value = "id") long courseId,
-			@Valid @RequestBody CourseDto courseDto) throws ResourceNotFoundException {
-		Course course = courseSvc.get(courseId).orElseThrow(
-				() -> new ResourceNotFoundException("Course not found for this id to update :: " + courseId));
-		log.info("Update Course:........." + courseDto);
-		// Assigning values from request
-		mapper.map(courseDto, course);
-		//Reset Id / Primary key from query parameter
-		course.setCourseid(courseId);
-		log.info("Update Course:........." + course);
-		return ResponseEntity.ok(mapper.map(courseSvc.save(course), CourseDto.class));
-
-	}
-
-	@DeleteMapping("/course/{id}")
-	public ResponseEntity<HttpStatus> deleteCourse(@PathVariable(value = "id") Long courseId) {
-		try {
-			log.info("Deleting  Course:........." + courseId);
-			courseSvc.delete(courseId);
-			return ResponseEntity.ok(HttpStatus.NO_CONTENT);
-		} catch (Exception e) {
-			return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	// Don't want to expose this method as it will allow to delete all the course
-	// records
-	/*
-	 * @DeleteMapping("/course") public ResponseEntity<HttpStatus>
-	 * deleteAllpersons() { try { log.info("Deleting  All Course:.........");
-	 * courseSvc.deleteAll(); return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
-	 * catch (Exception e) { return new
-	 * ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); }
-	 * 
-	 * }
-	 */
+    }
+    /**
+     *
+     * @param courseId
+     * @return ResponseEntity<HttpStatus>
+     */
+    @DeleteMapping("/course/{id}")
+    public ResponseEntity<HttpStatus> deleteCourse(
+            @PathVariable(value = "id") final Long courseId) {
+        try {
+            log.info("Deleting  Course:........." + courseId);
+            courseSvc.delete(courseId);
+            return ResponseEntity.ok(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

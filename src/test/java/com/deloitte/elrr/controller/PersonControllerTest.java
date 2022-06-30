@@ -1,94 +1,267 @@
 /**
- * 
+ *
  */
 package com.deloitte.elrr.controller;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-import com.deloitte.elrr.ElrrApplication;
 import com.deloitte.elrr.dto.PersonDto;
 import com.deloitte.elrr.entity.Person;
-import com.deloitte.elrr.jpa.svc.PersonSvc;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 
 /**
  * @author mnelakurti
  *
  */
-@SpringBootTest(classes = ElrrApplication.class)
-@RunWith(SpringRunner.class)
-public class PersonControllerTest {
-	
-	@MockBean
-	private PersonSvc personaSvc;
 
-	@MockBean
-	ModelMapper mapper;
-	
-	@Autowired
-	private WebApplicationContext webApplicationContext;
-	private MockMvc mockMvc;
-	@BeforeEach
-	public void setUp() {
-	mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-	
-	}
-	@Test
-	 void getAllPersonsTest() throws Exception {
-		List<Person> persons = new ArrayList<>();
-		Person person= new Person();
-		persons.add(person);
-		 Mockito.when(personaSvc.findAll()).thenReturn(persons);
-		 List<PersonDto> persondtos = new ArrayList<>();
-		  PersonDto dto = mapper.map(persons.get(0), PersonDto.class);
-		  persondtos.add(dto);
-		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/person")
-				.accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON);
-		
-		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
-		
-		assertNotNull(mvcResult);
-	}
-	@Test
-	 void getPersonByIdTest() throws Exception {
-		Person person= new Person();
-		 Mockito.when(personaSvc.get(Mockito.anyLong())).thenReturn(Optional.of(person));
-		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/person/12")
-				.accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON);
-		
-		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
-		
-		assertNotNull(mvcResult);
-	}
-	
-	public static String asJsonString(final Object obj) throws JsonProcessingException {
-	    
+@WebMvcTest(PersonController.class)
+public class PersonControllerTest extends CommonControllerTest {
+
+    /**
+     *
+     */
+    @MockBean
+    private ModelMapper mapper;
+
+    /**
+     *
+     */
+    @Autowired
+    private MockMvc mockMvc;
+
+    /**
+    *
+    */
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    /**
+     *
+     * @param obj
+     * @return String
+     * @throws JsonProcessingException
+     */
+    public static String asJsonString(final Object obj)
+            throws JsonProcessingException {
+
         return new ObjectMapper().writeValueAsString(obj);
-   
-   }
+
+    }
+
+    /**
+     *
+     * @throws Exception
+     */
+    @Test
+    void getAllPersonsTest() throws Exception {
+
+        Mockito.doReturn(getPersonList()).when(getPersonSvc()).findAll();
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/person").accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder).andExpect(status().isOk())
+                .andDo(print());
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+
+    }
+
+    /**
+     *
+     * @throws Exception
+     */
+    @Test
+    void getAllPersonsErrorTest() throws Exception {
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/person").accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder).andDo(print());
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+
+    }
+
+    /**
+     *
+     */
+    @Test
+    void getPersonByIdTest() throws Exception {
+
+        Mockito.doReturn(Optional.of(getPersonList().iterator().next()))
+                .when(getPersonSvc()).get(1L);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/person/1").accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+    }
+
+    /**
+     *
+     */
+    @Test
+    void getPersonByIdErrorTest() throws Exception {
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/person/1").accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+    }
+
+    /**
+     *
+     */
+    @Test
+    void getPersonByIdParameterTest() throws Exception {
+
+        Mockito.doReturn(Optional.of(getPersonList().iterator().next()))
+                .when(getPersonSvc()).get(1L);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/person?id=1").accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+    }
+
+    /**
+    *
+    */
+    @Test
+    void createPersonTest() throws Exception {
+        PersonDto personDto = new PersonDto();
+        personDto.setPersonid(1L);
+        Mockito.doReturn(getPersonList().iterator().next()).when(getPersonSvc())
+                .save(getPersonList().iterator().next());
+
+        mockMvc.perform(
+                post("/api/person/").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(personDto)))
+                .andExpect(status().isCreated()).andDo(print());
+    }
+
+    /**
+    *
+    */
+    @Test
+    void updatePersonTest() throws Exception {
+        PersonDto personDto = new PersonDto();
+        personDto.setPersonid(1L);
+        Mockito.doReturn(Optional.of(getPersonList().iterator().next()))
+                .when(getPersonSvc()).get(1L);
+        Mockito.doReturn(getPersonList().iterator().next()).when(getPersonSvc())
+                .save(getPersonList().iterator().next());
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put("/api/person/1").accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(personDto))
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+        assertNotNull(mvcResult);
+        mockMvc.perform(
+                put("/api/person/1").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(personDto)));
+        // .andExpect(status().isCreated()).andDo(print());
+
+    }
+
+    /**
+    *
+    */
+    @Test
+    void updatePersonErrorTest() throws Exception {
+        PersonDto personDto = new PersonDto();
+        personDto.setPersonid(1L);
+
+        Mockito.doReturn(getPersonList().iterator().next()).when(getPersonSvc())
+                .save(getPersonList().iterator().next());
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put("/api/person/1").accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(personDto))
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+        assertNotNull(mvcResult);
+        mockMvc.perform(
+                put("/api/person/1").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(personDto)));
+        // .andExpect(status().isCreated()).andDo(print());
+
+    }
+
+    /**
+     *
+     */
+    @Test
+    void deletePersonTest() throws Exception {
+
+        Mockito.doNothing().when(getPersonSvc()).delete(1L);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete("/api/person/1").accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+    }
+
+    /**
+    *
+    */
+    @Test
+    void deletePersonErrorTest() throws Exception {
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete("/api/person/").accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+    }
+
+    /**
+     *
+     * @return Iterable<PersonDto>
+     */
+    private static Iterable<Person> getPersonList() {
+        List<Person> personList = new ArrayList<>();
+        Person person = new Person();
+        person.setPersonid(1L);
+        personList.add(person);
+        Collection<Person> collections = personList;
+        Iterable<Person> iterable = collections;
+        return iterable;
+    }
 }

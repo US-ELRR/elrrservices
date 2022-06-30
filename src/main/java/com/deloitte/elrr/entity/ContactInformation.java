@@ -1,7 +1,5 @@
 package com.deloitte.elrr.entity;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,33 +13,63 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="CONTACTINFORMATION")
+@Table(name = "CONTACTINFORMATION")
 //, schema="CMTR")
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Getter 
+@Getter
 @Setter
 public class ContactInformation extends Auditable<String> {
-	     	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long contactinformationid;
-	@Column(name = "personid")
-	private long personid;
-	@Column(name = "contactinformation")
-	private String contactinformation;
-	@Column(name = "telephonenumber")
-	private String telephonenumber;
-	@Column(name = "isprimaryindicator")
-	private String isprimaryindicator;
-	@Column(name = "telephonetype")
-	private String telephonetype;
-	@Column(name = "electronicmailaddress")
-	private String electronicmailaddress;
-	@Column(name = "electronicmailaddresstype")
-	private String electronicmailaddresstype;
-	@Column(name = "emergencycontact")
-	private String emergencycontact;
-	@Column(name = "recordstatus")
-	private String recordstatus;
+    /**
+    * contactinformationid.
+    */
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long contactinformationid;
+    /**
+    * personid.
+    */
+    @Column(name = "personid")
+    private long personid;
+    /**
+    * contactinformationData.
+    */
+    @Column(name = "contactinformation")
+    private String contactinformationData;
+    /**
+    * telephonenumber.
+    */
+    @Column(name = "telephonenumber")
+    private String telephonenumber;
+    /**
+    * isprimaryindicator.
+    */
+    @Column(name = "isprimaryindicator")
+    private String isprimaryindicator;
+    /**
+    * telephonetype.
+    */
+    @Column(name = "telephonetype")
+    private String telephonetype;
+    /**
+    * electronicmailaddress.
+    */
+    @Column(name = "electronicmailaddress")
+    private String electronicmailaddress;
+    /**
+    * electronicmailaddresstype.
+    */
+    @Column(name = "electronicmailaddresstype")
+    private String electronicmailaddresstype;
+    /**
+    * emergencycontact.
+    */
+    @Column(name = "emergencycontact")
+    private String emergencycontact;
+    /**
+    * recordstatus.
+    */
+    @Column(name = "recordstatus")
+    private String recordstatus;
 }

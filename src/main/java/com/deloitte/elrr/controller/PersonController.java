@@ -1,12 +1,10 @@
 /**
- * 
+ *
  */
 package com.deloitte.elrr.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -35,101 +33,131 @@ import lombok.extern.slf4j.Slf4j;
  * @author mnelakurti
  *
  */
-@CrossOrigin(origins = {"http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:3001", "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:5000"})
+@CrossOrigin(origins = {
+        "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:3001",
+        "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:5000" })
 @RestController
 @RequestMapping("api")
 @Slf4j
 public class PersonController {
+    /**
+     *
+     */
+    @Autowired
+    private PersonSvc personaSvc;
+    /**
+     *
+     */
+    @Autowired
+    private ModelMapper mapper;
+    /**
+     *
+     * @param personId
+     * @return ResponseEntity<List<PersonDto>>
+     * @throws ResourceNotFoundException
+     */
+    @GetMapping("/person")
+    public ResponseEntity<List<PersonDto>> getAllPersons(
+            @RequestParam(value = "id", required = false) final Long personId)
+            throws ResourceNotFoundException {
+        try {
+            List<PersonDto> persontoList = new ArrayList<>();
+            if (personId == null) {
+                Iterable<Person> persons = personaSvc.findAll();
 
-	@Autowired
-	private PersonSvc personaSvc;
+                for (Person person : persons) {
+                    PersonDto personDto = mapper.map(person, PersonDto.class);
+                    persontoList.add(personDto);
+                }
+            } else {
+                Person person = personaSvc.get(personId)
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "Person not found for this id :: " + personId));
+                PersonDto personDto = mapper.map(person, PersonDto.class);
+                persontoList.add(personDto);
 
-	@Autowired
-	private ModelMapper mapper;
+            }
 
-	@GetMapping("/person")
-	public ResponseEntity<List<PersonDto>> getAllPersons(@RequestParam(value = "id", required = false) Long personId)
-			throws ResourceNotFoundException {
-		try {
-			List<PersonDto> persontoList = new ArrayList<>();
-			if (personId == null) {
-				Iterable<Person> persons = personaSvc.findAll();
+            if (persontoList.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            } else {
+                return ResponseEntity.ok(persontoList);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    /**
+     *
+     * @param personId
+     * @return ResponseEntity<PersonDto>
+     * @throws ResourceNotFoundException
+     */
+    @GetMapping("/person/{id}")
+    public ResponseEntity<PersonDto> getPersonById(
+            @PathVariable(value = "id") final Long personId)
+            throws ResourceNotFoundException {
+        Person person = personaSvc.get(personId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Person not found for this id :: " + personId));
+        PersonDto personDto = mapper.map(person, PersonDto.class);
+        return ResponseEntity.ok().body(personDto);
+    }
+    /**
+     *
+     * @param personDto
+     * @return ResponseEntity<PersonDto>
+     */
+    @PostMapping("/person")
+    public ResponseEntity<PersonDto> createPerson(
+            @Valid @RequestBody final PersonDto personDto) {
+        log.info("create Person:........." + personDto);
+        Person person = mapper.map(personDto, Person.class);
+        log.info("create Person:........." + person);
+        mapper.map(personaSvc.save(person), PersonDto.class);
+        return new ResponseEntity<>(personDto, HttpStatus.CREATED);
+    }
+    /**
+     *
+     * @param personId
+     * @param personDto
+     * @return ResponseEntity<PersonDto>
+     * @throws ResourceNotFoundException
+     */
+    @PutMapping("/person/{id}")
+    public ResponseEntity<PersonDto> updatePerson(
+            @PathVariable(value = "id") final long personId,
+            @Valid @RequestBody final PersonDto personDto)
+            throws ResourceNotFoundException {
+        Person person = personaSvc.get(personId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Person not found for this id to update :: "
+                                + personId));
+        log.info("Update Person:........." + personDto);
+        // Assigning values from request
+        mapper.map(personDto, person);
+        // Reset Id / Primary key from query parameter
+        person.setPersonid(personId);
+        log.info("Update Person:........." + person);
+        return ResponseEntity
+                .ok(mapper.map(personaSvc.save(person), PersonDto.class));
 
-				for (Person person : persons) {
-					PersonDto personDto = mapper.map(person, PersonDto.class);
-					persontoList.add(personDto);
-				}
-			} else {
-				Person person = personaSvc.get(personId).orElseThrow(
-						() -> new ResourceNotFoundException("Person not found for this id :: " + personId));
-				PersonDto personDto = mapper.map(person, PersonDto.class);
-				persontoList.add(personDto);
+    }
+    /**
+     *
+     * @param personId
+     * @return ResponseEntity<HttpStatus>
+     */
+    @DeleteMapping("/person/{id}")
+    public ResponseEntity<HttpStatus> deletePerson(
+            @PathVariable(value = "id") final Long personId) {
+        try {
+            log.info("Deleting  Person:........." + personId);
+            personaSvc.delete(personId);
+            return ResponseEntity.ok(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-			}
-
-			if (persontoList.isEmpty())
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			else
-				return ResponseEntity.ok(persontoList);
-
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@GetMapping("/person/{id}")
-	public ResponseEntity<PersonDto> getPersonById(@PathVariable(value = "id") Long personId)
-			throws ResourceNotFoundException {
-		Person person = personaSvc.get(personId)
-				.orElseThrow(() -> new ResourceNotFoundException("Person not found for this id :: " + personId));
-		PersonDto personDto = mapper.map(person, PersonDto.class);
-		return ResponseEntity.ok().body(personDto);
-	}
-
-	@PostMapping("/person")
-	public ResponseEntity<PersonDto> createPerson(@Valid @RequestBody PersonDto personDto) {
-		log.info("create Person:........." + personDto);
-		Person person = mapper.map(personDto, Person.class);
-		log.info("create Person:........." + person);
-		mapper.map(personaSvc.save(person), PersonDto.class);
-		return new ResponseEntity<>(personDto, HttpStatus.CREATED);
-	}
-
-	@PutMapping("/person/{id}")
-	public ResponseEntity<PersonDto> updatePerson(@PathVariable(value = "id") long personId,
-			@Valid @RequestBody PersonDto personDto) throws ResourceNotFoundException {
-		Person person = personaSvc.get(personId).orElseThrow(
-				() -> new ResourceNotFoundException("Person not found for this id to update :: " + personId));
-		log.info("Update Person:........." + personDto);
-		// Assigning values from request
-		mapper.map(personDto, person);
-		//Reset Id / Primary key from query parameter
-		person.setPersonid(personId);
-		log.info("Update Person:........." + person);
-		return ResponseEntity.ok(mapper.map(personaSvc.save(person), PersonDto.class));
-
-	}
-
-	@DeleteMapping("/person/{id}")
-	public ResponseEntity<HttpStatus> deletePerson(@PathVariable(value = "id") Long personId) {
-		try {
-			log.info("Deleting  Person:........." + personId);
-			personaSvc.delete(personId);
-			return ResponseEntity.ok(HttpStatus.NO_CONTENT);
-		} catch (Exception e) {
-			return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	// Don't want to expose this method as it will allow to delete all the person
-	// records
-	/*
-	 * @DeleteMapping("/person") public ResponseEntity<HttpStatus>
-	 * deleteAllPersons() { try { log.info("Deleting  All Person:.........");
-	 * personSvc.deleteAll(); return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
-	 * catch (Exception e) { return new
-	 * ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); }
-	 * 
-	 * }
-	 */
 }

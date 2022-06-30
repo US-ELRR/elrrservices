@@ -6,8 +6,12 @@ import org.springframework.stereotype.Repository;
 import com.deloitte.elrr.entity.Course;
 
 @Repository
-public interface CourseRepository extends JpaRepository<Course, Long>{
-	
-	public Course findIdByCourseidentifier(final String courseidentifier);
+public interface CourseRepository extends JpaRepository<Course, Long> {
+    /**
+     *
+     * @param courseidentifier
+     * @return Course
+     */
+    Course findIdByCourseidentifier(String courseidentifier);
 
 }

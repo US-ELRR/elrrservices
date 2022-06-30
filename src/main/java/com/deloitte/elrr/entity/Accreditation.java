@@ -1,7 +1,5 @@
 package com.deloitte.elrr.entity;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,28 +13,24 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="ACCREDITATION")
+@Table(name = "ACCREDITATION")
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Getter 
+@Getter
 @Setter
-public class Accreditation extends Auditable<String> {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long accreditationid;
-	@Column(name = "organizationaccredits")
-	private String organizationaccredits;
-	@Column(name = "accreditedby")
-	private String accreditedby;
-	@Column(name = "accreditationtype")
-	private String accreditationtype;
-	@Column(name = "accreditationadminprocess")
-	private String  accreditationadminprocess;
-	@Column(name = "accreditationawarddate")
-	private Date accreditationawarddate;
-	@Column(name = "accreditationexpirationdate")
-	private Date accreditationexpirationdate;
-	@Column(name = "recordstatus")
-	private String recordstatus;
-	
+public class Accreditation extends CommonEntity {
+
+    /**
+    * accreditationid.
+    */
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long accreditationid;
+
+    /**
+    * organizationaccredits .
+    */
+    @Column(name = "organizationaccredits")
+    private String organizationaccredits;
+
 }

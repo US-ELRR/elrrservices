@@ -1,12 +1,9 @@
 /**
- * 
+ *
  */
 package com.deloitte.elrr.dto;
 
 import java.io.Serializable;
-import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,35 +22,44 @@ import lombok.Setter;
 @Setter
 public class ContactInformationDto implements Serializable {
 
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	private long competencyid;
-	private String competencyframeworktitle;	
-	private String competencyframeworkversion;
-	private String competencyframeworkidentifier;
-	private String competencyframeworkdescription;
-	private String competencyframeworksubject;
-	@JsonFormat(pattern = "dd/MM/yyyy")
-	private Date competencyframeworkvalidstartdate;
-	@JsonFormat(pattern = "dd/MM/yyyy")
-	private Date competencyframeworkvalidenddate;
-	private String competencydefinitionidentifier;
-	private String competencydefinitionidentifierurl;
-	private String competencytaxonomyid;
-	@JsonFormat(pattern = "dd/MM/yyyy")
-	private Date competencydefinitionvalidstartdate;
-	@JsonFormat(pattern = "dd/MM/yyyy")
-	private Date competencydefinitionvalideenddate;
-	private String competencydefinitionparentidentifier;
-	private String competencydefinitionparenturl;
-	private String competencydescriptionparentcode;
-	private String competencydefinitioncode;
-	private String competencydefinitionstatement;	
-	private String competencydefinitiontypeurl;	
-	private String competencydefinitiontype;	
-	private String recordstatus;
+    /**
+     * contactinformationid.
+     */
+    private long contactinformationid;
+    /**
+     * personid.
+     */
+    private long personid;
+    /**
+     * contactinformationData.
+     */
+    private String contactinformationData;
+    /**
+     * telephonenumber.
+     */
+    private String telephonenumber;
+    /**
+     * isprimaryindicator.
+     */
+    private String isprimaryindicator;
+    /**
+     * telephonetype.
+     */
+    private String telephonetype;
+    /**
+     * electronicmailaddress.
+     */
+    private String electronicmailaddress;
+    /**
+     * electronicmailaddresstype.
+     */
+    private String electronicmailaddresstype;
+    /**
+     * emergencycontact.
+     */
+    private String emergencycontact;
+    /**
+     * recordstatus.
+     */
+    private String recordstatus;
 }

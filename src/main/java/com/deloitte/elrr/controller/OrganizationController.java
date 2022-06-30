@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.deloitte.elrr.controller;
 
@@ -34,101 +34,139 @@ import lombok.extern.slf4j.Slf4j;
  * @author mnelakurti
  *
  */
-@CrossOrigin(origins = {"http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:3001", "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:5000"})
+@CrossOrigin(origins = {
+        "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:3001",
+        "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:5000" })
 @RestController
 @RequestMapping("api")
 @Slf4j
 public class OrganizationController {
+    /**
+     *
+     */
+    @Autowired
+    private OrganizationSvc organizationSvc;
+    /**
+     *
+     */
+    @Autowired
+    private ModelMapper mapper;
+    /**
+     *
+     * @param organizationid
+     * @return ResponseEntity<List<OrganizationDto>>
+     * @throws ResourceNotFoundException
+     */
+    @GetMapping("/organization")
+    public ResponseEntity<List<OrganizationDto>> getAllOrganizations(
+            @RequestParam(value = "id", required = false)
+            final Long organizationid)
+            throws ResourceNotFoundException {
+        try {
+            List<OrganizationDto> organizationList = new ArrayList<>();
+            if (organizationid == null) {
+                Iterable<Organization> organizations = organizationSvc
+                        .findAll();
 
-	@Autowired
-	private OrganizationSvc organizationSvc;
+                for (Organization organization : organizations) {
+                    OrganizationDto organizationDto = mapper.map(organization,
+                            OrganizationDto.class);
+                    organizationList.add(organizationDto);
+                }
+            } else {
+                Organization organization = organizationSvc.get(organizationid)
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "Organization not found for this id :: "
+                                        + organizationid));
+                OrganizationDto organizationDto = mapper.map(organization,
+                        OrganizationDto.class);
+                organizationList.add(organizationDto);
 
-	@Autowired
-	private ModelMapper mapper;
+            }
 
-	@GetMapping("/organization")
-	public ResponseEntity<List<OrganizationDto>> getAllOrganizations(@RequestParam(value = "id", required = false) Long organizationid)
-			throws ResourceNotFoundException {
-		try {
-			List<OrganizationDto> organizationList = new ArrayList<>();
-			if (organizationid == null) {
-				Iterable<Organization> organizations = organizationSvc.findAll();
+            if (organizationList.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            } else {
+                return ResponseEntity.ok(organizationList);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    /**
+     *
+     * @param organizationid
+     * @return ResponseEntity<OrganizationDto>
+     * @throws ResourceNotFoundException
+     */
+    @GetMapping("/organization/{id}")
+    public ResponseEntity<OrganizationDto> getOrganizationById(
+            @PathVariable(value = "id") final Long organizationid)
+            throws ResourceNotFoundException {
+        Organization organization = organizationSvc.get(organizationid)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Organization not found for this id :: "
+                                + organizationid));
+        OrganizationDto organizationDto = mapper.map(organization,
+                OrganizationDto.class);
+        return ResponseEntity.ok().body(organizationDto);
+    }
+    /**
+     *
+     * @param organizationDto
+     * @return ResponseEntity<OrganizationDto>
+     */
+    @PostMapping("/organization")
+    public ResponseEntity<OrganizationDto> createOrganization(
+            @Valid @RequestBody final OrganizationDto organizationDto) {
+        log.info("create Organization:........." + organizationDto);
+        Organization organization = mapper.map(organizationDto,
+                Organization.class);
+        log.info("create Organization:........." + organization);
+        mapper.map(organizationSvc.save(organization), OrganizationDto.class);
+        return new ResponseEntity<>(organizationDto, HttpStatus.CREATED);
+    }
+    /**
+     *
+     * @param organizationid
+     * @param organizationDto
+     * @return ResponseEntity<OrganizationDto>
+     * @throws ResourceNotFoundException
+     */
+    @PutMapping("/organization/{id}")
+    public ResponseEntity<OrganizationDto> updateOrganization(
+            @PathVariable(value = "id") final long organizationid,
+            @Valid @RequestBody final OrganizationDto organizationDto)
+            throws ResourceNotFoundException {
+        Organization organization = organizationSvc.get(organizationid)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Organization not found for this id to update :: "
+                                + organizationid));
+        log.info("Update Organization:........." + organizationDto);
+        // Assigning values from request
+        mapper.map(organizationDto, organization);
+        // Reset Id / Primary key from query parameter
+        organization.setOrganizationid(organizationid);
+        log.info("Update Organization:........." + organization);
+        return ResponseEntity.ok(mapper.map(organizationSvc.save(organization),
+                OrganizationDto.class));
 
-				for (Organization organization : organizations) {
-					OrganizationDto organizationDto = mapper.map(organization, OrganizationDto.class);
-					organizationList.add(organizationDto);
-				}
-			} else {
-				Organization organization = organizationSvc.get(organizationid).orElseThrow(
-						() -> new ResourceNotFoundException("Organization not found for this id :: " + organizationid));
-				OrganizationDto organizationDto = mapper.map(organization, OrganizationDto.class);
-				organizationList.add(organizationDto);
+    }
+    /**
+     *
+     * @param organizationid
+     * @return ResponseEntity<HttpStatus>
+     */
+    @DeleteMapping("/organization/{id}")
+    public ResponseEntity<HttpStatus> deleteOrganization(
+            @PathVariable(value = "id") final Long organizationid) {
+        try {
+            log.info("Deleting  Organization:........." + organizationid);
+            organizationSvc.delete(organizationid);
+            return ResponseEntity.ok(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-			}
-
-			if (organizationList.isEmpty())
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			else
-				return ResponseEntity.ok(organizationList);
-
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@GetMapping("/organization/{id}")
-	public ResponseEntity<OrganizationDto> getOrganizationById(@PathVariable(value = "id") Long organizationid)
-			throws ResourceNotFoundException {
-		Organization organization = organizationSvc.get(organizationid)
-				.orElseThrow(() -> new ResourceNotFoundException("Organization not found for this id :: " + organizationid));
-		OrganizationDto organizationDto = mapper.map(organization, OrganizationDto.class);
-		return ResponseEntity.ok().body(organizationDto);
-	}
-
-	@PostMapping("/organization")
-	public ResponseEntity<OrganizationDto> createOrganization(@Valid @RequestBody OrganizationDto organizationDto) {
-		log.info("create Organization:........." + organizationDto);
-		Organization organization = mapper.map(organizationDto, Organization.class);
-		log.info("create Organization:........." + organization);
-		mapper.map(organizationSvc.save(organization), OrganizationDto.class);
-		return new ResponseEntity<>(organizationDto, HttpStatus.CREATED);
-	}
-
-	@PutMapping("/organization/{id}")
-	public ResponseEntity<OrganizationDto> updateOrganization(@PathVariable(value = "id") long organizationid,
-			@Valid @RequestBody OrganizationDto organizationDto) throws ResourceNotFoundException {
-		Organization organization = organizationSvc.get(organizationid).orElseThrow(
-				() -> new ResourceNotFoundException("Organization not found for this id to update :: " + organizationid));
-		log.info("Update Organization:........." + organizationDto);
-		// Assigning values from request
-		mapper.map(organizationDto, organization);
-		//Reset Id / Primary key from query parameter
-		organization.setOrganizationid(organizationid);
-		log.info("Update Organization:........." + organization);
-		return ResponseEntity.ok(mapper.map(organizationSvc.save(organization), OrganizationDto.class));
-
-	}
-
-	@DeleteMapping("/organization/{id}")
-	public ResponseEntity<HttpStatus> deleteOrganization(@PathVariable(value = "id") Long organizationid) {
-		try {
-			log.info("Deleting  Organization:........." + organizationid);
-			organizationSvc.delete(organizationid);
-			return ResponseEntity.ok(HttpStatus.NO_CONTENT);
-		} catch (Exception e) {
-			return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	// Don't want to expose this method as it will allow to delete all the organization
-	// records
-	/*
-	 * @DeleteMapping("/organization") public ResponseEntity<HttpStatus>
-	 * deleteAllpersons() { try { log.info("Deleting  All Organization:.........");
-	 * organizationSvc.deleteAll(); return new ResponseEntity<>(HttpStatus.NO_CONTENT); }
-	 * catch (Exception e) { return new
-	 * ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); }
-	 * 
-	 * }
-	 */
 }

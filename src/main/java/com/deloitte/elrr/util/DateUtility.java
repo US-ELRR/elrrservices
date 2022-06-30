@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.deloitte.elrr.util;
 
@@ -9,144 +9,247 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author mnelakurti
  *
  */
-public class DateUtility {
+@Slf4j
+public final class DateUtility {
 
-		private static String dateFormat = "yyyy-MM-dd";
-		private static String dateFormatUx = "dd-MMM-yyyy";
-		
-		public static int getYearIndex(String courseDateStr,int renewal,String renewalStartDateStr,String renewalEndDateStr) throws Exception{
-			SimpleDateFormat formatDate = new SimpleDateFormat(dateFormat);
-			Date courseDate = formatDate.parse(courseDateStr);
-			GregorianCalendar courseDateGC = new GregorianCalendar();
-			courseDateGC.setTime(courseDate);
-			GregorianCalendar renewalStartDate = new GregorianCalendar();
-			renewalStartDate.setTime(formatDate.parse(renewalStartDateStr));
-			for(int i=0; i < renewal; i++) {
-				GregorianCalendar renewalEndDate = new GregorianCalendar();
-				renewalEndDate.setTime(formatDate.parse(renewalStartDateStr));
-				renewalEndDate.add(Calendar.YEAR, i+1);
-				if(renewalStartDate.compareTo(courseDateGC) <= 0 && renewalEndDate.compareTo(courseDateGC) >= 0) {
-					return i;
-				}
-			}
-			return  -1;
-		}
+    private DateUtility() {
 
-		public static String getDate(Date date) throws ParseException {
-			SimpleDateFormat formatDate = new SimpleDateFormat(dateFormat);
-			return formatDate.format(date);
-		}
+    }
+    /**
+     *
+     */
+    private static String dateFormat = "yyyy-MM-dd";
+    /**
+     *
+     */
+    private static String dateFormatUx = "dd-MMM-yyyy";
 
-		public static Date getCurrentDate() throws ParseException {
-			GregorianCalendar cal = new GregorianCalendar();
-			return cal.getTime();
-		}
+    /**
+    *
+    */
+   private static final int MONTHS = 12;
+    /**
+     *
+     * @param courseDateStr
+     * @param renewal
+     * @param renewalStartDateStr
+     * @return int
+     * @throws Exception
+     */
+    public static int getYearIndex(final String courseDateStr,
+                      final int renewal, final String renewalStartDateStr)
+                    throws ParseException {
+        SimpleDateFormat formatDate = new SimpleDateFormat(dateFormat);
+        Date courseDate = formatDate.parse(courseDateStr);
+        GregorianCalendar courseDateGC = new GregorianCalendar();
+        courseDateGC.setTime(courseDate);
+        GregorianCalendar renewalStartDate = new GregorianCalendar();
+        renewalStartDate.setTime(formatDate.parse(renewalStartDateStr));
+        for (int i = 0; i < renewal; i++) {
+            GregorianCalendar renewalEndDate = new GregorianCalendar();
+            renewalEndDate.setTime(formatDate.parse(renewalStartDateStr));
+            renewalEndDate.add(Calendar.YEAR, i + 1);
+            if (renewalStartDate.compareTo(courseDateGC) <= 0
+                    && renewalEndDate.compareTo(courseDateGC) >= 0) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    /**
+     *
+     * @param date
+     * @return String
+     * @throws ParseException
+     */
+    public static String getDate(final Date date) {
+        SimpleDateFormat formatDate = new SimpleDateFormat(dateFormat);
+        return formatDate.format(date);
+    }
+    /**
+     *
+     * @return Date
+     * @throws ParseException
+     */
+    public static Date getCurrentDate() {
+        GregorianCalendar cal = new GregorianCalendar();
+        return cal.getTime();
+    }
+    /**
+     *
+     * @param dateStr
+     * @return String
+     * @throws ParseException
+     */
+    public static String getUXDate(final String dateStr) throws ParseException {
+        SimpleDateFormat formatDate = new SimpleDateFormat(dateFormat);
+        SimpleDateFormat formatUXDate = new SimpleDateFormat(dateFormatUx);
+        Date date = formatDate.parse(dateStr);
+        return formatUXDate.format(date);
+    }
+    /**
+     *
+     * @param date
+     * @return String
+     * @throws ParseException
+     */
+    public static String getUXDate(final Date date) {
+        SimpleDateFormat formatUXDate = new SimpleDateFormat(dateFormatUx);
+        return formatUXDate.format(date);
+    }
+    /**
+     *
+     * @param endDateStr
+     * @param year
+     * @return String
+     * @throws ParseException
+     */
+    public static String getUXDateFromEndDate(final String endDateStr,
+            final int year) throws ParseException {
+        SimpleDateFormat formatDate = new SimpleDateFormat(dateFormat);
+        Date endDate = formatDate.parse(endDateStr);
+        return getUXTimeFromEndDate(year, endDate);
+    }
+    /**
+     *
+     * @param year
+     * @param endDate
+     * @return String
+     */
+    private static String getUXTimeFromEndDate(final int year,
+            final Date endDate) {
+        GregorianCalendar calDate = new GregorianCalendar();
+        SimpleDateFormat formatUXDate = new SimpleDateFormat(dateFormatUx);
+        calDate.setTime(endDate);
+        calDate.add(Calendar.YEAR, -year);
+        return formatUXDate.format(calDate.getTime());
+    }
+    /**
+     *
+     * @param date
+     * @param year
+     * @return String
+     * @throws ParseException
+     */
+    public static String addUXDate(final Date date, final int year) {
+        return getUXTime(year, date);
+    }
+    /**
+     *
+     * @param dateStr
+     * @param year
+     * @return String
+     * @throws ParseException
+     */
+    public static String addUXDate(final String dateStr, final int year)
+            throws ParseException {
+        SimpleDateFormat formatDate = new SimpleDateFormat(dateFormat);
 
-		public static String getUXDate(String dateStr) throws ParseException {
-			SimpleDateFormat formatDate = new SimpleDateFormat(dateFormat);
-			SimpleDateFormat formatUXDate = new SimpleDateFormat(dateFormatUx);
-			Date date = formatDate.parse(dateStr);
-			return formatUXDate.format(date);
-		}
+        Date date = formatDate.parse(dateStr);
+        return getUXTime(year, date);
+    }
+    /**
+     *
+     * @param year
+     * @param date
+     * @return String
+     */
+    private static String getUXTime(final int year, final Date date) {
+        GregorianCalendar calDate = new GregorianCalendar();
+        SimpleDateFormat formatUXDate = new SimpleDateFormat(dateFormatUx);
+        calDate.setTime(date);
+        calDate.add(Calendar.YEAR, year);
+        calDate.add(Calendar.DATE, -1);
+        return formatUXDate.format(calDate.getTime());
+    }
+    /**
+     *
+     * @param dateStr
+     * @return GregorianCalendar
+     * @throws ParseException
+     */
+    public static GregorianCalendar getDate(final String dateStr)
+            throws ParseException {
+        SimpleDateFormat formatDate = new SimpleDateFormat(dateFormat);
 
-		public static String getUXDate(Date date) throws ParseException {
-			SimpleDateFormat formatUXDate = new SimpleDateFormat(dateFormatUx);
-			return formatUXDate.format(date);
-		}
+        Date date = formatDate.parse(dateStr);
+        GregorianCalendar calDate = new GregorianCalendar();
+        calDate.setTime(date);
+        return calDate;
+    }
+    /**
+     *
+     * @param dateStr
+     * @return int
+     * @throws ParseException
+     */
+    public static int getYear(final String dateStr) throws ParseException {
+        SimpleDateFormat formatDate = new SimpleDateFormat(dateFormat);
 
-		public static String getUXDateFromEndDate(String endDateStr, int year) throws ParseException {
-			SimpleDateFormat formatDate = new SimpleDateFormat(dateFormat);
-			Date endDate = formatDate.parse(endDateStr);
-			return getUXTimeFromEndDate(year, endDate);
-		}
+        Date date = formatDate.parse(dateStr);
+        Calendar calDate = Calendar.getInstance();
+        calDate.setTime(date);
+        return calDate.get(Calendar.YEAR);
+    }
+    /**
+     *
+     * @param dateStr
+     * @return int
+     * @throws ParseException
+     */
+    public static int getLastDayOfMonth(final String dateStr)
+            throws ParseException {
+        SimpleDateFormat formatDate = new SimpleDateFormat(dateFormat);
 
-		private static String getUXTimeFromEndDate(int year, Date endDate) {
-			GregorianCalendar calDate = new GregorianCalendar();
-			SimpleDateFormat formatUXDate = new SimpleDateFormat(dateFormatUx);
-			calDate.setTime(endDate);
-			calDate.add(Calendar.YEAR, -year);
-			return formatUXDate.format(calDate.getTime());
-		}
+        Date date = formatDate.parse(dateStr);
+        Calendar calDate = Calendar.getInstance();
+        calDate.setTime(date);
+        return calDate.getActualMaximum(Calendar.DATE);
 
-		public static String addUXDate(Date date, int year) throws ParseException {
-			return getUXTime(year, date);
-		}
+    }
+    /**
+     *
+     * @param startDate
+     * @param endDate
+     * @return double
+     */
+    public static double getDateRange(final GregorianCalendar startDate,
+            final GregorianCalendar endDate) {
 
-		public static String addUXDate(String dateStr, int year) throws ParseException {
-			SimpleDateFormat formatDate = new SimpleDateFormat(dateFormat);
+        double diff = 0;
+        endDate.add(Calendar.DATE, 1);
+        double endYr = endDate.get(Calendar.YEAR);
+        double endMonth = endDate.get(Calendar.MONTH);
+        double startYr = startDate.get(Calendar.YEAR);
+        double startMonth = startDate.get(Calendar.MONTH);
+        diff = (endYr - startYr) + (endMonth - startMonth) / MONTHS;
 
-			Date date = formatDate.parse(dateStr);
-			return getUXTime(year, date);
-		}
+        return diff;
 
-		private static String getUXTime(int year, Date date) {
-			GregorianCalendar calDate = new GregorianCalendar();
-			SimpleDateFormat formatUXDate = new SimpleDateFormat(dateFormatUx);
-			calDate.setTime(date);
-			calDate.add(Calendar.YEAR, year);
-			calDate.add(Calendar.DATE, -1);
-			return formatUXDate.format(calDate.getTime());
-		}
+    }
+    /**
+     *
+     * @param args
+     * @throws Exception
+     */
+    public static void main(final String[] args) {
 
-		public static GregorianCalendar getDate(String dateStr) throws ParseException {
-			SimpleDateFormat formatDate = new SimpleDateFormat(dateFormat);
+        double diff;
+        try {
+            diff = getDateRange(getDate("2019-02-01"),
+                    getDate("2021-01-31"));
+            int idx = getYearIndex("2020-05-30", 2, "2020-01-01");
+            log.info("" + diff);
+            log.info("" + idx);
+        } catch (ParseException e) {
+            log.error("ParseException" + e.getMessage());
+          }
+    }
 
-			Date date = formatDate.parse(dateStr);
-			GregorianCalendar calDate = new GregorianCalendar();
-			calDate.setTime(date);
-			return calDate;
-		}
-
-		public static int getYear(String dateStr) throws ParseException {
-			SimpleDateFormat formatDate = new SimpleDateFormat(dateFormat);
-
-			Date date = formatDate.parse(dateStr);
-			Calendar calDate = Calendar.getInstance();
-			calDate.setTime(date);
-			return calDate.get(Calendar.YEAR);
-		}
-
-		public static int getLastDayOfMonth(String dateStr) throws ParseException {
-			SimpleDateFormat formatDate = new SimpleDateFormat(dateFormat);
-
-			Date date = formatDate.parse(dateStr);
-			Calendar calDate = Calendar.getInstance();
-			calDate.setTime(date);
-			return calDate.getActualMaximum(Calendar.DATE);
-
-		}
-
-		public static double getDateRange(GregorianCalendar startDate, GregorianCalendar endDate) {
-
-			double diff = 0;
-
-			endDate.add(Calendar.DATE, 1);
-			double endYr = endDate.get(Calendar.YEAR);
-			double endMonth = endDate.get(Calendar.MONTH);
-			double endDay = endDate.get(Calendar.DAY_OF_MONTH);
-
-			double startYr = startDate.get(Calendar.YEAR);
-			double startMonth = startDate.get(Calendar.MONTH);
-			double startDay = startDate.get(Calendar.DAY_OF_MONTH);
-
-			diff = (endYr - startYr) + (endMonth - startMonth) / 12;
-
-			return diff;
-
-		}
-
-		public static void main(String[] args) throws Exception {
-
-			double diff = getDateRange(getDate("2019-02-01"), getDate("2021-01-31"));
-			
-			int idx = getYearIndex("2020-05-30", 2,"2020-01-01","2022-01-31");
-			System.out.println(diff);
-			System.out.println(idx);
-
-		}
-
-	}
+}

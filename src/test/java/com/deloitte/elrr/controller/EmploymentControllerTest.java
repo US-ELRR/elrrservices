@@ -1,94 +1,283 @@
 /**
- * 
+ *
  */
 package com.deloitte.elrr.controller;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-import com.deloitte.elrr.ElrrApplication;
 import com.deloitte.elrr.dto.EmploymentDto;
 import com.deloitte.elrr.entity.Employment;
-import com.deloitte.elrr.jpa.svc.EmploymentSvc;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 
 /**
  * @author mnelakurti
  *
  */
-@SpringBootTest(classes = ElrrApplication.class)
-@RunWith(SpringRunner.class)
-public class EmploymentControllerTest {
-	
-	@MockBean
-	private EmploymentSvc employmentSvc;
+@WebMvcTest(EmploymentController.class)
+public class EmploymentControllerTest extends CommonControllerTest {
 
-	@MockBean
-	ModelMapper mapper;
-	
-	@Autowired
-	private WebApplicationContext webApplicationContext;
-	private MockMvc mockMvc;
-	@BeforeEach
-	public void setUp() {
-	mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-	
-	}
-	@Test
-	 void getAllEmploymentsTest() throws Exception {
-		List<Employment> employments = new ArrayList<>();
-		Employment employment= new Employment();
-		employments.add(employment);
-		 Mockito.when(employmentSvc.findAll()).thenReturn(employments);
-		 List<EmploymentDto> employmentDto = new ArrayList<>();
-		  EmploymentDto dto = mapper.map(employments.get(0), EmploymentDto.class);
-		  employmentDto.add(dto);
-		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/employment")
-				.accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON);
-		
-		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
-		
-		assertNotNull(mvcResult);
-	}
-	@Test
-	 void getEmploymentByIdTest() throws Exception {
-		Employment employment= new Employment();
-		 Mockito.when(employmentSvc.get(Mockito.anyLong())).thenReturn(Optional.of(employment));
-		MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/employment/12")
-				.accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON);
-		
-		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
-		
-		assertNotNull(mvcResult);
-	}
-	
-	public static String asJsonString(final Object obj) throws JsonProcessingException {
-	    
+
+    /**
+     *
+     */
+    @MockBean
+    private ModelMapper mapper;
+
+
+    /**
+     *
+     */
+    @Autowired
+    private MockMvc mockMvc;
+
+    /**
+    *
+    */
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    /**
+     *
+     * @param obj
+     * @return String
+     * @throws JsonProcessingException
+     */
+    public static String asJsonString(final Object obj)
+            throws JsonProcessingException {
+
         return new ObjectMapper().writeValueAsString(obj);
-   
-   }
+
+    }
+
+    /**
+     *
+     * @throws Exception
+     */
+    @Test
+    void getAllEmploymentsTest() throws Exception {
+
+        Mockito.doReturn(getEmploymentList())
+        .when(getEmploymentSvc()).findAll();
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/employment")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder).andExpect(status().isOk())
+                .andDo(print());
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+
+    }
+
+    /**
+     *
+     * @throws Exception
+     */
+    @Test
+    void getAllEmploymentsErrorTest() throws Exception {
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/employment")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(requestBuilder).andDo(print());
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+
+    }
+
+    /**
+     *
+     */
+    @Test
+    void getEmploymentByIdTest() throws Exception {
+
+        Mockito.doReturn(Optional.of(getEmploymentList().iterator().next()))
+                .when(getEmploymentSvc()).get(1L);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/employment/1")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+    }
+
+    /**
+     *
+     */
+    @Test
+    void getEmploymentByIdErrorTest() throws Exception {
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/employment/1")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+    }
+
+    /**
+     *
+     */
+    @Test
+    void getEmploymentByIdParameterTest() throws Exception {
+
+        Mockito.doReturn(Optional.of(getEmploymentList().iterator().next()))
+                .when(getEmploymentSvc()).get(1L);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/employment?id=1")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+    }
+
+    /**
+    *
+    */
+    @Test
+    void createEmploymentTest() throws Exception {
+        EmploymentDto employmentDto = new EmploymentDto();
+        employmentDto.setEmploymentid(1L);
+        Mockito.doReturn(getEmploymentList().iterator().next())
+        .when(getEmploymentSvc())
+                .save(getEmploymentList().iterator().next());
+
+        mockMvc.perform(post("/api/employment/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(employmentDto)))
+                .andExpect(status().isCreated()).andDo(print());
+    }
+
+    /**
+    *
+    */
+    @Test
+    void updateEmploymentTest() throws Exception {
+        EmploymentDto employmentDto = new EmploymentDto();
+        employmentDto.setEmploymentid(1L);
+        Mockito.doReturn(Optional.of(getEmploymentList().iterator().next()))
+                .when(getEmploymentSvc()).get(1L);
+        Mockito.doReturn(getEmploymentList().iterator().next())
+        .when(getEmploymentSvc())
+                .save(getEmploymentList().iterator().next());
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put("/api/employment/1")
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(employmentDto))
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+        assertNotNull(mvcResult);
+        mockMvc.perform(put("/api/employment/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(employmentDto)));
+        // .andExpect(status().isCreated()).andDo(print());
+
+    }
+
+    /**
+    *
+    */
+    @Test
+    void updateEmploymentErrorTest() throws Exception {
+        EmploymentDto employmentDto = new EmploymentDto();
+        employmentDto.setEmploymentid(1L);
+
+        Mockito.doReturn(getEmploymentList().iterator().next())
+        .when(getEmploymentSvc())
+                .save(getEmploymentList().iterator().next());
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put("/api/employment/1")
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(employmentDto))
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+        assertNotNull(mvcResult);
+        mockMvc.perform(put("/api/employment/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(employmentDto)));
+        // .andExpect(status().isCreated()).andDo(print());
+
+    }
+
+    /**
+     *
+     */
+    @Test
+    void deleteEmploymentTest() throws Exception {
+
+        Mockito.doNothing().when(getEmploymentSvc()).delete(1L);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete("/api/employment/1")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+    }
+
+    /**
+    *
+    */
+    @Test
+    void deleteEmploymentErrorTest() throws Exception {
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete("/api/employment/")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+    }
+
+    /**
+     *
+     * @return Iterable<EmploymentDto>
+     */
+    private static Iterable<Employment> getEmploymentList() {
+        List<Employment> employmentList = new ArrayList<>();
+        Employment employment = new Employment();
+        employment.setEmploymentid(1L);
+        employmentList.add(employment);
+        Collection<Employment> collections = employmentList;
+        Iterable<Employment> iterable = collections;
+        return iterable;
+    }
+
+
 }

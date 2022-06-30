@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.deloitte.elrr.jpa.svc;
 
@@ -16,25 +16,38 @@ import com.deloitte.elrr.repository.OrganizationRepository;
 
 @Service
 public class OrganizationSvc implements CommonSvc<Organization, Long> {
-	private final OrganizationRepository organizationRepository;
-
-	public OrganizationSvc(final OrganizationRepository organizationRepository) {
-		this.organizationRepository =organizationRepository;
-	}
-
-	@Override
-	public CrudRepository<Organization, Long> getRepository() {
-		return this.organizationRepository;
-	}
-
-	@Override
-	public Long getId(Organization organization) {
-		return organization.getOrganizationid();
-	}
-
-	@Override
-	public Organization save(Organization organization) {
-		return CommonSvc.super.save(organization);
-	}
+    /**
+     *
+     */
+    private final OrganizationRepository organizationRepository;
+    /**
+     *
+     * @param argsOrganizationRepository
+     */
+    public OrganizationSvc(
+            final OrganizationRepository argsOrganizationRepository) {
+        this.organizationRepository = argsOrganizationRepository;
+    }
+    /**
+     *
+     */
+    @Override
+    public CrudRepository<Organization, Long> getRepository() {
+        return this.organizationRepository;
+    }
+    /**
+     *
+     */
+    @Override
+    public Long getI(final Organization organization) {
+        return organization.getOrganizationid();
+    }
+    /**
+     *
+     */
+    @Override
+    public Organization save(final Organization organization) {
+        return CommonSvc.super.save(organization);
+    }
 
 }

@@ -1,14 +1,9 @@
 /**
- * 
+ *
  */
 package com.deloitte.elrr.dto;
 
 import java.io.Serializable;
-import java.util.List;
-
-import com.deloitte.elrr.entity.Employment;
-import com.deloitte.elrr.entity.Organization;
-import com.deloitte.elrr.entity.Person;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,21 +22,49 @@ import lombok.Setter;
 @Setter
 public class OrganizationDto implements Serializable {
 
+    /**
+     *
+    */
+    private static final long serialVersionUID = 1L;
+    /**
+    *
+    */
+    private long organizationid;
+    /**
+    *
+    */
+    private String organizationname;
+    /**
+    *
+    */
+    private String organizationidentifier;
+    /**
+    *
+    */
+    private String organizationidentificationcode;
+    /**
+    *
+    */
+    private String organizationidentificationsystem;
+    /**
+    *
+    */
+    private String industrytypeidentifier;
+    /**
+    *
+    */
+    private String organizationfein;
+    /**
+    *
+    */
+    private String organizationdescription;
+    /**
+    *
+    */
+    private String parentorganization;
+    /**
+    *
+    */
+    private String recordstatus;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	private long organizationid;
-	private String organizationname;
-	private String organizationidentifier;
-	private String organizationidentificationcode;
-	private String organizationidentificationsystem;
-	private String industrytypeidentifier;
-	private String organizationfein;
-	private String organizationdescription;
-	private String parentorganization;
-	private String recordstatus;
-	
 }

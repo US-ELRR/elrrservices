@@ -23,62 +23,119 @@ import lombok.Setter;
 @Setter
 public class Course extends Auditable<String> {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long courseid;
+    /**
+     *
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long courseid;
+    /**
+    *
+    */
 
-	@Column(name = "coursetitle")
-	private String name;
+    @Column(name = "coursetitle")
+    private String name;
+    /**
+    *
+    */
 
-	@Column(name = "coursesubjectmatter")
-	private String coursesubjectmatter;
+    @Column(name = "coursesubjectmatter")
+    private String coursesubjectmatter;
+    /**
+    *
+    */
 
-	@Column(name = "coursesubjectabbreviation")
-	private String coursesubjectabbreviation;
+    @Column(name = "coursesubjectabbreviation")
+    private String coursesubjectabbreviation;
+    /**
+    *
+    */
 
-	@Column(name = "courseidentifier")
-	private String courseidentifier;
+    @Column(name = "courseidentifier")
+    private String courseidentifier;
+    /**
+    *
+    */
 
-	@Column(name = "courselevel")
-	private String courselevel;
+    @Column(name = "courselevel")
+    private String courselevel;
+    /**
+    *
+    */
 
-	@Column(name = "coursenumber")
-	private String coursenumber;
+    @Column(name = "coursenumber")
+    private String coursenumber;
+    /**
+    *
+    */
 
-	@Column(name = "courseinstructionmethod")
-	private String courseinstructionmethod;
+    @Column(name = "courseinstructionmethod")
+    private String courseinstructionmethod;
+    /**
+    *
+    */
 
-	@Column(name = "coursestartdate")
-	private Date coursestartdate;
+    @Column(name = "coursestartdate")
+    private Date coursestartdate;
+    /**
+    *
+    */
 
-	@Column(name = "courseenddate")
-	private Date courseenddate;
+    @Column(name = "courseenddate")
+    private Date courseenddate;
+    /**
+    *
+    */
 
-	@Column(name = "courseenrollmentdate")
-	private Date courseenrollmentdate;
+    @Column(name = "courseenrollmentdate")
+    private Date courseenrollmentdate;
+    /**
+    *
+    */
 
-	@Column(name = "courseacademicgrade")
-	private String courseacademicgrade;
+    @Column(name = "courseacademicgrade")
+    private String courseacademicgrade;
+    /**
+    *
+    */
 
-	@Column(name = "courseprovidername")
-	private String courseprovidername;
+    @Column(name = "courseprovidername")
+    private String courseprovidername;
+    /**
+    *
+    */
 
-	@Column(name = "departmentname")
-	private String departmentname;
+    @Column(name = "departmentname")
+    private String departmentname;
+    /**
+    *
+    */
 
-	@Column(name = "coursegradescalecode")
-	private String coursegradescalecode;
+    @Column(name = "coursegradescalecode")
+    private String coursegradescalecode;
+    /**
+    *
+    */
 
-	@Column(name = "coursemetadatarepository")
-	private String coursemetadatarepository;
+    @Column(name = "coursemetadatarepository")
+    private String coursemetadatarepository;
+    /**
+    *
+    */
 
-	@Column(name = "courselrsendpoint")
-	private String courselrsendpoint;
+    @Column(name = "courselrsendpoint")
+    private String courselrsendpoint;
+    /**
+    *
+    */
 
-	@Column(name = "coursedescription")
-	private String coursedescription;
+    @Column(name = "coursedescription")
+    private String coursedescription;
+    /**
+    *
+    */
 
-	@Column(name = "recordstatus")
-	private String recordstatus;
+    @Column(name = "recordstatus")
+    private String recordstatus;
 
 }
