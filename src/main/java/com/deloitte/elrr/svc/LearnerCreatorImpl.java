@@ -86,7 +86,9 @@ public class LearnerCreatorImpl implements LearnerCreatorSvc {
         for (LearnerProfile profile : profiles) {
             Optional<Competency> competency = competencyRepository
                     .findById(profile.getCompetencyid());
-            list.add(competency.get());
+            if (competency.isPresent()) {
+                list.add(competency.get());
+            }
         }
         return list;
     }
@@ -101,7 +103,9 @@ public class LearnerCreatorImpl implements LearnerCreatorSvc {
         for (LearnerProfile profile : profiles) {
             Optional<Course> course = courseRepository
                     .findById(profile.getCourseid());
-            list.add(course.get());
+            if (course.isPresent()) {
+                list.add(course.get());
+            }
         }
         return list;
     }
@@ -125,18 +129,17 @@ public class LearnerCreatorImpl implements LearnerCreatorSvc {
      */
     private Personnel getLearnerPersonnel(final String personId,
             final List<LearnerProfile> profiles) {
-
         Personnel personnel = new Personnel();
-
         Optional<Person> person = this.personalRepository
                 .findById(Long.valueOf(personId));
         Optional<Organization> organization1 = this.organizationRepository
                 .findById(profiles.get(0).getOrganizationid());
-
-        personnel.setPerson(person.get());
-        personnel.setOrganization(organization1.get());
-        personnel.setContactInformation(getContactInformation(personId));
-        personnel.setEmployment(getEmployeeList(profiles));
+        if (person.isPresent() && organization1.isPresent()) {
+            personnel.setPerson(person.get());
+            personnel.setOrganization(organization1.get());
+            personnel.setContactInformation(getContactInformation(personId));
+            personnel.setEmployment(getEmployeeList(profiles));
+        }
         return personnel;
     }
     /**
@@ -168,7 +171,9 @@ public class LearnerCreatorImpl implements LearnerCreatorSvc {
         for (LearnerProfile profile : profiles) {
             Optional<Employment> employment1 = this.employmentRepository
                     .findById(profile.getEmploymentid());
-            list.add(employment1.get());
+            if (employment1.isPresent()) {
+                list.add(employment1.get());
+            }
         }
         return list;
     }

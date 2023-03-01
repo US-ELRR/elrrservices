@@ -6,7 +6,7 @@ package com.deloitte.elrr.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +63,9 @@ public class ContactInformationController {
             Long contactInformationid)
             throws ResourceNotFoundException {
         try {
+            log.info("get contactInformationid:" + contactInformationid);
+            log.info("contactInformationid:....." + contactInformationid);
+            log.info("Getting contactinformation:.......");
             List<ContactInformationDto> contactInformationList
                 = new ArrayList<>();
             if (contactInformationid == null) {
@@ -105,6 +108,9 @@ public class ContactInformationController {
     public ResponseEntity<ContactInformationDto> getCompetencyById(
             @PathVariable(value = "id") final Long contactInformationid)
             throws ResourceNotFoundException {
+        log.info("Update contactinformation:....." + contactInformationid);
+        log.info("contactinformationid:........." + contactInformationid);
+        log.info("contactinformationrepository:.........");
         ContactInformation contactInformation = contactInformationSvc
                 .get(contactInformationid)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -122,10 +128,8 @@ public class ContactInformationController {
     @PostMapping("/contactinformation")
     public ResponseEntity<ContactInformationDto> createCompetency(
         @Valid @RequestBody final ContactInformationDto contactInformationDto) {
-        log.info("create ContactInformation:........." + contactInformationDto);
         ContactInformation contactInformation = mapper
                 .map(contactInformationDto, ContactInformation.class);
-        log.info("create ContactInformation:........." + contactInformation);
         mapper.map(contactInformationSvc.save(contactInformation),
                 ContactInformationDto.class);
         return new ResponseEntity<>(contactInformationDto, HttpStatus.CREATED);
@@ -142,6 +146,9 @@ public class ContactInformationController {
             @PathVariable(value = "id") final long contactInformationid,
         @Valid @RequestBody final ContactInformationDto contactInformationDto)
             throws ResourceNotFoundException {
+        log.info("contactinformationDto:..." + contactInformationDto);
+        log.info("contactinformation:......" + contactInformationid);
+        log.info("Update contactinformation:.....");
         ContactInformation contactInformation = contactInformationSvc
                 .get(contactInformationid)
                 .orElseThrow(() -> new ResourceNotFoundException(

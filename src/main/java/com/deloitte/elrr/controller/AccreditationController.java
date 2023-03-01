@@ -6,7 +6,7 @@ package com.deloitte.elrr.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,10 +120,9 @@ public class AccreditationController {
     @PostMapping("/accreditation")
     public ResponseEntity<AccreditationDto> createAccreditation(
             @Valid @RequestBody final AccreditationDto accreditationDto) {
-        log.info("create Accreditation:........." + accreditationDto);
+
         Accreditation accreditation = mapper.map(accreditationDto,
                 Accreditation.class);
-        log.info("create Acceditation:........." + accreditation);
         mapper.map(accreditationSvc.save(accreditation),
                 AccreditationDto.class);
         return new ResponseEntity<>(accreditationDto, HttpStatus.CREATED);
@@ -144,7 +143,9 @@ public class AccreditationController {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Accreditation not found for this id to update :: "
                                 + accreditationid));
-        log.info("Update Accreditation:........." + accreditationDto);
+        log.info("accreditationDto:........." + accreditationDto);
+        log.info("accreditationid:........." + accreditationid);
+        log.info("Update Accreditation:.........");
         // Assigning values from request
         mapper.map(accreditationDto, accreditation);
         // Reset Id / Primary key from query parameter

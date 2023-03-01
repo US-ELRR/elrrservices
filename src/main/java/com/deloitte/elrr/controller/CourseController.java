@@ -6,7 +6,7 @@ package com.deloitte.elrr.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +62,9 @@ public class CourseController {
             @RequestParam(value = "id", required = false) final Long courseId)
             throws ResourceNotFoundException {
         try {
+            log.info("getAllCourses course id:........." + courseId);
+            log.info("getAllCourses:........." + courseId);
+            log.info("getAllCourses :.........");
             List<CourseDto> courseList = new ArrayList<>();
             if (courseId == null) {
                 Iterable<Course> courses = courseSvc.findAll();

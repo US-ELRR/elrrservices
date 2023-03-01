@@ -6,7 +6,7 @@ package com.deloitte.elrr.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,9 +116,7 @@ public class EmploymentController {
     @PostMapping("/employment")
     public ResponseEntity<EmploymentDto> createEmployment(
             @Valid @RequestBody final EmploymentDto employmentDto) {
-        log.info("create Employment:........." + employmentDto);
         Employment employment = mapper.map(employmentDto, Employment.class);
-        log.info("create Employment:........." + employment);
         mapper.map(employmentSvc.save(employment), EmploymentDto.class);
         return new ResponseEntity<>(employmentDto, HttpStatus.CREATED);
     }
@@ -138,7 +136,9 @@ public class EmploymentController {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Employment not found for this id to update :: "
                                 + employmentid));
-        log.info("Update Employment:........." + employmentDto);
+        log.info("Update Employment dto:........." + employmentDto);
+        log.info("Update employment id:........." + employmentid);
+        log.info("Update Employment:.........");
         // Assigning values from request
         mapper.map(employmentDto, employment);
         // Reset Id / Primary key from query parameter
@@ -157,7 +157,9 @@ public class EmploymentController {
     public ResponseEntity<HttpStatus> deleteEmployment(
             @PathVariable(value = "id") final Long employmentid) {
         try {
-            log.info("Deleting  Employment:........." + employmentid);
+            log.info("Deleting  Employment:.........method");
+            log.info("Deleting employment id:........." + employmentid);
+            log.info("Deleting Employment:.........");
             employmentSvc.delete(employmentid);
             return ResponseEntity.ok(HttpStatus.NO_CONTENT);
         } catch (Exception e) {

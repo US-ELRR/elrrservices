@@ -17,7 +17,6 @@ import com.deloitte.elrr.repository.PersonalRepository;
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 
 @SpringBootApplication
-//@ComponentScan({ "com.deloitte.elrr" })
 @Import({ JacksonAutoConfiguration.class })
 @EnableEncryptableProperties
 public class ElrrApplication  {

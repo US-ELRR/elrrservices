@@ -6,7 +6,7 @@ package com.deloitte.elrr.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,9 +117,7 @@ public class CompetencyController {
     @PostMapping("/competency")
     public ResponseEntity<CompetencyDto> createCompetency(
             @Valid @RequestBody final CompetencyDto competencyDto) {
-        log.info("create Competency:........." + competencyDto);
         Competency competency = mapper.map(competencyDto, Competency.class);
-        log.info("create Competency:........." + competency);
         mapper.map(competencySvc.save(competency), CompetencyDto.class);
         return new ResponseEntity<>(competencyDto, HttpStatus.CREATED);
     }
@@ -140,6 +138,8 @@ public class CompetencyController {
                         "Competency not found for this id to update :: "
                                 + competencyid));
         log.info("Update Competency:........." + competencyDto);
+        log.info("CompetencyDTO:........." + competencyDto);
+        log.info("Competency:........." + competencyid);
         // Assigning values from request
         mapper.map(competencyDto, competency);
         // Reset Id / Primary key from query parameter
