@@ -6,7 +6,7 @@ package com.deloitte.elrr.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +61,8 @@ public class PersonController {
             @RequestParam(value = "id", required = false) final Long personId)
             throws ResourceNotFoundException {
         try {
+            log.info("getting  PersonDto:.........");
+            log.info("getting Organization id:........." + personId);
             List<PersonDto> persontoList = new ArrayList<>();
             if (personId == null) {
                 Iterable<Person> persons = personaSvc.findAll();
@@ -97,6 +99,8 @@ public class PersonController {
     public ResponseEntity<PersonDto> getPersonById(
             @PathVariable(value = "id") final Long personId)
             throws ResourceNotFoundException {
+        log.info("getting  Organization:.........");
+        log.info("getting Organization id:........." + personId);
         Person person = personaSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Person not found for this id :: " + personId));
@@ -111,9 +115,7 @@ public class PersonController {
     @PostMapping("/person")
     public ResponseEntity<PersonDto> createPerson(
             @Valid @RequestBody final PersonDto personDto) {
-        log.info("create Person:........." + personDto);
         Person person = mapper.map(personDto, Person.class);
-        log.info("create Person:........." + person);
         mapper.map(personaSvc.save(person), PersonDto.class);
         return new ResponseEntity<>(personDto, HttpStatus.CREATED);
     }
@@ -129,6 +131,8 @@ public class PersonController {
             @PathVariable(value = "id") final long personId,
             @Valid @RequestBody final PersonDto personDto)
             throws ResourceNotFoundException {
+        log.info("Updating  personId:.........");
+        log.info("Updating personId id:........." + personId);
         Person person = personaSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Person not found for this id to update :: "
@@ -152,6 +156,7 @@ public class PersonController {
     public ResponseEntity<HttpStatus> deletePerson(
             @PathVariable(value = "id") final Long personId) {
         try {
+            log.info("deleting  person:.........");
             log.info("Deleting  Person:........." + personId);
             personaSvc.delete(personId);
             return ResponseEntity.ok(HttpStatus.NO_CONTENT);

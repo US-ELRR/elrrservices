@@ -6,7 +6,7 @@ package com.deloitte.elrr.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,6 +106,9 @@ public class CourseAccreditationController {
     public ResponseEntity<CourseAccreditationDto> getCourseAccreditationById(
             @PathVariable(value = "id") final Long courseAccreditationid)
             throws ResourceNotFoundException {
+        log.info("Update request id:........." + courseAccreditationid);
+        log.info("courseaccreditation:........." + courseAccreditationid);
+        log.info("Update courseaccreditation:.........");
         CourseAccreditation acceditation = courseAccreditationSvc
                 .get(courseAccreditationid)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -123,11 +126,8 @@ public class CourseAccreditationController {
     @PostMapping("/courseaccreditation")
     public ResponseEntity<CourseAccreditationDto> createCourseAccreditation(
     @Valid @RequestBody final CourseAccreditationDto courseAccreditationDto) {
-        log.info("create CourseAccreditation:........."
-                + courseAccreditationDto);
         CourseAccreditation courseAccreditation = mapper
                 .map(courseAccreditationDto, CourseAccreditation.class);
-        log.info("create courseaccreditation:........." + courseAccreditation);
         mapper.map(courseAccreditationSvc.save(courseAccreditation),
                 CourseAccreditationDto.class);
         return new ResponseEntity<>(courseAccreditationDto, HttpStatus.CREATED);
@@ -144,6 +144,9 @@ public class CourseAccreditationController {
             @PathVariable(value = "id") final long courseAccreditationid,
         @Valid @RequestBody final CourseAccreditationDto courseAccreditationDto)
             throws ResourceNotFoundException {
+        log.info("Update request id:........." + courseAccreditationid);
+        log.info("courseaccreditation:........." + courseAccreditationid);
+        log.info("Update courseaccreditation:.........");
         CourseAccreditation courseAccreditation = courseAccreditationSvc
                 .get(courseAccreditationid)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -170,6 +173,7 @@ public class CourseAccreditationController {
     public ResponseEntity<HttpStatus> deleteCourseAccreditation(
             @PathVariable(value = "id") final Long courseAccreditationid) {
         try {
+            log.info("deleting request id:........." + courseAccreditationid);
             log.info("Deleting  CourseAccreditation:........."
                     + courseAccreditationid);
             courseAccreditationSvc.delete(courseAccreditationid);

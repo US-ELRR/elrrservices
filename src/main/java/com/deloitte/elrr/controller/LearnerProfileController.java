@@ -6,7 +6,7 @@ package com.deloitte.elrr.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,10 +119,8 @@ public class LearnerProfileController {
     @PostMapping("/learnerprofilefact")
     public ResponseEntity<LearnerProfileDto> createCourseAccreditation(
             @Valid @RequestBody final LearnerProfileDto learnerProfileFactDto) {
-        log.info("create LearnerProfile:........." + learnerProfileFactDto);
         LearnerProfile learnerProfileFact = mapper.map(learnerProfileFactDto,
                 LearnerProfile.class);
-        log.info("create learnerprofilefact:........." + learnerProfileFact);
         mapper.map(learnerProfileFactSvc.save(learnerProfileFact),
                 LearnerProfileDto.class);
         return new ResponseEntity<>(learnerProfileFactDto, HttpStatus.CREATED);

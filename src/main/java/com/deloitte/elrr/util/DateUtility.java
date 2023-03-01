@@ -233,23 +233,4 @@ public final class DateUtility {
         return diff;
 
     }
-    /**
-     *
-     * @param args
-     * @throws Exception
-     */
-    public static void main(final String[] args) {
-
-        double diff;
-        try {
-            diff = getDateRange(getDate("2019-02-01"),
-                    getDate("2021-01-31"));
-            int idx = getYearIndex("2020-05-30", 2, "2020-01-01");
-            log.info("" + diff);
-            log.info("" + idx);
-        } catch (ParseException e) {
-            log.error("ParseException" + e.getMessage());
-          }
-    }
-
 }

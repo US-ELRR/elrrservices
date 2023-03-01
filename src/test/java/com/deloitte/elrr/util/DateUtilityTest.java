@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -65,6 +66,10 @@ class DateUtilityTest {
         DateUtility.getUXDateFromEndDate("2022-11-11", 1);
         DateUtility.getYear("2022-11-11");
         DateUtility.getYearIndex("2022-11-11", 1, "2022-11-11");
+        DateUtility.getYearIndex("2022-11-11", 1, "2022-11-12");
+        DateUtility.getYearIndex("2022-11-12", 1, "2022-11-11");
+        assertNotNull(DateUtility.getDate(new Date()));
+        DateUtility.getDateRange(new GregorianCalendar(), new GregorianCalendar());
     }
 
 }

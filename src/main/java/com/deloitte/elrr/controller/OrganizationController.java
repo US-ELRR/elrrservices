@@ -6,7 +6,7 @@ package com.deloitte.elrr.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +63,8 @@ public class OrganizationController {
             final Long organizationid)
             throws ResourceNotFoundException {
         try {
+            log.info("GetMapping  Organization:.........");
+            log.info("GetMapping Organization id:........." + organizationid);
             List<OrganizationDto> organizationList = new ArrayList<>();
             if (organizationid == null) {
                 Iterable<Organization> organizations = organizationSvc
@@ -103,6 +105,8 @@ public class OrganizationController {
     public ResponseEntity<OrganizationDto> getOrganizationById(
             @PathVariable(value = "id") final Long organizationid)
             throws ResourceNotFoundException {
+        log.info("GetMapping  Organization:.........");
+        log.info("GetMapping Organization id:........." + organizationid);
         Organization organization = organizationSvc.get(organizationid)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Organization not found for this id :: "
@@ -119,10 +123,8 @@ public class OrganizationController {
     @PostMapping("/organization")
     public ResponseEntity<OrganizationDto> createOrganization(
             @Valid @RequestBody final OrganizationDto organizationDto) {
-        log.info("create Organization:........." + organizationDto);
         Organization organization = mapper.map(organizationDto,
                 Organization.class);
-        log.info("create Organization:........." + organization);
         mapper.map(organizationSvc.save(organization), OrganizationDto.class);
         return new ResponseEntity<>(organizationDto, HttpStatus.CREATED);
     }
@@ -138,6 +140,8 @@ public class OrganizationController {
             @PathVariable(value = "id") final long organizationid,
             @Valid @RequestBody final OrganizationDto organizationDto)
             throws ResourceNotFoundException {
+        log.info("Updating  Organization:.........");
+        log.info("Updating Organization id:........." + organizationid);
         Organization organization = organizationSvc.get(organizationid)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Organization not found for this id to update :: "
@@ -161,7 +165,8 @@ public class OrganizationController {
     public ResponseEntity<HttpStatus> deleteOrganization(
             @PathVariable(value = "id") final Long organizationid) {
         try {
-            log.info("Deleting  Organization:........." + organizationid);
+            log.info("Deleting  Organization:.........");
+            log.info("Deleting Organization id:........." + organizationid);
             organizationSvc.delete(organizationid);
             return ResponseEntity.ok(HttpStatus.NO_CONTENT);
         } catch (Exception e) {

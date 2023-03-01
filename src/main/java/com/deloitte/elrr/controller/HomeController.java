@@ -44,7 +44,6 @@ public class HomeController {
     public Learner getLearner(@RequestParam(required = false)
         final String userName, @RequestParam(required = false)
         final String password) {
-        log.info(userName + "_" + password);
 
         Learner learner = null;
         learner = learnerCreatorSvc.learnerCreator(userName);

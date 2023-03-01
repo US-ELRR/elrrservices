@@ -37,9 +37,12 @@ public class ELRRExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
     /**
-     *
+     * @param ex
+     * @param headers
+     * @param status
+     * @param request
+     * @return ResponseEntity
      */
-    @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             final MethodArgumentNotValidException ex, final HttpHeaders headers,
             final HttpStatus status, final WebRequest request) {
