@@ -46,7 +46,7 @@ public class HomeController {
         final String userName, @RequestParam(required = false)
         final String password) {
 
-        if (EmailValidator.getInstance().isValid(userName))
+        if (!EmailValidator.getInstance().isValid(userName))
         {
             return null;
         }
