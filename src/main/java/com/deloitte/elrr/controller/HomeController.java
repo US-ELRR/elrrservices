@@ -3,6 +3,7 @@ package com.deloitte.elrr.controller;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.apache.commons.validator.routines.EmailValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -44,6 +45,11 @@ public class HomeController {
     public Learner getLearner(@RequestParam(required = false)
         final String userName, @RequestParam(required = false)
         final String password) {
+
+        if (!EmailValidator.getInstance().isValid(userName))
+        {
+            return null;
+        }
 
         Learner learner = null;
         learner = learnerCreatorSvc.learnerCreator(userName);
