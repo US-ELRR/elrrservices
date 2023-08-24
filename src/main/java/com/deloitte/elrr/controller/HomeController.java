@@ -43,8 +43,7 @@ public class HomeController {
     @RequestMapping(value = "/learner", method = RequestMethod.GET, produces = {
             "application/json" })
     public Learner getLearner(@RequestParam(required = false)
-        final String userName, @RequestParam(required = false)
-        final String password) {
+        final String userName) {
 
         if (!EmailValidator.getInstance().isValid(userName))
         {

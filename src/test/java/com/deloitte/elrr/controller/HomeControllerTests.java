@@ -68,7 +68,7 @@ class HomeControllerTests extends CommonControllerTest {
         //Mockito.doReturn(getLearnerList())
         //        .when(getLearnerCreatorSvc().learnerCreator("test"));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/learner?param1=test&param2=test")
+                .get("/api/learner?param1=test")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -84,7 +84,7 @@ class HomeControllerTests extends CommonControllerTest {
     void getLearnerByIdErrorTest() throws Exception {
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/learner?param1=test&param2=test")
+                .get("/api/learner?param1=test")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
 
