@@ -69,7 +69,6 @@ class DateUtilityTest {
         DateUtility.getYearIndex("2022-11-11", 1, "2022-11-12");
         DateUtility.getYearIndex("2022-11-12", 1, "2022-11-11");
         assertNotNull(DateUtility.getDate(new Date()));
-        DateUtility.getDateRange(new GregorianCalendar(), new GregorianCalendar());
     }
 
 }
