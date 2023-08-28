@@ -55,7 +55,6 @@ class DateUtilityTest {
         assertNotNull(DateUtility.addUXDate("2022-11-11", 1));
         assertEquals(DateUtility.getCurrentDate(), new Date());
         assertNotNull(DateUtility.getDate("2022-11-11"));
-        //assertNotNull(DateUtility.getDateRange(new Date(), new Date());
         assertNotNull(DateUtility.getYearIndex("2020-05-30", 2, "2022-11-11"));
         assertNotNull(DateUtility.getLastDayOfMonth("2022-11-11"));
         //assertNotNull(DateUtility.addUXDate("11/11/2022", 1));
