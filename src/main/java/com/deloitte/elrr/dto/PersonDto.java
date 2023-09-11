@@ -8,6 +8,7 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,11 +40,13 @@ public class PersonDto implements Serializable {
     /**
     *
     */
+    @NotNull
     @Size(max = 250)
     private String name;
     /**
     *
     */
+    @NotNull
     @Size(max = 50)
     private String firstName;
     /**
@@ -54,6 +57,7 @@ public class PersonDto implements Serializable {
     /**
     *
     */
+    @NotNull
     @Size(max = 50)
     private String lastName;
     /**

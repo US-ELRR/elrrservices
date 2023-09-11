@@ -5,6 +5,7 @@ package com.deloitte.elrr.dto;
 
 import java.io.Serializable;
 
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,6 +35,7 @@ public class OrganizationDto implements Serializable {
     /**
     *
     */
+    @NotNull
     @Size(max = 100)
     private String organizationname;
     /**
