@@ -8,6 +8,7 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -37,10 +38,12 @@ public class EmploymentDto implements Serializable {
     /**
     *
     */
+    @Size(max = 100)
     private String employerName;
     /**
     *
     */
+    @Size(max = 100)
     private String employerdepartment;
     /**
     *
@@ -59,18 +62,22 @@ public class EmploymentDto implements Serializable {
     /**
     *
     */
+    @Size(max = 100)
     private String joblevel;
     /**
     *
     */
+    @Size(max = 100)
     private String occupation;
     /**
     *
     */
+    @Size(max = 1)
     private String employed;
     /**
     *
     */
+    @Size(max = 50)
     private String primarycarrercategory;
     /**
     *
@@ -79,5 +86,6 @@ public class EmploymentDto implements Serializable {
     /**
     *
     */
+    @Size(max = 10)
     private String recordstatus;
 }

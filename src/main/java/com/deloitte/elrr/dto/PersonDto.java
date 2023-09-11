@@ -8,6 +8,7 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -38,42 +39,52 @@ public class PersonDto implements Serializable {
     /**
     *
     */
+    @Size(max = 250)
     private String name;
     /**
     *
     */
+    @Size(max = 50)
     private String firstName;
     /**
     *
     */
+    @Size(max = 50)
     private String middleName;
     /**
     *
     */
+    @Size(max = 50)
     private String lastName;
     /**
     *
     */
+    @Size(max = 50)
     private String namePrefix;
     /**
     *
     */
+    @Size(max = 50)
     private String titleAffixcode;
     /**
     *
     */
+    @Size(max = 50)
     private String nameSuffix;
     /**
     *
     */
+    @Size(max = 50)
     private String qualificationAffixcode;
     /**
     *
     */
+    @Size(max = 50)
     private String maidenName;
     /**
     *
     */
+    @Size(max = 50)
     private String preferredName;
     /**
     *
@@ -91,18 +102,22 @@ public class PersonDto implements Serializable {
     /**
     *
     */
+    @Size(max = 1)
     private String sex;
     /**
     *
     */
+    @Size(max = 50)
     private String primaryLanguage;
     /**
     *
     */
+    @Size(max = 1)
     private String militaryVeteranindicator;
     /**
     *
     */
+    @Size(max = 10)
     private String recordStatus;
 
     /**
