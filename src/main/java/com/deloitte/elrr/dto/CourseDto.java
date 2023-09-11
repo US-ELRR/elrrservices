@@ -8,6 +8,8 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -41,26 +43,33 @@ public class CourseDto implements Serializable {
     /**
     *
     */
+    @Size(max = 100)
     private String coursesubjectmatter;
     /**
     *
     */
+    @Size(max = 20)
     private String coursesubjectabbreviation;
     /**
     *
     */
+    @NotNull
+    @Size(max = 50)
     private String courseidentifier;
     /**
     *
     */
+    @Size(max = 50)
     private String courselevel;
     /**
     *
     */
+    @Size(max = 50)
     private String coursenumber;
     /**
     *
     */
+    @Size(max = 50)
     private String courseinstructionmethod;
     /**
     *
@@ -80,26 +89,32 @@ public class CourseDto implements Serializable {
     /**
     *
     */
+    @Size(max = 50)
     private String courseacademicgrade;
     /**
     *
     */
+    @Size(max = 100)
     private String courseprovidername;
     /**
     *
     */
+    @Size(max = 100)
     private String departmentname;
     /**
     *
     */
+    @Size(max = 50)
     private String coursegradescalecode;
     /**
     *
     */
+    @Size(max = 50)
     private String coursemetadatarepository;
     /**
     *
     */
+    @Size(max = 50)
     private String courselrsendpoint;
     /**
     *
@@ -108,5 +123,6 @@ public class CourseDto implements Serializable {
     /**
     *
     */
+    @Size(max = 10)
     private String recordstatus;
 }

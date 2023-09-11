@@ -5,6 +5,8 @@ package com.deloitte.elrr.dto;
 
 import java.io.Serializable;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -85,9 +87,12 @@ public class LearnerProfileDto implements Serializable {
     /**
     *
     */
+    @NotNull
+    @Size(max = 10)
     private long activitystatus;
     /**
     *
     */
+    @Size(max = 10)
     private String recordstatus;
 }

@@ -6,6 +6,8 @@ package com.deloitte.elrr.dto;
 import java.io.Serializable;
 import java.util.Date;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -35,14 +37,18 @@ public class CompetencyDto implements Serializable {
     /**
     *
     */
+    @NotNull
+    @Size(max = 100)
     private String competencyframeworktitle;
     /**
     *
     */
+    @Size(max = 100)
     private String competencyframeworkversion;
     /**
     *
     */
+    @Size(max = 100)
     private String competencyframeworkidentifier;
     /**
     *
@@ -51,6 +57,7 @@ public class CompetencyDto implements Serializable {
     /**
     *
     */
+    @Size(max = 100)
     private String competencyframeworksubject;
     /**
     *
@@ -63,6 +70,7 @@ public class CompetencyDto implements Serializable {
     /**
     *
     */
+    @Size(max = 100)
     private String competencydefinitionidentifier;
     /**
     *
@@ -71,6 +79,7 @@ public class CompetencyDto implements Serializable {
     /**
     *
     */
+    @Size(max = 100)
     private String competencytaxonomyid;
     /**
     *
@@ -83,6 +92,7 @@ public class CompetencyDto implements Serializable {
     /**
     *
     */
+    @Size(max = 100)
     private String competencydefinitionparentidentifier;
     /**
     *
@@ -91,10 +101,12 @@ public class CompetencyDto implements Serializable {
     /**
     *
     */
+    @Size(max = 100)
     private String competencydescriptionparentcode;
     /**
     *
     */
+    @Size(max = 100)
     private String competencydefinitioncode;
     /**
     *
@@ -107,9 +119,11 @@ public class CompetencyDto implements Serializable {
     /**
     *
     */
+    @Size(max = 100)
     private String competencydefinitiontype;
     /**
     *
     */
+    @Size(max = 10)
     private String recordstatus;
 }
