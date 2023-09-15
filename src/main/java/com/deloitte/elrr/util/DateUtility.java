@@ -213,24 +213,4 @@ public final class DateUtility {
         return calDate.getActualMaximum(Calendar.DATE);
 
     }
-    /**
-     *
-     * @param startDate
-     * @param endDate
-     * @return double
-     */
-    public static double getDateRange(final GregorianCalendar startDate,
-            final GregorianCalendar endDate) {
-
-        double diff = 0;
-        endDate.add(Calendar.DATE, 1);
-        double endYr = endDate.get(Calendar.YEAR);
-        double endMonth = endDate.get(Calendar.MONTH);
-        double startYr = startDate.get(Calendar.YEAR);
-        double startMonth = startDate.get(Calendar.MONTH);
-        diff = (endYr - startYr) + (endMonth - startMonth) / MONTHS;
-
-        return diff;
-
-    }
 }
