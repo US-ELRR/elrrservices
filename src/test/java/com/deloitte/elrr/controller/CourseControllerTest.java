@@ -4,6 +4,7 @@
 package com.deloitte.elrr.controller;
 
 
+import static org.hamcrest.CoreMatchers.any;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -21,6 +22,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -76,13 +78,16 @@ public class CourseControllerTest extends CommonControllerTest {
      */
     @Test
     void getAllCoursesTest() throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", " */*");
+        headers.set("X-Forwarded-Proto", "https");
 
         Mockito.doReturn(getCourseList()).when(getCourseSvc()).findAll();
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/course")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
-        mockMvc.perform(requestBuilder).andExpect(status().isOk())
+        mockMvc.perform(requestBuilder.headers(headers)).andExpect(status().isOk())
                 .andDo(print());
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -103,7 +108,6 @@ public class CourseControllerTest extends CommonControllerTest {
                 .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder).andDo(print());
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
-
         assertNotNull(mvcResult);
 
     }
@@ -165,15 +169,20 @@ public class CourseControllerTest extends CommonControllerTest {
     */
     @Test
     void createCourseTest() throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", " */*");
+        headers.set("X-Forwarded-Proto", "https");
         CourseDto courseDto = new CourseDto();
         courseDto.setCourseid(1L);
+        //Mockito.when(mapper.map(any(), CoreMatchers.any())).doReturn(new Course());
         Mockito.doReturn(getCourseList().iterator().next()).when(getCourseSvc())
                 .save(getCourseList().iterator().next());
 
-        mockMvc.perform(post("/api/course/")
+        mockMvc.perform(post("/api/course")
+                .headers(headers)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(courseDto)));
-               // .andExpect(status().isCreated()).andDo(print());
+                //.andExpect(status().isCreated()).andDo(print());
     }
 
     /**
@@ -182,10 +191,12 @@ public class CourseControllerTest extends CommonControllerTest {
     @Test
     void updateCourseTest() throws Exception {
         CourseDto courseDto = new CourseDto();
+        courseDto.setCourseidentifier("Any");
         courseDto.setCourseid(1L);
         Mockito.doReturn(Optional.of(getCourseList().iterator().next()))
                 .when(getCourseSvc()).get(1L);
-        Mockito.doReturn(getCourseList().iterator().next()).when(getCourseSvc())
+        Mockito.doReturn(getCourseList().iterator().next())
+                .when(getCourseSvc())
                 .save(getCourseList().iterator().next());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/course/1")
