@@ -212,6 +212,7 @@ public class EmploymentControllerTest extends CommonControllerTest {
     void updateEmploymentTest() throws Exception {
         EmploymentDto employmentDto = new EmploymentDto();
         employmentDto.setEmploymentid(1L);
+        employmentDto.setEmployerName("Any");
         Mockito.doReturn(Optional.of(getEmploymentList().iterator().next()))
                 .when(getEmploymentSvc()).get(1L);
         Mockito.doReturn(getEmploymentList().iterator().next())
@@ -241,7 +242,7 @@ public class EmploymentControllerTest extends CommonControllerTest {
     void updateEmploymentErrorTest() throws Exception {
         EmploymentDto employmentDto = new EmploymentDto();
         employmentDto.setEmploymentid(1L);
-
+        employmentDto.setEmployerName("Any");
         Mockito.doReturn(getEmploymentList().iterator().next())
         .when(getEmploymentSvc())
                 .save(getEmploymentList().iterator().next());
@@ -305,6 +306,7 @@ public class EmploymentControllerTest extends CommonControllerTest {
         List<Employment> employmentList = new ArrayList<>();
         Employment employment = new Employment();
         employment.setEmploymentid(1L);
+        employment.setEmployerName("Any");
         employmentList.add(employment);
         Collection<Employment> collections = employmentList;
         Iterable<Employment> iterable = collections;
