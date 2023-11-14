@@ -14,13 +14,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -37,6 +41,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 
 @WebMvcTest(PersonController.class)
+@ContextConfiguration
+@WithMockUser
 public class PersonControllerTest extends CommonControllerTest {
 
     /**
@@ -56,6 +62,20 @@ public class PersonControllerTest extends CommonControllerTest {
     */
     @Autowired
     private ObjectMapper objectMapper;
+    
+    /**
+     * 
+     */
+    private HttpHeaders headers;
+    /**
+     * 
+     */
+    @BeforeEach
+    void addHeaders() {
+        headers = new HttpHeaders();
+        headers.set("Content-Type", " */*");
+        headers.set("X-Forwarded-Proto", "https");
+    }
 
     /**
      *
@@ -80,7 +100,8 @@ public class PersonControllerTest extends CommonControllerTest {
         Mockito.doReturn(getPersonList()).when(getPersonSvc()).findAll();
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/person").accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
         //mockMvc.perform(requestBuilder).andExpect(status().isOk())
         //        .andDo(print());
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
@@ -98,7 +119,8 @@ public class PersonControllerTest extends CommonControllerTest {
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/person").accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
         mockMvc.perform(requestBuilder).andDo(print());
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -116,7 +138,8 @@ public class PersonControllerTest extends CommonControllerTest {
                 .when(getPersonSvc()).get(1L);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/person/1").accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -131,7 +154,8 @@ public class PersonControllerTest extends CommonControllerTest {
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/person/1").accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -148,7 +172,8 @@ public class PersonControllerTest extends CommonControllerTest {
                 .when(getPersonSvc()).get(1L);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/person?id=1").accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -167,7 +192,8 @@ public class PersonControllerTest extends CommonControllerTest {
 
         mockMvc.perform(
                 post("/api/person/").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(personDto)));
+                        .content(objectMapper.writeValueAsString(personDto))
+                        .headers(headers));
                 //.andExpect(status().isCreated()).andDo(print());
     }
 
@@ -185,13 +211,15 @@ public class PersonControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/person/1").accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(personDto))
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
         assertNotNull(mvcResult);
         mockMvc.perform(
                 put("/api/person/1").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(personDto)));
+                        .content(objectMapper.writeValueAsString(personDto))
+                        .headers(headers));
         // .andExpect(status().isCreated()).andDo(print());
 
     }
@@ -209,13 +237,15 @@ public class PersonControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/person/1").accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(personDto))
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
         assertNotNull(mvcResult);
         mockMvc.perform(
                 put("/api/person/1").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(personDto)));
+                        .content(objectMapper.writeValueAsString(personDto))
+                        .headers(headers));
         // .andExpect(status().isCreated()).andDo(print());
 
     }
@@ -229,7 +259,8 @@ public class PersonControllerTest extends CommonControllerTest {
         Mockito.doNothing().when(getPersonSvc()).delete(1L);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .delete("/api/person/1").accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -244,7 +275,8 @@ public class PersonControllerTest extends CommonControllerTest {
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .delete("/api/person/").accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
