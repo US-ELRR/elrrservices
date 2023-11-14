@@ -15,17 +15,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -41,8 +37,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 @WebMvcTest(CompetencyController.class)
-@ContextConfiguration
-@WithMockUser
 public class CompetencyControllerTest extends CommonControllerTest {
 
 
@@ -67,19 +61,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
    private ObjectMapper objectMapper;
 
 
-   /**
-    * 
-    */
-   private HttpHeaders headers;
-   /**
-    * 
-    */
-   @BeforeEach
-   void addHeaders() {
-       headers = new HttpHeaders();
-       headers.set("Content-Type", " */*");
-       headers.set("X-Forwarded-Proto", "https");
-   }
+
 
     /**
      *
@@ -106,9 +88,9 @@ public class CompetencyControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/competency").accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
-        mockMvc.perform(requestBuilder.headers(headers)).andExpect(status().isOk())
+        mockMvc.perform(requestBuilder).andExpect(status().isOk())
                 .andDo(print());
-        MvcResult mvcResult = mockMvc.perform(requestBuilder.headers(headers)).andReturn();
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
 
@@ -124,9 +106,9 @@ public class CompetencyControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/competency").accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
-        mockMvc.perform(requestBuilder.headers(headers))
+        mockMvc.perform(requestBuilder)
                 .andDo(print());
-        MvcResult mvcResult = mockMvc.perform(requestBuilder.headers(headers)).andReturn();
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
 
@@ -144,7 +126,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
                 .get("/api/competency/1").accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
 
-        MvcResult mvcResult = mockMvc.perform(requestBuilder.headers(headers)).andReturn();
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
     }
@@ -159,7 +141,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
                 .get("/api/competency/1").accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
 
-        MvcResult mvcResult = mockMvc.perform(requestBuilder.headers(headers)).andReturn();
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
     }
@@ -176,7 +158,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
 
-        MvcResult mvcResult = mockMvc.perform(requestBuilder.headers(headers)).andReturn();
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
     }
@@ -205,6 +187,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
     void updateCompetencyTest() throws Exception {
         CompetencyDto competencyDto = new CompetencyDto();
         competencyDto.setCompetencyid(1L);
+        competencyDto.setCompetencyframeworktitle("Any");
         Mockito.doReturn(Optional.of(getCompetencyList().iterator().next()))
                 .when(getCompetencySvc()).get(1L);
         Mockito.doReturn(getCompetencyList().iterator().next())
@@ -215,12 +198,11 @@ public class CompetencyControllerTest extends CommonControllerTest {
                 .content(objectMapper.writeValueAsString(competencyDto))
                 .contentType(MediaType.APPLICATION_JSON);
 
-        MvcResult mvcResult = mockMvc.perform(requestBuilder.headers(headers)).andReturn();
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
         assertNotNull(mvcResult);
         mockMvc.perform(put("/api/competency/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(competencyDto))
-                .headers(headers));
+                .content(objectMapper.writeValueAsString(competencyDto)));
         // .andExpect(status().isCreated()).andDo(print());
 
     }
@@ -232,6 +214,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
     void updateCompetencyErrorTest() throws Exception {
         CompetencyDto competencyDto = new CompetencyDto();
         competencyDto.setCompetencyid(1L);
+        competencyDto.setCompetencyframeworktitle("Any");
 
         Mockito.doReturn(getCompetencyList().iterator().next())
                 .when(getCompetencySvc())
@@ -239,15 +222,13 @@ public class CompetencyControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/competency/1").accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(competencyDto))
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
         assertNotNull(mvcResult);
         mockMvc.perform(put("/api/competency/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(competencyDto))
-                .headers(headers));
+                .content(objectMapper.writeValueAsString(competencyDto)));
         // .andExpect(status().isCreated()).andDo(print());
 
     }
@@ -262,8 +243,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .delete("/api/competency/1")
                 .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -279,8 +259,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .delete("/api/competency/")
                 .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -295,6 +274,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
         List<Competency> competencyList = new ArrayList<>();
         Competency competency = new Competency();
         competency.setCompetencyid(1L);
+        competency.setCompetencyframeworktitle("Any");
         competencyList.add(competency);
         Collection<Competency> collections = competencyList;
         Iterable<Competency> iterable = collections;

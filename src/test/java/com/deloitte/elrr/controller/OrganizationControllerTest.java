@@ -14,17 +14,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -40,8 +36,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 @WebMvcTest(OrganizationController.class)
-@ContextConfiguration
-@WithMockUser
 public class OrganizationControllerTest extends CommonControllerTest {
 
     /**
@@ -62,20 +56,6 @@ public class OrganizationControllerTest extends CommonControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    /**
-     * 
-     */
-    private HttpHeaders headers;
-    /**
-     * 
-     */
-    @BeforeEach
-    void addHeaders() {
-        headers = new HttpHeaders();
-        headers.set("Content-Type", " */*");
-        headers.set("X-Forwarded-Proto", "https");
-    }
-    
     /**
      *
      * @param obj
@@ -100,8 +80,7 @@ public class OrganizationControllerTest extends CommonControllerTest {
                 .findAll();
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/organization").accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder).andExpect(status().isOk())
                 .andDo(print());
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
@@ -119,8 +98,7 @@ public class OrganizationControllerTest extends CommonControllerTest {
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/organization").accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .contentType(MediaType.APPLICATION_JSON);
         mockMvc.perform(requestBuilder).andDo(print());
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -138,8 +116,7 @@ public class OrganizationControllerTest extends CommonControllerTest {
                 .when(getOrganizationSvc()).get(1L);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/organization/1").accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -154,8 +131,7 @@ public class OrganizationControllerTest extends CommonControllerTest {
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/organization/1").accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -173,8 +149,7 @@ public class OrganizationControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/organization?id=1")
                 .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -186,16 +161,15 @@ public class OrganizationControllerTest extends CommonControllerTest {
     */
     @Test
     void createOrganizationTest() throws Exception {
-        OrganizationDto orgnizationDto = new OrganizationDto();
-        orgnizationDto.setOrganizationid(1L);
+        OrganizationDto organizationDto = new OrganizationDto();
+        organizationDto.setOrganizationid(1L);
         Mockito.doReturn(getOrganizationList().iterator().next())
                 .when(getOrganizationSvc())
                 .save(getOrganizationList().iterator().next());
 
         mockMvc.perform(post("/api/organization/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orgnizationDto))
-                .headers(headers));
+                .content(objectMapper.writeValueAsString(organizationDto)));
                 //.andExpect(status().isCreated()).andDo(print());
     }
 
@@ -204,8 +178,9 @@ public class OrganizationControllerTest extends CommonControllerTest {
     */
     @Test
     void updateOrganizationTest() throws Exception {
-        OrganizationDto orgnizationDto = new OrganizationDto();
-        orgnizationDto.setOrganizationid(1L);
+        OrganizationDto organizationDto = new OrganizationDto();
+        organizationDto.setOrganizationid(1L);
+        organizationDto.setOrganizationname("Any");
         Mockito.doReturn(Optional.of(getOrganizationList().iterator().next()))
                 .when(getOrganizationSvc()).get(1L);
         Mockito.doReturn(getOrganizationList().iterator().next())
@@ -213,16 +188,14 @@ public class OrganizationControllerTest extends CommonControllerTest {
                 .save(getOrganizationList().iterator().next());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/organization/1").accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orgnizationDto))
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .content(objectMapper.writeValueAsString(organizationDto))
+                .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
         assertNotNull(mvcResult);
         mockMvc.perform(put("/api/organization/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orgnizationDto))
-                .headers(headers));
+                .content(objectMapper.writeValueAsString(organizationDto)));
         // .andExpect(status().isCreated()).andDo(print());
 
     }
@@ -232,24 +205,23 @@ public class OrganizationControllerTest extends CommonControllerTest {
     */
     @Test
     void updateOrganizationErrorTest() throws Exception {
-        OrganizationDto orgnizationDto = new OrganizationDto();
-        orgnizationDto.setOrganizationid(1L);
+        OrganizationDto organizationDto = new OrganizationDto();
+        organizationDto.setOrganizationid(1L);
+        organizationDto.setOrganizationname("Any");
 
         Mockito.doReturn(getOrganizationList().iterator().next())
                 .when(getOrganizationSvc())
                 .save(getOrganizationList().iterator().next());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/organization/1").accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orgnizationDto))
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .content(objectMapper.writeValueAsString(organizationDto))
+                .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
         assertNotNull(mvcResult);
         mockMvc.perform(put("/api/organization/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orgnizationDto))
-                .headers(headers));
+                .content(objectMapper.writeValueAsString(organizationDto)));
         // .andExpect(status().isCreated()).andDo(print());
 
     }
@@ -264,8 +236,7 @@ public class OrganizationControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .delete("/api/organization/1")
                 .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -280,8 +251,7 @@ public class OrganizationControllerTest extends CommonControllerTest {
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .delete("/api/organization/").accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -293,11 +263,12 @@ public class OrganizationControllerTest extends CommonControllerTest {
      * @return Iterable<OrganizationDto>
      */
     private static Iterable<Organization> getOrganizationList() {
-        List<Organization> orgnizationList = new ArrayList<>();
-        Organization orgnization = new Organization();
-        orgnization.setOrganizationid(1L);
-        orgnizationList.add(orgnization);
-        Collection<Organization> collections = orgnizationList;
+        List<Organization> organizationList = new ArrayList<>();
+        Organization organization = new Organization();
+        organization.setOrganizationid(1L);
+        organization.setOrganizationname("Any");
+        organizationList.add(organization);
+        Collection<Organization> collections = organizationList;
         Iterable<Organization> iterable = collections;
         return iterable;
     }
