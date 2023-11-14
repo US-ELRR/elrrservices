@@ -14,12 +14,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
@@ -61,6 +63,20 @@ public class OrganizationControllerTest extends CommonControllerTest {
     private ObjectMapper objectMapper;
 
     /**
+     * 
+     */
+    private HttpHeaders headers;
+    /**
+     * 
+     */
+    @BeforeEach
+    void addHeaders() {
+        headers = new HttpHeaders();
+        headers.set("Content-Type", " */*");
+        headers.set("X-Forwarded-Proto", "https");
+    }
+    
+    /**
      *
      * @param obj
      * @return String
@@ -84,7 +100,8 @@ public class OrganizationControllerTest extends CommonControllerTest {
                 .findAll();
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/organization").accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
         mockMvc.perform(requestBuilder).andExpect(status().isOk())
                 .andDo(print());
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
@@ -102,7 +119,8 @@ public class OrganizationControllerTest extends CommonControllerTest {
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/organization").accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
         mockMvc.perform(requestBuilder).andDo(print());
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -120,7 +138,8 @@ public class OrganizationControllerTest extends CommonControllerTest {
                 .when(getOrganizationSvc()).get(1L);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/organization/1").accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -135,7 +154,8 @@ public class OrganizationControllerTest extends CommonControllerTest {
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/organization/1").accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -153,7 +173,8 @@ public class OrganizationControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/organization?id=1")
                 .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -173,7 +194,8 @@ public class OrganizationControllerTest extends CommonControllerTest {
 
         mockMvc.perform(post("/api/organization/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orgnizationDto)));
+                .content(objectMapper.writeValueAsString(orgnizationDto))
+                .headers(headers));
                 //.andExpect(status().isCreated()).andDo(print());
     }
 
@@ -192,13 +214,15 @@ public class OrganizationControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/organization/1").accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(orgnizationDto))
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
         assertNotNull(mvcResult);
         mockMvc.perform(put("/api/organization/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orgnizationDto)));
+                .content(objectMapper.writeValueAsString(orgnizationDto))
+                .headers(headers));
         // .andExpect(status().isCreated()).andDo(print());
 
     }
@@ -217,13 +241,15 @@ public class OrganizationControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/organization/1").accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(orgnizationDto))
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
         assertNotNull(mvcResult);
         mockMvc.perform(put("/api/organization/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orgnizationDto)));
+                .content(objectMapper.writeValueAsString(orgnizationDto))
+                .headers(headers));
         // .andExpect(status().isCreated()).andDo(print());
 
     }
@@ -238,7 +264,8 @@ public class OrganizationControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .delete("/api/organization/1")
                 .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -253,7 +280,8 @@ public class OrganizationControllerTest extends CommonControllerTest {
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .delete("/api/organization/").accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 

@@ -6,11 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
@@ -51,6 +53,20 @@ class HomeControllerTests extends CommonControllerTest {
     private ObjectMapper objectMapper;
 
     /**
+     * 
+     */
+    private HttpHeaders headers;
+    /**
+     * 
+     */
+    @BeforeEach
+    void addHeaders() {
+        headers = new HttpHeaders();
+        headers.set("Content-Type", " */*");
+        headers.set("X-Forwarded-Proto", "https");
+    }
+    
+    /**
      *
      * @param obj
      * @return String
@@ -74,7 +90,8 @@ class HomeControllerTests extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/learner?param1=test")
                 .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -90,7 +107,8 @@ class HomeControllerTests extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/learner?param1=test")
                 .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -107,7 +125,8 @@ class HomeControllerTests extends CommonControllerTest {
         //        .when(getLearnerCreatorSvc().learnerCreator("test"));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/learner?id=1").accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 

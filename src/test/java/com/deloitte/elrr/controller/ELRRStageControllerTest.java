@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -59,11 +60,22 @@ class ELRRStageControllerTest extends CommonControllerTest {
      */
     @Mock
     private StatementResult statementResult;
-
     
+    /**
+     * 
+     */
+    private HttpHeaders headers;
+
+
+    /**
+     * 
+     */
     @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+        headers = new HttpHeaders();
+        headers.set("Content-Type", " */*");
+        headers.set("X-Forwarded-Proto", "https");
     }
     @Test
     void testlocalData() throws Exception {
@@ -74,7 +86,8 @@ class ELRRStageControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/elrrstagedata")
                 .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
         MockHttpServletResponse servletResponse = mvcResult.getResponse();
         assertEquals(null, servletResponse.getErrorMessage());
@@ -87,7 +100,8 @@ class ELRRStageControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/elrrstagedata/")
                 .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
         mockMvc.perform(requestBuilder).andExpect(status().is4xxClientError())
                 .andDo(print());
         MvcResult mvcResult = this.mockMvc.perform(requestBuilder).andReturn();
@@ -104,7 +118,8 @@ class ELRRStageControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/elrrstagedata/")
                 .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
         mockMvc.perform(requestBuilder).andExpect(status().is4xxClientError())
                 .andDo(print());
         MvcResult mvcResult = this.mockMvc.perform(requestBuilder).andReturn();
@@ -119,7 +134,8 @@ class ELRRStageControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/elrrstagedata/")
                 .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
         mockMvc.perform(requestBuilder).andExpect(status().is4xxClientError())
                 .andDo(print());
         MvcResult mvcResult = this.mockMvc.perform(requestBuilder).andReturn();

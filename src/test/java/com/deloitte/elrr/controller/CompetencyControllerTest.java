@@ -15,12 +15,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
@@ -65,7 +67,19 @@ public class CompetencyControllerTest extends CommonControllerTest {
    private ObjectMapper objectMapper;
 
 
-
+   /**
+    * 
+    */
+   private HttpHeaders headers;
+   /**
+    * 
+    */
+   @BeforeEach
+   void addHeaders() {
+       headers = new HttpHeaders();
+       headers.set("Content-Type", " */*");
+       headers.set("X-Forwarded-Proto", "https");
+   }
 
     /**
      *
@@ -92,9 +106,9 @@ public class CompetencyControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/competency").accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
-        mockMvc.perform(requestBuilder).andExpect(status().isOk())
+        mockMvc.perform(requestBuilder.headers(headers)).andExpect(status().isOk())
                 .andDo(print());
-        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+        MvcResult mvcResult = mockMvc.perform(requestBuilder.headers(headers)).andReturn();
 
         assertNotNull(mvcResult);
 
@@ -110,9 +124,9 @@ public class CompetencyControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/competency").accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
-        mockMvc.perform(requestBuilder)
+        mockMvc.perform(requestBuilder.headers(headers))
                 .andDo(print());
-        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+        MvcResult mvcResult = mockMvc.perform(requestBuilder.headers(headers)).andReturn();
 
         assertNotNull(mvcResult);
 
@@ -130,7 +144,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
                 .get("/api/competency/1").accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
 
-        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+        MvcResult mvcResult = mockMvc.perform(requestBuilder.headers(headers)).andReturn();
 
         assertNotNull(mvcResult);
     }
@@ -145,7 +159,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
                 .get("/api/competency/1").accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
 
-        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+        MvcResult mvcResult = mockMvc.perform(requestBuilder.headers(headers)).andReturn();
 
         assertNotNull(mvcResult);
     }
@@ -162,7 +176,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
 
-        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+        MvcResult mvcResult = mockMvc.perform(requestBuilder.headers(headers)).andReturn();
 
         assertNotNull(mvcResult);
     }
@@ -201,11 +215,12 @@ public class CompetencyControllerTest extends CommonControllerTest {
                 .content(objectMapper.writeValueAsString(competencyDto))
                 .contentType(MediaType.APPLICATION_JSON);
 
-        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+        MvcResult mvcResult = mockMvc.perform(requestBuilder.headers(headers)).andReturn();
         assertNotNull(mvcResult);
         mockMvc.perform(put("/api/competency/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(competencyDto)));
+                .content(objectMapper.writeValueAsString(competencyDto))
+                .headers(headers));
         // .andExpect(status().isCreated()).andDo(print());
 
     }
@@ -224,13 +239,15 @@ public class CompetencyControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/competency/1").accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(competencyDto))
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
         assertNotNull(mvcResult);
         mockMvc.perform(put("/api/competency/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(competencyDto)));
+                .content(objectMapper.writeValueAsString(competencyDto))
+                .headers(headers));
         // .andExpect(status().isCreated()).andDo(print());
 
     }
@@ -245,7 +262,8 @@ public class CompetencyControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .delete("/api/competency/1")
                 .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -261,7 +279,8 @@ public class CompetencyControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .delete("/api/competency/")
                 .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 

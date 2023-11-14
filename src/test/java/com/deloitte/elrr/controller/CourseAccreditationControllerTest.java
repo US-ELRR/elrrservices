@@ -15,12 +15,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
@@ -62,6 +64,20 @@ public class CourseAccreditationControllerTest extends CommonControllerTest {
     private ObjectMapper objectMapper;
 
     /**
+     * 
+     */
+    private HttpHeaders headers;
+    /**
+     * 
+     */
+    @BeforeEach
+    void addHeaders() {
+        headers = new HttpHeaders();
+        headers.set("Content-Type", " */*");
+        headers.set("X-Forwarded-Proto", "https");
+    }
+    
+    /**
      *
      * @param obj
      * @return String
@@ -86,7 +102,8 @@ public class CourseAccreditationControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/courseaccreditation")
                 .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
         mockMvc.perform(requestBuilder).andExpect(status().isOk())
                 .andDo(print());
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
@@ -105,7 +122,8 @@ public class CourseAccreditationControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/courseaccreditation")
                 .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
         mockMvc.perform(requestBuilder).andDo(print());
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -125,7 +143,8 @@ public class CourseAccreditationControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/courseaccreditation/1")
                 .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -141,7 +160,8 @@ public class CourseAccreditationControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/courseaccreditation/1")
                 .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -160,7 +180,8 @@ public class CourseAccreditationControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/courseaccreditation?id=1")
                 .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -182,7 +203,8 @@ public class CourseAccreditationControllerTest extends CommonControllerTest {
         mockMvc.perform(post("/api/courseaccreditation/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper
-                        .writeValueAsString(courseAccreditationDto)));
+                        .writeValueAsString(courseAccreditationDto))
+                .headers(headers));
                 //.andExpect(status().isCreated()).andDo(print());
     }
 
@@ -205,13 +227,15 @@ public class CourseAccreditationControllerTest extends CommonControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content(
                         objectMapper.writeValueAsString(courseAccreditationDto))
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
         assertNotNull(mvcResult);
         mockMvc.perform(put("/api/courseaccreditation/1")
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper
-                        .writeValueAsString(courseAccreditationDto)));
+                        .writeValueAsString(courseAccreditationDto))
+                .headers(headers));
         // .andExpect(status().isCreated()).andDo(print());
 
     }
@@ -233,13 +257,15 @@ public class CourseAccreditationControllerTest extends CommonControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content(
                         objectMapper.writeValueAsString(courseAccreditationDto))
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
         assertNotNull(mvcResult);
         mockMvc.perform(put("/api/courseaccreditation/1")
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper
-                        .writeValueAsString(courseAccreditationDto)));
+                        .writeValueAsString(courseAccreditationDto))
+                .headers(headers));
         // .andExpect(status().isCreated()).andDo(print());
 
     }
@@ -254,7 +280,8 @@ public class CourseAccreditationControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .delete("/api/courseaccreditation/1")
                 .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
@@ -270,7 +297,8 @@ public class CourseAccreditationControllerTest extends CommonControllerTest {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .delete("/api/courseaccreditation/")
                 .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
