@@ -91,6 +91,7 @@ public class LearnerProfileController {
                 return ResponseEntity.ok(courseAccreditationList);
             }
         } catch (Exception e) {
+            log.error("Error occurred when getting learner profile fact: ", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -165,6 +166,7 @@ public class LearnerProfileController {
             learnerProfileFactSvc.delete(personid);
             return ResponseEntity.ok(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
+            log.error("Error occurred when deleting learner profile fact: ", e);
             return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

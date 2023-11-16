@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  *
  */
 @ControllerAdvice
+@Slf4j
 public class ELRRExceptionHandler extends ResponseEntityExceptionHandler {
     /**
      *
@@ -34,6 +36,7 @@ public class ELRRExceptionHandler extends ResponseEntityExceptionHandler {
             final ResourceNotFoundException ex, final WebRequest request) {
         ELRRErrorDetails errorDetails = new ELRRErrorDetails(new Date(),
                 ex.getMessage(), request.getDescription(false), null);
+        log.error("Exception occurred: ", ex);
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
     /**
@@ -52,6 +55,7 @@ public class ELRRExceptionHandler extends ResponseEntityExceptionHandler {
         }
         ELRRErrorDetails errorDetails = new ELRRErrorDetails(new Date(),
                 "Validation Failed", request.getDescription(false), details);
+        log.error("Method argument are not valid: ", ex);
         return new ResponseEntity<>(errorDetails, status);
     }
     /**
@@ -65,6 +69,7 @@ public class ELRRExceptionHandler extends ResponseEntityExceptionHandler {
             final WebRequest request) {
         ELRRErrorDetails errorDetails = new ELRRErrorDetails(new Date(),
                 ex.getMessage(), request.getDescription(false), null);
+        log.error("Exception occurred: ", ex);
         return new ResponseEntity<>(errorDetails,
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }

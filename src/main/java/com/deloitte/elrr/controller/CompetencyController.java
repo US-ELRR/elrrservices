@@ -89,6 +89,7 @@ public class CompetencyController {
                 return ResponseEntity.ok(competencyList);
             }
         } catch (Exception e) {
+            log.error("Error occurred when getting all competencys: ", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -162,6 +163,7 @@ public class CompetencyController {
             competencySvc.delete(competencyid);
             return ResponseEntity.ok(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
+            log.error("Error occurred when deleting competency: ", e);
             return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

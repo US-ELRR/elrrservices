@@ -91,6 +91,7 @@ public class AccreditationController {
                 return ResponseEntity.ok(accreditationList);
             }
         } catch (Exception e) {
+            log.error("Error occurred when getting all accreditation: ", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -168,6 +169,7 @@ public class AccreditationController {
             accreditationSvc.delete(accreditationid);
             return ResponseEntity.ok(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
+            log.error("Error occurred when deleting accreditation: ", e);
             return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -88,6 +88,7 @@ public class CourseController {
                 return ResponseEntity.ok(courseList);
             }
         } catch (Exception e) {
+            log.error("Error occurred when getting all courses: ", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -160,6 +161,7 @@ public class CourseController {
             courseSvc.delete(courseId);
             return ResponseEntity.ok(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
+            log.error("Error occurred when deleting course: ", e);
             return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

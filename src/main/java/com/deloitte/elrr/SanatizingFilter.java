@@ -9,6 +9,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import java.util.Iterator;
  * 
  */
 @Component
+@Slf4j
 public class SanatizingFilter implements Filter {
 
     @Override
@@ -34,8 +36,7 @@ public class SanatizingFilter implements Filter {
                 body.append('\n');
 
             } else {
-                // need to log bad request. Might be best to continue processing
-                // and report all bad lines. / complete body
+                log.error("Illegal line in request body: " + line);
                 httpResponse.sendError(HttpStatus.BAD_REQUEST.value(),
                         "Illegal line in request body: " + line);
             }
@@ -55,11 +56,13 @@ public class SanatizingFilter implements Filter {
             if (!InputSanatizer.isValidInput(paramVal)
                     || !InputSanatizer.isValidInput(param)) {
                 try {
+                    log.error("Illegal Parameter Value");
                     httpResponse.sendError(HttpStatus.BAD_REQUEST.value(),
                             "Illegal Parameter Value");
                     return;
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
+                    log.error("Error occurred: ", e);
                     e.printStackTrace();
                 }
             }
@@ -67,11 +70,13 @@ public class SanatizingFilter implements Filter {
 
         try {
             if (hasHomoGlyphs(httpRequest)) {
+                log.error("Request body contains homoglyphs.");
                 httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST,
                         "Request body contains homoglyphs.");
                 return;
             }
         } catch (Exception e) {
+            log.error("Malformed request body");
             httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST,
                     "Malformed request body");
             return;

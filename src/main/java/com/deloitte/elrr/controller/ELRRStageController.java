@@ -132,6 +132,7 @@ public class ELRRStageController {
             }
             response = "xAPI data loaded to ELRR Stage Database";
         } catch (Exception e) {
+            log.error("Error occurred when getting elrr stage data: ", e);
             response = e.getMessage();
           }
 

@@ -88,6 +88,7 @@ public class EmploymentController {
                 return ResponseEntity.ok(employmentList);
             }
         } catch (Exception e) {
+            log.error("Error occurred when getting all employments: ", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -163,6 +164,7 @@ public class EmploymentController {
             employmentSvc.delete(employmentid);
             return ResponseEntity.ok(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
+            log.error("Error occurred when deleting employment: ", e);
             return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

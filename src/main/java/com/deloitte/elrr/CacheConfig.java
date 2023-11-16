@@ -1,5 +1,6 @@
 package com.deloitte.elrr;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
+@Slf4j
 public class CacheConfig {
 
 	@Value("${lrs.samlid}")
@@ -36,6 +38,7 @@ public class CacheConfig {
 						saml2.relyingPartyRegistrationRepository(relyingPartyRegistrations());
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
+						log.error("Exception occurred: ", e);
 						e.printStackTrace();
 					}
 				});
