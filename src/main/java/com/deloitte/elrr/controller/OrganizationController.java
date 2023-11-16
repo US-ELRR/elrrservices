@@ -92,7 +92,6 @@ public class OrganizationController {
                 return ResponseEntity.ok(organizationList);
             }
         } catch (Exception e) {
-            log.error("Error occurred when getting all organizations: ", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -171,7 +170,6 @@ public class OrganizationController {
             organizationSvc.delete(organizationid);
             return ResponseEntity.ok(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
-            log.error("Error occurred when deleting organization: ", e);
             return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

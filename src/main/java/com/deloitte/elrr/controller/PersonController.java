@@ -86,7 +86,6 @@ public class PersonController {
                 return ResponseEntity.ok(persontoList);
             }
         } catch (Exception e) {
-            log.error("Error occurred when getting all persons: ", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -162,7 +161,6 @@ public class PersonController {
             personaSvc.delete(personId);
             return ResponseEntity.ok(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
-            log.error("Error occurred when deleting person: ", e);
             return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

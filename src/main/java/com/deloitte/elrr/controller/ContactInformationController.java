@@ -95,7 +95,6 @@ public class ContactInformationController {
                 return ResponseEntity.ok(contactInformationList);
             }
         } catch (Exception e) {
-            log.error("Error occurred when getting all contact information: ", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -180,7 +179,6 @@ public class ContactInformationController {
             contactInformationSvc.delete(contactInformationid);
             return ResponseEntity.ok(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
-            log.error("Error occurred when deleting contact information: ", e);
             return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -38,7 +38,7 @@ public class CacheConfig {
 						saml2.relyingPartyRegistrationRepository(relyingPartyRegistrations());
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
-						log.error("Exception occurred: ", e);
+						log.error("SAML login failure occurred");
 						e.printStackTrace();
 					}
 				});

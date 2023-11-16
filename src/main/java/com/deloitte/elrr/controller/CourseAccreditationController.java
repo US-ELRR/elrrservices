@@ -93,7 +93,6 @@ public class CourseAccreditationController {
                 return ResponseEntity.ok(courseAccreditationList);
             }
         } catch (Exception e) {
-            log.error("Error occurred when getting course accreditation: ", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -180,7 +179,6 @@ public class CourseAccreditationController {
             courseAccreditationSvc.delete(courseAccreditationid);
             return ResponseEntity.ok(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
-            log.error("Error occurred when deleting course accreditation: ", e);
             return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
