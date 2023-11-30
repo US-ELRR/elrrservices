@@ -3,8 +3,8 @@ name: Docker-CI
 on:
   push:
     branches:
-      - main
-      - actions-update
+      - 'main'
+      - 'actions-update'
   pull_request:
     branches:
       - main
