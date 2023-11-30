@@ -3,8 +3,7 @@ name: Docker-CI
 on:
   push:
     branches:
-      - 'main'
-      - 'actions-update'
+      - main
   pull_request:
     branches:
       - main
@@ -40,7 +39,7 @@ jobs:
        echo "Start docker build"
        #docker build . -t openlxp/elrr-services
        docker build --build-arg JAR_FILE="./target/elrrservices-0.0.1-SNAPSHOT.jar" --file Dockerfile -t openlxp/elrr-services .
-    - name: Push Image
+    - name: Push Image to Dockerhub
       run: |
        echo "Push new image to the Dockerhub repository"
        docker push openlxp/elrr-services
@@ -51,7 +50,7 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
-    - name: Login to Amazon ECR
+    - name: ECR Login
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
       with:
