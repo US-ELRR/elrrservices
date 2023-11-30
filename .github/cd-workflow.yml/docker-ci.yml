@@ -1,28 +1,22 @@
 name: Docker-CI
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
+    branches:
+      - main
+      - actions-update
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
     types: [opened, synchronize, reopened]
+
 jobs:  
   build:
-    # requires dependency from step above
-    name: Build and push Docker Image
+    # Install/build maven dependencies
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Code
       uses: actions/checkout@v2
-    - name: Docker login
-      env:
-       DOCKER_USER: ${{ secrets.DOCKER_USER }}
-       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      run: |
-       echo "Authenticate to Docker"
-       docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     - name: Set up archived Oracle JDK 17.0.3.1
       uses: oracle-actions/setup-java@v1
       with:
@@ -34,6 +28,14 @@ jobs:
        echo "maven build - Clean install"
        mvn clean install -Dmaven.test.skip=true
        mkdir -p target/dependency && (cd target/dependency; jar -xf ../elrrservices-0.0.1-SNAPSHOT.jar)
+    - name: Docker login
+      env:
+       DOCKER_USER: ${{ secrets.DOCKER_USER }}
+       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: |
+       echo "Authenticate to Docker"
+       docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+    
     - name: Docker build
       run: |
        echo "Start docker build"
