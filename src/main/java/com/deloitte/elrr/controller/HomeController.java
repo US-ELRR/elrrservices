@@ -47,6 +47,7 @@ public class HomeController {
 
         if (!EmailValidator.getInstance().isValid(userName))
         {
+            log.info("Invalid username.");
             return null;
         }
 
