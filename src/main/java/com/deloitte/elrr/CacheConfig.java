@@ -16,10 +16,10 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class CacheConfig {
 
-	@Value("${lrs.samlid}")
-	private String samlid;
-	@Value("${lrs.samlurl}")
-	private String samlurl;
+	//@Value("${lrs.samlid}")
+	private String samlid = "elrrsamltest";
+	//@Value("${lrs.samlurl}")
+	private String samlurl = "https://idp.ssocircle.com";
 	@Bean
 	public RelyingPartyRegistrationRepository relyingPartyRegistrations() throws Exception {
 		RelyingPartyRegistration relyingPartyRegistration = RelyingPartyRegistrations
