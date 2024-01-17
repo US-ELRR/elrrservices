@@ -18,7 +18,7 @@ public class HeaderFilter implements Filter {
         if("https".equalsIgnoreCase(httpServletRequest.getHeader("X-Forwarded-Proto"))) {
             chain.doFilter(request, response);
         }else {
-            ((HttpServletResponse) response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Not a HTTPS request.");
+            ((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, "Not a HTTPS request.");
         }
     }
 }
