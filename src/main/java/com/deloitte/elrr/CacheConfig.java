@@ -17,30 +17,59 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class CacheConfig {
 
 	//@Value("${lrs.samlid}")
-	private String samlid = "elrrsamltest";
+	private String samlid;// = "elrrsamltest";
 	//@Value("${lrs.samlurl}")
-	private String samlurl = "https://idp.ssocircle.com";
-	@Bean
-	public RelyingPartyRegistrationRepository relyingPartyRegistrations() throws Exception {
-		RelyingPartyRegistration relyingPartyRegistration = RelyingPartyRegistrations
-				.fromMetadataLocation(samlurl).registrationId(samlid).build();
+	private String samlurl;// = "https://idp.ssocircle.com";
 
-		return new InMemoryRelyingPartyRegistrationRepository(relyingPartyRegistration);
-	}
 
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated()).saml2Metadata(withDefaults())
-				.saml2Login(saml2 -> {
-					try {
-						saml2.relyingPartyRegistrationRepository(relyingPartyRegistrations());
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				});
+    /**
+     * access IDP using lrs.samlurl and lrs.samlid application properties.
+     * @return InMemoryRelyingPartyRegistrationRepository instance
+     * @throws Exception
+     */
+    @Bean
+    public RelyingPartyRegistrationRepository relyingPartyRegistrations()
+            throws Exception {
+        if (samlid.isEmpty() || samlurl.isEmpty()) {
+                return null;
+        }
+        RelyingPartyRegistration relyingPartyRegistration =
+        RelyingPartyRegistrations
+        .fromMetadataLocation(samlurl).registrationId(samlid).build();
 
-		return http.build();
-	}
+        return new InMemoryRelyingPartyRegistrationRepository(
+                relyingPartyRegistration);
+    }
+
+    /**
+     * add authentication and authorization.
+     * @param http
+     * @return http build
+     * @throws Exception
+     */
+    @Bean
+    public SecurityFilterChain filterChain(final HttpSecurity http)
+            throws Exception {
+
+        if (samlid.isEmpty() || samlurl.isEmpty()) {
+            http.authorizeHttpRequests(
+                    authorize -> authorize.anyRequest().authenticated());
+            http.formLogin(withDefaults());
+        } else {
+            http.authorizeHttpRequests(
+                authorize -> authorize.anyRequest().authenticated())
+                    .saml2Metadata(withDefaults())
+                    .saml2Login(saml2 -> {
+                        try {
+                            saml2
+                                    .relyingPartyRegistrationRepository(
+                                            relyingPartyRegistrations());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+        }
+
+        return http.build();
 
 }
