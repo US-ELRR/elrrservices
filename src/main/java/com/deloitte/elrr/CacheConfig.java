@@ -30,15 +30,15 @@ public class CacheConfig {
     @Bean
     public RelyingPartyRegistrationRepository relyingPartyRegistrations()
             throws Exception {
-        if (samlid.isEmpty() || samlurl.isEmpty()) {
+        // if (samlid.isEmpty() || samlurl.isEmpty()) {
                 return null;
-        }
-        RelyingPartyRegistration relyingPartyRegistration =
-        RelyingPartyRegistrations
-        .fromMetadataLocation(samlurl).registrationId(samlid).build();
+        // }
+        // RelyingPartyRegistration relyingPartyRegistration =
+        // RelyingPartyRegistrations
+        // .fromMetadataLocation(samlurl).registrationId(samlid).build();
 
-        return new InMemoryRelyingPartyRegistrationRepository(
-                relyingPartyRegistration);
+        // return new InMemoryRelyingPartyRegistrationRepository(
+        //         relyingPartyRegistration);
     }
 
     /**
@@ -51,24 +51,24 @@ public class CacheConfig {
     public SecurityFilterChain filterChain(final HttpSecurity http)
             throws Exception {
 
-        if (samlid.isEmpty() || samlurl.isEmpty()) {
+        // if (samlid.isEmpty() || samlurl.isEmpty()) {
             http.authorizeHttpRequests(
                     authorize -> authorize.anyRequest().authenticated());
             http.formLogin(withDefaults());
-        } else {
-            http.authorizeHttpRequests(
-                authorize -> authorize.anyRequest().authenticated())
-                    .saml2Metadata(withDefaults())
-                    .saml2Login(saml2 -> {
-                        try {
-                            saml2
-                                    .relyingPartyRegistrationRepository(
-                                            relyingPartyRegistrations());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    });
-        }
+        // } else {
+        //     http.authorizeHttpRequests(
+        //         authorize -> authorize.anyRequest().authenticated())
+        //             .saml2Metadata(withDefaults())
+        //             .saml2Login(saml2 -> {
+        //                 try {
+        //                     saml2
+        //                             .relyingPartyRegistrationRepository(
+        //                                     relyingPartyRegistrations());
+        //                 } catch (Exception e) {
+        //                     e.printStackTrace();
+        //                 }
+        //             });
+        // }
 
         return http.build();
 
