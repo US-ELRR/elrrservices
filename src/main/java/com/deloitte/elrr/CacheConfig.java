@@ -32,6 +32,7 @@ public class CacheConfig {
 
     /**
      * access IDP using lrs.samlurl and lrs.samlid application properties.
+     *
      * @return InMemoryRelyingPartyRegistrationRepository instance
      * @throws Exception
      */
@@ -51,6 +52,7 @@ public class CacheConfig {
 
     /**
      * add authentication and authorization.
+     *
      * @param http
      * @return http build
      * @throws Exception
@@ -71,7 +73,7 @@ public class CacheConfig {
                             saml2
                                     .relyingPartyRegistrationRepository(
                                             relyingPartyRegistrations());
-                            saml2.successHandler(new SavedRequestAwareAuthenticationSuccessHandler())
+                            saml2.successHandler(new SavedRequestAwareAuthenticationSuccessHandler());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -80,4 +82,6 @@ public class CacheConfig {
 
         return http.build();
     }
+}
+
 
