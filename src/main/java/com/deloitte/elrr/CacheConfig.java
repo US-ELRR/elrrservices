@@ -10,6 +10,7 @@ import org.springframework.security.saml2.provider.service.registration.RelyingP
 import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository;
 import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrations;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
@@ -64,6 +65,7 @@ public class CacheConfig {
         //                     saml2
         //                             .relyingPartyRegistrationRepository(
         //                                     relyingPartyRegistrations());
+		//						saml2.successHandler(new SavedRequestAwareAuthenticationSuccessHandler())
         //                 } catch (Exception e) {
         //                     e.printStackTrace();
         //                 }
