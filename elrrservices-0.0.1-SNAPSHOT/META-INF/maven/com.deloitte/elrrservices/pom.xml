@@ -24,7 +24,7 @@
 		<sonar.dynamicAnalysis>resuseReports</sonar.dynamicAnalysis>
 		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
 		<sona.lauguage>java</sona.lauguage>
-		<spring-security.version>6.2.1</spring-security.version>
+		<spring-security.version>6.2.3</spring-security.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -94,6 +94,11 @@
     		<groupId>org.springframework.boot</groupId>
     		<artifactId>spring-boot-autoconfigure</artifactId>
     		<version>3.2.4</version>
+		</dependency>
+		<dependency>
+    		<groupId>org.springframework</groupId>
+    		<artifactId>spring-web</artifactId>
+    		<version>6.1.5</version>
 		</dependency>
 		<dependency>
     		<groupId>org.springframework</groupId>
@@ -179,7 +184,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.5.1</version>
+			<version>42.7.3</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -272,6 +277,11 @@
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>2.10.1</version>
+		</dependency>
+		<dependency>
+    		<groupId>com.jayway.jsonpath</groupId>
+    		<artifactId>json-path</artifactId>
+    		<version>2.9.0</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.mail</groupId>
