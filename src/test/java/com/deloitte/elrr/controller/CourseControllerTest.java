@@ -240,7 +240,7 @@ public class CourseControllerTest extends CommonControllerTest {
     void updateCourseErrorTest() throws Exception {
         CourseDto courseDto = new CourseDto();
         courseDto.setCourseid(1L);
-
+        courseDto.setCourseidentifier("Any");
         Mockito.doReturn(getCourseList().iterator().next()).when(getCourseSvc())
                 .save(getCourseList().iterator().next());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -303,6 +303,7 @@ public class CourseControllerTest extends CommonControllerTest {
         List<Course> courseList = new ArrayList<>();
         Course course = new Course();
         course.setCourseid(1L);
+        course.setCourseidentifier("Any");
         courseList.add(course);
         Collection<Course> collections = courseList;
         Iterable<Course> iterable = collections;

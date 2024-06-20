@@ -204,6 +204,9 @@ public class PersonControllerTest extends CommonControllerTest {
     void updatePersonTest() throws Exception {
         PersonDto personDto = new PersonDto();
         personDto.setPersonid(1L);
+        personDto.setName("Any");
+        personDto.setFirstName("Any");
+        personDto.setLastName("Any");
         Mockito.doReturn(Optional.of(getPersonList().iterator().next()))
                 .when(getPersonSvc()).get(1L);
         Mockito.doReturn(getPersonList().iterator().next()).when(getPersonSvc())
@@ -231,7 +234,9 @@ public class PersonControllerTest extends CommonControllerTest {
     void updatePersonErrorTest() throws Exception {
         PersonDto personDto = new PersonDto();
         personDto.setPersonid(1L);
-
+        personDto.setName("Any");
+        personDto.setFirstName("Any");
+        personDto.setLastName("Any");
         Mockito.doReturn(getPersonList().iterator().next()).when(getPersonSvc())
                 .save(getPersonList().iterator().next());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -291,6 +296,7 @@ public class PersonControllerTest extends CommonControllerTest {
         List<Person> personList = new ArrayList<>();
         Person person = new Person();
         person.setPersonid(1L);
+        person.setName("Any");
         personList.add(person);
         Collection<Person> collections = personList;
         Iterable<Person> iterable = collections;

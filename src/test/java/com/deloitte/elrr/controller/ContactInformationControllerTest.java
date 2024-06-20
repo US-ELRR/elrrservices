@@ -216,6 +216,7 @@ public class ContactInformationControllerTest extends CommonControllerTest {
         ContactInformationDto contactInformationDto =
                 new ContactInformationDto();
         contactInformationDto.setContactinformationid(1L);
+        contactInformationDto.setContactinformationData("Any");
         Mockito.doReturn(
                 Optional.of(getContactInformationList().iterator().next()))
                 .when(getContactInformationSvc()).get(1L);
@@ -247,6 +248,7 @@ public class ContactInformationControllerTest extends CommonControllerTest {
         ContactInformationDto contactInformationDto =
                 new ContactInformationDto();
         contactInformationDto.setContactinformationid(1L);
+        contactInformationDto.setContactinformationData("Any");
 
         Mockito.doReturn(getContactInformationList().iterator().next())
                 .when(getContactInformationSvc())
@@ -311,6 +313,7 @@ public class ContactInformationControllerTest extends CommonControllerTest {
         List<ContactInformation> contactInformationList = new ArrayList<>();
         ContactInformation contactInformation = new ContactInformation();
         contactInformation.setContactinformationid(1L);
+        contactInformation.setContactinformationData("Any");
         contactInformationList.add(contactInformation);
         Collection<ContactInformation> collections = contactInformationList;
         Iterable<ContactInformation> iterable = collections;

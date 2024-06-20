@@ -205,6 +205,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
     void updateCompetencyTest() throws Exception {
         CompetencyDto competencyDto = new CompetencyDto();
         competencyDto.setCompetencyid(1L);
+        competencyDto.setCompetencyframeworktitle("Any");
         Mockito.doReturn(Optional.of(getCompetencyList().iterator().next()))
                 .when(getCompetencySvc()).get(1L);
         Mockito.doReturn(getCompetencyList().iterator().next())
@@ -295,6 +296,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
         List<Competency> competencyList = new ArrayList<>();
         Competency competency = new Competency();
         competency.setCompetencyid(1L);
+        competency.setCompetencyframeworktitle("Any");
         competencyList.add(competency);
         Collection<Competency> collections = competencyList;
         Iterable<Competency> iterable = collections;
