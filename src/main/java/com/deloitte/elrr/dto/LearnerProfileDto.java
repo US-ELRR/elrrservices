@@ -88,8 +88,8 @@ public class LearnerProfileDto implements Serializable {
     *
     */
     @NotNull
-    @Size(max = 10)
-    private long activitystatus;
+    @Size(max = 100)
+    private String activitystatus;
     /**
     *
     */
