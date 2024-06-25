@@ -10,15 +10,17 @@ import java.io.IOException;
 @Component
 public class HeaderFilter implements Filter {
     @Override
-    public
-    void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 
-        if("https".equalsIgnoreCase(httpServletRequest.getHeader("X-Forwarded-Proto"))) {
-            chain.doFilter(request, response);
-        }else {
-            ((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, "Not a HTTPS request.");
-        }
+        // if("https".equalsIgnoreCase(httpServletRequest.getHeader("X-Forwarded-Proto")))
+        // {
+        chain.doFilter(request, response);
+        // }else {
+        // ((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN,
+        // "Not a HTTPS request.");
+        // }
     }
 }

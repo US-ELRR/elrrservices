@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.deloitte.elrr.entity.Learner;
+import com.deloitte.elrr.svc.LearnerCreatorImpl;
 import com.deloitte.elrr.svc.LearnerCreatorSvc;
 
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,7 @@ public class HomeController {
      *
      */
     @Autowired
-    private LearnerCreatorSvc learnerCreatorSvc;
+    private LearnerCreatorImpl learnerCreatorSvc;
     /**
      *
      * @param userName
@@ -45,10 +46,10 @@ public class HomeController {
     public Learner getLearner(@RequestParam(required = false)
         final String userName) {
 
-        if (!EmailValidator.getInstance().isValid(userName))
-        {
-            return null;
-        }
+        // if (!EmailValidator.getInstance().isValid(userName))
+        // {
+        //     return null;
+        // }
 
         Learner learner = null;
         learner = learnerCreatorSvc.learnerCreator(userName);
