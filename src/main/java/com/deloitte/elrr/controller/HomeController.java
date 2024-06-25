@@ -45,10 +45,10 @@ public class HomeController {
     public Learner getLearner(@RequestParam(required = false)
         final String userName) {
 
-        if (!EmailValidator.getInstance().isValid(userName))
-        {
-            return null;
-        }
+        // if (!EmailValidator.getInstance().isValid(userName))
+        // {
+        //     return null;
+        // }
 
         Learner learner = null;
         learner = learnerCreatorSvc.learnerCreator(userName);
