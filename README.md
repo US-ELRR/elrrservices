@@ -7,6 +7,8 @@ Elrr services which provide a mechanism to synchronize the data in the ELRR with
 - git
 - Maven 3
 - Docker Desktop
+
+# Tools
 - DBeaver
 - Postman
 
