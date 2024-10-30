@@ -1,58 +1,34 @@
 
-# elrrservices     
-Elrr services which provide a mechanism to synchronize the data in the ELRR with the data in the local learning systems 
+# elrrservices
+Elrr services which provide a mechanism to synchronize the data in the ELRR with the data in the local learning systems
 
-## Getting Started
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+There are database and kafka dependencies, but there's a [repo with a docker-compose](https://github.com/US-ELRR/elrrdockercompose/) that resolves them locally.
 
-# Requirements
-For building and running the elrrservices you need:
+[Setup elrrdatasync first](https://github.com/US-ELRR/elrrdatasync/)
 
-`Java >=1.8` : Download and install Java from here 
-* [Java](https://www.oracle.com/java/technologies/downloads/).
+# Dependencies
+- [Java JDK 1.8](https://www.oracle.com/java/technologies/downloads/)
+- [git](https://git-scm.com/downloads)
+- [Maven](https://maven.apache.org/)
+- [Docker](https://www.docker.com/products/docker-desktop/)
+- [PostgreSQL](https://www.postgresql.org/download/)
 
-`Maven >=3.6` : Download and install Apache Maven from here 
-* [Maven](https://maven.apache.org/) - Dependency Management.
+# Tools
+- SQL client or Terminal
+- [Postman](https://www.postman.com/downloads/)
+- [Eclipse](https://www.eclipse.org/downloads/packages/) or other IDE
 
-`Postgres >=11` : Download and install Postgres from here 
-* [Postgres](https://www.postgresql.org/download/). 
-
-`Docker` : Download and install Docker from here 
-*[Docker](https://www.docker.com/products/docker-desktop).
+# Build the application
+- mvn clean install
 
 # Running the application locally
 There are several ways to run a Spring Boot application on your local machine. One way is to execute the main method in the com.deloitte.elrr.DemoApplication class from your IDE
 
-1. Clone the Github repository:
-
-   [GitHub-US-ELRR](https://github.com/US-ELRR/elrrservices)
-
-2. Open terminal at the root directory of the project.
-    
-    example: ~/elrrexternalservices
-
-3. Run command to install all the requirements from requirements.txt 
-    
-    mvn spring-boot:run
-
-4. Once the installation and build are done, Once the server is up you can   access API using below URL
-    
-    http://localhost:8088/api/lrsdata?lastReadDate=<Date a parameter in this format>
-	
-	e.g 2021-01-10T00:00:00Z
-
-# Deploying the application to Docker 
-The easiest way to deploy the sample application to Docker is to follow below steps:
-
-1. mvn clean install -Dmaven.test.skip=false
-
-2. mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
-
-3. docker build --build-arg JAR_FILE="./target/elrrservices-0.0.1-SNAPSHOT.jar" --file Dockerfile -t <docker_hub>/test:elrrservices-dck-img .
-
-4. docker run -p Port:Port -t <docker_hub>/test:elrrservices-dck-img
+# Alternatively you can use the Spring Boot Maven plugin: 
+- mvn clean
+- mvn spring-boot:run -D"spring-boot.run.profiles"=local -e (Windows)
+- mvn spring-boot:run -D spring-boot.run.profiles=local -e (Linux)
+- Ctrl+C to end --> Terminate batch job = Y
 
 # Optional step 
-1. docker push <docker_hub>/test:elrrservices-dck-img
-
-
+- docker push <docker_hub>/test:elrrservices-dck-img

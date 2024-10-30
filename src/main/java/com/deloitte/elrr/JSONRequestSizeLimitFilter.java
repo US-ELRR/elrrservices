@@ -4,6 +4,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import org.apache.commons.codec.binary.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -13,7 +16,13 @@ import java.io.IOException;
 
 @Component
 public class JSONRequestSizeLimitFilter extends OncePerRequestFilter {
-    private static final long MAX_SIZE_LIMIT = 2000000;
+    
+    @Value("${json.max.size.limit}")
+    private static long maxSizeLimit;
+    private static final long MAX_SIZE_LIMIT = maxSizeLimit;
+    
+    @Value("${environment}")
+    private static String environment;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -28,9 +37,15 @@ public class JSONRequestSizeLimitFilter extends OncePerRequestFilter {
     }
 
     private boolean isApplicationJson(HttpServletRequest httpRequest) {
-        // return (MediaType.APPLICATION_JSON.isCompatibleWith(MediaType
-        // .parseMediaType(httpRequest.getHeader(HttpHeaders.CONTENT_TYPE))));
-        return true;
+        
+        // If Deloitte sandbox don't check if is JSON
+        if (StringUtils.equals(environment, "sandbox")) {
+            return true;
+        } else {
+            return (MediaType.APPLICATION_JSON.isCompatibleWith(MediaType
+                    .parseMediaType(httpRequest.getHeader(HttpHeaders.CONTENT_TYPE))));
+        }
+       
     }
 
 }

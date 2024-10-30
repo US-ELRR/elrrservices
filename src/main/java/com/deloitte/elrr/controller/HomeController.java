@@ -25,16 +25,13 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("api")
 @Slf4j
 public class HomeController {
-    /**
-     *
-     */
+    
     @Autowired
     private ModelMapper mapper;
-    /**
-     *
-     */
+    
     @Autowired
     private LearnerCreatorImpl learnerCreatorSvc;
+    
     /**
      *
      * @param userName
@@ -46,10 +43,10 @@ public class HomeController {
     public Learner getLearner(@RequestParam(required = false)
         final String userName) {
 
-        // if (!EmailValidator.getInstance().isValid(userName))
-        // {
-        //     return null;
-        // }
+        //if (!EmailValidator.getInstance().isValid(userName))
+        //{
+            //return null;
+        //}
 
         Learner learner = null;
         learner = learnerCreatorSvc.learnerCreator(userName);
