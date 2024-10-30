@@ -2,21 +2,21 @@
 # elrrservices
 Elrr services which provide a mechanism to synchronize the data in the ELRR with the data in the local learning systems
 
-There are database and kafka dependencies, but there's a repo with a docker-compose that resolves them locally.
-[.yaml](https://github.com/US-ELRR/elrrdatasync/tree/dev-pom-update-local-fixes-and-docs-1/dev-resources/docker-compose)
+There are database and kafka dependencies, but there's a [repo with a docker-compose](https://github.com/US-ELRR/elrrdatasync/) that resolves them locally.
 
-Setup elrrdatasync first [README](https://github.com/US-ELRR/elrrdatasync/blob/dev-pom-update-local-fixes-and-docs-1/README.md)
+[Setup elrrdatasync first](https://github.com/US-ELRR/elrrdatasync/)
 
-- Java JDK 1.8 [JDK](https://www.oracle.com/java/technologies/downloads/)
-- git [Git](https://git-scm.com/downloads)
-- Maven 3 [Maven](https://maven.apache.org/)
-- Docker Desktop [Docker](https://www.docker.com/products/docker-desktop/)
-- PostgreSQL [PostgreSQL](https://www.postgresql.org/download/)
+# Dependencies
+- [Java JDK 1.8](https://www.oracle.com/java/technologies/downloads/)
+- [git](https://git-scm.com/downloads)
+- [Maven](https://maven.apache.org/)
+- [Docker](https://www.docker.com/products/docker-desktop/)
+- [PostgreSQL](https://www.postgresql.org/download/)
 
 # Tools
 - SQL client or Terminal
-- Postman [Postman](https://www.postman.com/downloads/)
-- Eclipse or other IDE [Eclipse](https://www.eclipse.org/downloads/packages/)
+- [Postman](https://www.postman.com/downloads/)
+- [Eclipse](https://www.eclipse.org/downloads/packages/) or other IDE
 
 # Build the application
 - mvn clean install
@@ -31,4 +31,4 @@ There are several ways to run a Spring Boot application on your local machine. O
 - Ctrl+C to end --> Terminate batch job = Y
 
 # Optional step 
-1. docker push <docker_hub>/test:elrrservices-dck-img
+- docker push <docker_hub>/test:elrrservices-dck-img
