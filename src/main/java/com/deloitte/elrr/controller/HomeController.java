@@ -3,7 +3,6 @@ package com.deloitte.elrr.controller;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import org.apache.commons.validator.routines.EmailValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.deloitte.elrr.entity.Learner;
 import com.deloitte.elrr.svc.LearnerCreatorImpl;
-import com.deloitte.elrr.svc.LearnerCreatorSvc;
 
 import lombok.extern.slf4j.Slf4j;
 

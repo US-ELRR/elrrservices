@@ -1,7 +1,7 @@
 package com.deloitte.elrr.jpa.svc;
 
 import com.deloitte.elrr.entity.Employment;
-import com.deloitte.elrr.entity.LearnerProfile;
+//import com.deloitte.elrr.entity.LearnerProfile;
 import com.deloitte.elrr.repository.EmploymentRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
