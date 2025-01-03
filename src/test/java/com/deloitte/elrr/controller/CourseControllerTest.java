@@ -1,10 +1,6 @@
-/**
- *
- */
+/** */
 package com.deloitte.elrr.controller;
 
-
-//import static org.hamcrest.CoreMatchers.any;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -39,273 +35,237 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author mnelakurti
- *
  */
 @WebMvcTest(CourseController.class)
 @ContextConfiguration
 @WithMockUser
 public class CourseControllerTest extends CommonControllerTest {
 
-    /**
-     *
-     */
-    @MockBean
-    private ModelMapper mapper;
+  /** */
+  @MockBean private ModelMapper mapper;
 
-    /**
-     *
-     */
-    @Autowired
-    private MockMvc mockMvc;
+  /** */
+  @Autowired private MockMvc mockMvc;
 
-    /**
-    *
-    */
-    @Autowired
-    private ObjectMapper objectMapper;
-    
-    /**
-     * 
-     */
-    private HttpHeaders headers;
-    /**
-     * 
-     */
-    @BeforeEach
-    void addHeaders() {
-        headers = new HttpHeaders();
-        headers.set("Content-Type", " */*");
-        headers.set("X-Forwarded-Proto", "https");
-    }
+  /** */
+  @Autowired private ObjectMapper objectMapper;
 
-    /**
-     *
-     * @param obj
-     * @return String
-     * @throws JsonProcessingException
-     */
-    public static String asJsonString(final Object obj)
-            throws JsonProcessingException {
+  /** */
+  private HttpHeaders headers;
 
-        return new ObjectMapper().writeValueAsString(obj);
+  /** */
+  @BeforeEach
+  void addHeaders() {
+    headers = new HttpHeaders();
+    headers.set("Content-Type", " */*");
+    headers.set("X-Forwarded-Proto", "https");
+  }
 
-    }
+  /**
+   * @param obj
+   * @return String
+   * @throws JsonProcessingException
+   */
+  public static String asJsonString(final Object obj) throws JsonProcessingException {
 
-    /**
-     *
-     * @throws Exception
-     */
-    @Test
-    void getAllCoursesTest() throws Exception {
+    return new ObjectMapper().writeValueAsString(obj);
+  }
 
-        Mockito.doReturn(getCourseList()).when(getCourseSvc()).findAll();
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/course")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
-        mockMvc.perform(requestBuilder.headers(headers)).andExpect(status().isOk())
-                .andDo(print());
-        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+  /**
+   * @throws Exception
+   */
+  @Test
+  void getAllCoursesTest() throws Exception {
 
-        assertNotNull(mvcResult);
+    Mockito.doReturn(getCourseList()).when(getCourseSvc()).findAll();
+    MockHttpServletRequestBuilder requestBuilder =
+        MockMvcRequestBuilders.get("/api/course")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON);
+    mockMvc.perform(requestBuilder.headers(headers)).andExpect(status().isOk()).andDo(print());
+    MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
-    }
+    assertNotNull(mvcResult);
+  }
 
-    /**
-     *
-     * @throws Exception
-     */
-    @Test
-    void getAllCoursesErrorTest() throws Exception {
+  /**
+   * @throws Exception
+   */
+  @Test
+  void getAllCoursesErrorTest() throws Exception {
 
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/course")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
-        mockMvc.perform(requestBuilder).andDo(print());
-        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
-        assertNotNull(mvcResult);
+    MockHttpServletRequestBuilder requestBuilder =
+        MockMvcRequestBuilders.get("/api/course")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .headers(headers);
+    mockMvc.perform(requestBuilder).andDo(print());
+    MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+    assertNotNull(mvcResult);
+  }
 
-    }
+  /** */
+  @Test
+  void getCourseByIdTest() throws Exception {
 
-    /**
-     *
-     */
-    @Test
-    void getCourseByIdTest() throws Exception {
+    Mockito.doReturn(Optional.of(getCourseList().iterator().next())).when(getCourseSvc()).get(1L);
+    MockHttpServletRequestBuilder requestBuilder =
+        MockMvcRequestBuilders.get("/api/course/1")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .headers(headers);
 
-        Mockito.doReturn(Optional.of(getCourseList().iterator().next()))
-                .when(getCourseSvc()).get(1L);
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/course/1")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+    MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
-        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+    assertNotNull(mvcResult);
+  }
 
-        assertNotNull(mvcResult);
-    }
+  /** */
+  @Test
+  void getCourseByIdErrorTest() throws Exception {
 
-    /**
-     *
-     */
-    @Test
-    void getCourseByIdErrorTest() throws Exception {
+    MockHttpServletRequestBuilder requestBuilder =
+        MockMvcRequestBuilders.get("/api/course/1")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .headers(headers);
 
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/course/1")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+    MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
-        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+    assertNotNull(mvcResult);
+  }
 
-        assertNotNull(mvcResult);
-    }
+  /** */
+  @Test
+  void getCourseByIdParameterTest() throws Exception {
 
-    /**
-     *
-     */
-    @Test
-    void getCourseByIdParameterTest() throws Exception {
+    Mockito.doReturn(Optional.of(getCourseList().iterator().next())).when(getCourseSvc()).get(1L);
+    MockHttpServletRequestBuilder requestBuilder =
+        MockMvcRequestBuilders.get("/api/course?id=1")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .headers(headers);
 
-        Mockito.doReturn(Optional.of(getCourseList().iterator().next()))
-                .when(getCourseSvc()).get(1L);
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/course?id=1")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+    MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
-        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+    assertNotNull(mvcResult);
+  }
 
-        assertNotNull(mvcResult);
-    }
+  /** */
+  @Test
+  void createCourseTest() throws Exception {
+    CourseDto courseDto = new CourseDto();
+    courseDto.setCourseid(1L);
+    // Mockito.when(mapper.map(any(), CoreMatchers.any())).doReturn(new Course());
+    Mockito.doReturn(getCourseList().iterator().next())
+        .when(getCourseSvc())
+        .save(getCourseList().iterator().next());
 
-    /**
-    *
-    */
-    @Test
-    void createCourseTest() throws Exception {
-        CourseDto courseDto = new CourseDto();
-        courseDto.setCourseid(1L);
-        //Mockito.when(mapper.map(any(), CoreMatchers.any())).doReturn(new Course());
-        Mockito.doReturn(getCourseList().iterator().next()).when(getCourseSvc())
-                .save(getCourseList().iterator().next());
+    mockMvc.perform(
+        post("/api/course")
+            .headers(headers)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(courseDto))
+            .headers(headers));
+    // .andExpect(status().isCreated()).andDo(print());
+  }
 
-        mockMvc.perform(post("/api/course")
-                .headers(headers)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(courseDto))
-                .headers(headers));
-                //.andExpect(status().isCreated()).andDo(print());
-    }
+  /** */
+  @Test
+  void updateCourseTest() throws Exception {
+    CourseDto courseDto = new CourseDto();
+    courseDto.setCourseidentifier("Any");
+    courseDto.setCourseid(1L);
+    Mockito.doReturn(Optional.of(getCourseList().iterator().next())).when(getCourseSvc()).get(1L);
+    Mockito.doReturn(getCourseList().iterator().next())
+        .when(getCourseSvc())
+        .save(getCourseList().iterator().next());
+    MockHttpServletRequestBuilder requestBuilder =
+        MockMvcRequestBuilders.put("/api/course/1")
+            .accept(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(courseDto))
+            .contentType(MediaType.APPLICATION_JSON)
+            .headers(headers);
 
-    /**
-    *
-    */
-    @Test
-    void updateCourseTest() throws Exception {
-        CourseDto courseDto = new CourseDto();
-        courseDto.setCourseidentifier("Any");
-        courseDto.setCourseid(1L);
-        Mockito.doReturn(Optional.of(getCourseList().iterator().next()))
-                .when(getCourseSvc()).get(1L);
-        Mockito.doReturn(getCourseList().iterator().next())
-                .when(getCourseSvc())
-                .save(getCourseList().iterator().next());
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/course/1")
-                .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(courseDto))
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+    MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+    assertNotNull(mvcResult);
+    mockMvc.perform(
+        put("/api/course/1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(courseDto))
+            .headers(headers));
+    // .andExpect(status().isCreated()).andDo(print());
 
-        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
-        assertNotNull(mvcResult);
-        mockMvc.perform(put("/api/course/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(courseDto))
-                .headers(headers));
-        // .andExpect(status().isCreated()).andDo(print());
+  }
 
-    }
+  /** */
+  @Test
+  void updateCourseErrorTest() throws Exception {
+    CourseDto courseDto = new CourseDto();
+    courseDto.setCourseid(1L);
 
-    /**
-    *
-    */
-    @Test
-    void updateCourseErrorTest() throws Exception {
-        CourseDto courseDto = new CourseDto();
-        courseDto.setCourseid(1L);
+    Mockito.doReturn(getCourseList().iterator().next())
+        .when(getCourseSvc())
+        .save(getCourseList().iterator().next());
+    MockHttpServletRequestBuilder requestBuilder =
+        MockMvcRequestBuilders.put("/api/course/1")
+            .accept(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(courseDto))
+            .contentType(MediaType.APPLICATION_JSON)
+            .headers(headers);
 
-        Mockito.doReturn(getCourseList().iterator().next()).when(getCourseSvc())
-                .save(getCourseList().iterator().next());
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/course/1")
-                .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(courseDto))
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+    MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+    assertNotNull(mvcResult);
+    mockMvc.perform(
+        put("/api/course/1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(courseDto))
+            .headers(headers));
+    // .andExpect(status().isCreated()).andDo(print());
 
-        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
-        assertNotNull(mvcResult);
-        mockMvc.perform(put("/api/course/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(courseDto))
-                .headers(headers));
-        // .andExpect(status().isCreated()).andDo(print());
+  }
 
-    }
+  /** */
+  @Test
+  void deleteCourseTest() throws Exception {
 
-    /**
-     *
-     */
-    @Test
-    void deleteCourseTest() throws Exception {
+    Mockito.doNothing().when(getCourseSvc()).delete(1L);
+    MockHttpServletRequestBuilder requestBuilder =
+        MockMvcRequestBuilders.delete("/api/course/1")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .headers(headers);
 
-        Mockito.doNothing().when(getCourseSvc()).delete(1L);
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/course/1")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+    MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
-        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+    assertNotNull(mvcResult);
+  }
 
-        assertNotNull(mvcResult);
-    }
+  /** */
+  @Test
+  void deleteCourseErrorTest() throws Exception {
 
-    /**
-    *
-    */
-    @Test
-    void deleteCourseErrorTest() throws Exception {
+    MockHttpServletRequestBuilder requestBuilder =
+        MockMvcRequestBuilders.delete("/api/course/")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .headers(headers);
 
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/course/")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+    MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
-        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+    assertNotNull(mvcResult);
+  }
 
-        assertNotNull(mvcResult);
-    }
-
-    /**
-     *
-     * @return Iterable<CourseDto>
-     */
-    private static Iterable<Course> getCourseList() {
-        List<Course> courseList = new ArrayList<>();
-        Course course = new Course();
-        course.setCourseid(1L);
-        courseList.add(course);
-        Collection<Course> collections = courseList;
-        Iterable<Course> iterable = collections;
-        return iterable;
-    }
+  /**
+   * @return Iterable<CourseDto>
+   */
+  private static Iterable<Course> getCourseList() {
+    List<Course> courseList = new ArrayList<>();
+    Course course = new Course();
+    course.setCourseid(1L);
+    courseList.add(course);
+    Collection<Course> collections = courseList;
+    Iterable<Course> iterable = collections;
+    return iterable;
+  }
 }
