@@ -1,28 +1,38 @@
 package com.deloitte.elrr.controller;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.deloitte.elrr.entity.Competency;
 import com.deloitte.elrr.entity.Course;
 import com.deloitte.elrr.entity.Learner;
 import com.deloitte.elrr.entity.Person;
 import com.deloitte.elrr.entity.Personnel;
+import com.deloitte.elrr.svc.LearnerCreatorImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@ContextHierarchy({@ContextConfiguration(classes = LearnerCreatorImpl.class)})
 @WebMvcTest(HomeController.class)
-@ContextConfiguration
+// @ContextConfiguration
 @WithMockUser
 class HomeControllerTests extends CommonControllerTest {
 
@@ -57,52 +67,53 @@ class HomeControllerTests extends CommonControllerTest {
   }
 
   /** */
-  /*@Test
+  @Test
   void getLearnerByIdTest() throws Exception {
 
-      //Mockito.doReturn(getLearnerList())
-      //        .when(getLearnerCreatorSvc().learnerCreator("test"));
-      MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-              .get("/api/learner?param1=test")
-              .accept(MediaType.APPLICATION_JSON)
-              .contentType(MediaType.APPLICATION_JSON)
-              .headers(headers);
+    // Mockito.doReturn(getLearnerList())
+    //        .when(getLearnerCreatorSvc().learnerCreator("test"));
+    MockHttpServletRequestBuilder requestBuilder =
+        MockMvcRequestBuilders.get("/api/learner?param1=test")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .headers(headers);
 
-      MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+    MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
-      assertNotNull(mvcResult);
-  } */
+    assertNotNull(mvcResult);
+  }
 
   /** */
-  /*@Test
+  @Test
   void getLearnerByIdErrorTest() throws Exception {
 
-      MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-              .get("/api/learner?param1=test")
-              .accept(MediaType.APPLICATION_JSON)
-              .contentType(MediaType.APPLICATION_JSON)
-              .headers(headers);
+    MockHttpServletRequestBuilder requestBuilder =
+        MockMvcRequestBuilders.get("/api/learner?param1=test")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .headers(headers);
 
-      MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+    MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
-      assertNotNull(mvcResult);
-  }*/
+    assertNotNull(mvcResult);
+  }
 
   /** */
-  /*@Test
+  @Test
   void getLearnerByIdParameterTest() throws Exception {
 
-      //Mockito.doReturn(getLearnerList())
-      //        .when(getLearnerCreatorSvc().learnerCreator("test"));
-      MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-              .get("/api/learner?id=1").accept(MediaType.APPLICATION_JSON)
-              .contentType(MediaType.APPLICATION_JSON)
-              .headers(headers);
+    // Mockito.doReturn(getLearnerList())
+    //        .when(getLearnerCreatorSvc().learnerCreator("test"));
+    MockHttpServletRequestBuilder requestBuilder =
+        MockMvcRequestBuilders.get("/api/learner?id=1")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .headers(headers);
 
-      MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+    MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
-      assertNotNull(mvcResult);
-  }*/
+    assertNotNull(mvcResult);
+  }
 
   /**
    * @return Iterable<LearnerDto>
