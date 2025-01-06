@@ -1,6 +1,5 @@
 package com.deloitte.elrr.controller;
 
-
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
@@ -16,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -26,160 +26,137 @@ import com.deloitte.elrr.entity.Course;
 import com.deloitte.elrr.entity.Learner;
 import com.deloitte.elrr.entity.Person;
 import com.deloitte.elrr.entity.Personnel;
+import com.deloitte.elrr.svc.LearnerCreatorImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@ContextHierarchy({@ContextConfiguration(classes = LearnerCreatorImpl.class)})
 @WebMvcTest(HomeController.class)
-@ContextConfiguration
+// @ContextConfiguration
 @WithMockUser
 class HomeControllerTests extends CommonControllerTest {
 
-    /**
-     *
-     */
-    @MockBean
-    private ModelMapper mapper;
+  /** */
+  @MockBean private ModelMapper mapper;
 
-    /**
-     *
-     */
-    @Autowired
-    private MockMvc mockMvc;
+  /** */
+  @Autowired private MockMvc mockMvc;
 
-    /**
-    *
-    */
-    @Autowired
-    private ObjectMapper objectMapper;
+  /** */
+  @Autowired private ObjectMapper objectMapper;
 
-    /**
-     * 
-     */
-    private HttpHeaders headers;
-    /**
-     * 
-     */
-    @BeforeEach
-    void addHeaders() {
-        headers = new HttpHeaders();
-        headers.set("Content-Type", " */*");
-        headers.set("X-Forwarded-Proto", "https");
-    }
-    
-    /**
-     *
-     * @param obj
-     * @return String
-     * @throws JsonProcessingException
-     */
-    public static String asJsonString(final Object obj)
-            throws JsonProcessingException {
+  /** */
+  private HttpHeaders headers;
 
-        return new ObjectMapper().writeValueAsString(obj);
+  /** */
+  @BeforeEach
+  void addHeaders() {
+    headers = new HttpHeaders();
+    headers.set("Content-Type", " */*");
+    headers.set("X-Forwarded-Proto", "https");
+  }
 
-    }
+  /**
+   * @param obj
+   * @return String
+   * @throws JsonProcessingException
+   */
+  public static String asJsonString(final Object obj) throws JsonProcessingException {
 
-    /**
-     *
-     */
-    @Test
-    void getLearnerByIdTest() throws Exception {
+    return new ObjectMapper().writeValueAsString(obj);
+  }
 
-        //Mockito.doReturn(getLearnerList())
-        //        .when(getLearnerCreatorSvc().learnerCreator("test"));
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/learner?param1=test")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+  /** */
+  @Test
+  void getLearnerByIdTest() throws Exception {
 
-        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+    // Mockito.doReturn(getLearnerList())
+    //        .when(getLearnerCreatorSvc().learnerCreator("test"));
+    MockHttpServletRequestBuilder requestBuilder =
+        MockMvcRequestBuilders.get("/api/learner?param1=test")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .headers(headers);
 
-        assertNotNull(mvcResult);
-    }
+    MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
-    /**
-     *
-     */
-    @Test
-    void getLearnerByIdErrorTest() throws Exception {
+    assertNotNull(mvcResult);
+  }
 
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/learner?param1=test")
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+  /** */
+  @Test
+  void getLearnerByIdErrorTest() throws Exception {
 
-        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+    MockHttpServletRequestBuilder requestBuilder =
+        MockMvcRequestBuilders.get("/api/learner?param1=test")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .headers(headers);
 
-        assertNotNull(mvcResult);
-    }
+    MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
-    /**
-     *
-     */
-    @Test
-    void getLearnerByIdParameterTest() throws Exception {
+    assertNotNull(mvcResult);
+  }
 
-        //Mockito.doReturn(getLearnerList())
-        //        .when(getLearnerCreatorSvc().learnerCreator("test"));
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/learner?id=1").accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+  /** */
+  @Test
+  void getLearnerByIdParameterTest() throws Exception {
 
-        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+    // Mockito.doReturn(getLearnerList())
+    //        .when(getLearnerCreatorSvc().learnerCreator("test"));
+    MockHttpServletRequestBuilder requestBuilder =
+        MockMvcRequestBuilders.get("/api/learner?id=1")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .headers(headers);
 
-        assertNotNull(mvcResult);
-    }
+    MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
-    /**
-     *
-     * @return Iterable<LearnerDto>
-     */
-    private static Learner getLearnerList() {
-        Learner learner = new Learner();
-        learner.setCourses(getCourseList());
-        learner.setCompetencies(getCompetencyList());
-        learner.setPersonnel(getPersonnelList());
-        return learner;
-    }
+    assertNotNull(mvcResult);
+  }
 
-    /**
-     *
-     * @return Iterable<CompetencyDto>
-     */
-    private static List<Competency> getCompetencyList() {
-        List<Competency> competencyList = new ArrayList<>();
-        Competency competency = new Competency();
-        competency.setCompetencyid(1L);
-        competencyList.add(competency);
+  /**
+   * @return Iterable<LearnerDto>
+   */
+  private static Learner getLearnerList() {
+    Learner learner = new Learner();
+    learner.setCourses(getCourseList());
+    learner.setCompetencies(getCompetencyList());
+    learner.setPersonnel(getPersonnelList());
+    return learner;
+  }
 
-        return competencyList;
-    }
+  /**
+   * @return Iterable<CompetencyDto>
+   */
+  private static List<Competency> getCompetencyList() {
+    List<Competency> competencyList = new ArrayList<>();
+    Competency competency = new Competency();
+    competency.setCompetencyid(1L);
+    competencyList.add(competency);
 
-    /**
-     *
-     * @return Iterable<CourseDto>
-     */
-    private static List<Course> getCourseList() {
-        List<Course> courseList = new ArrayList<>();
-        Course course = new Course();
-        course.setCourseid(1L);
-        courseList.add(course);
-        return courseList;
-    }
+    return competencyList;
+  }
 
-    /**
-     *
-     * @return Iterable<CourseDto>
-     */
-    private static Personnel getPersonnelList() {
-        Personnel personnel = new Personnel();
-        Person person = new Person();
-        person.setPersonid(1L);
-        personnel.setPerson(person);
-        return personnel;
-    }
+  /**
+   * @return Iterable<CourseDto>
+   */
+  private static List<Course> getCourseList() {
+    List<Course> courseList = new ArrayList<>();
+    Course course = new Course();
+    course.setCourseid(1L);
+    courseList.add(course);
+    return courseList;
+  }
 
+  /**
+   * @return Iterable<CourseDto>
+   */
+  private static Personnel getPersonnelList() {
+    Personnel personnel = new Personnel();
+    Person person = new Person();
+    person.setPersonid(1L);
+    personnel.setPerson(person);
+    return personnel;
+  }
 }
