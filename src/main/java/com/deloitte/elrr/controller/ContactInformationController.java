@@ -1,12 +1,8 @@
-/**
- *
- */
+/** */
 package com.deloitte.elrr.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import jakarta.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,159 +24,154 @@ import com.deloitte.elrr.entity.ContactInformation;
 import com.deloitte.elrr.exception.ResourceNotFoundException;
 import com.deloitte.elrr.jpa.svc.ContactInformationSvc;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author mnelakurti
- *
  */
-@CrossOrigin(origins = {
-        "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:3001",
-        "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:5000" })
+@CrossOrigin(
+    origins = {
+      "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:3001",
+      "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:5000"
+    })
 @RestController
 @RequestMapping("api")
 @Slf4j
 public class ContactInformationController {
-    /**
-     *
-     */
-    @Autowired
-    private ContactInformationSvc contactInformationSvc;
-    /**
-     *
-     */
-    @Autowired
-    private ModelMapper mapper;
-    /**
-     *
-     * @param contactInformationid
-     * @return ResponseEntity<List<ContactInformationDto>>
-     * @throws ResourceNotFoundException
-     */
-    @GetMapping("/contactinformation")
-    public ResponseEntity<List<ContactInformationDto>> getAllCompetencys(
-            @RequestParam(value = "id", required = false) final
-            Long contactInformationid)
-            throws ResourceNotFoundException {
-        try {
-            log.info("get contactInformationid:" + contactInformationid);
-            log.info("contactInformationid:....." + contactInformationid);
-            log.info("Getting contactinformation:.......");
-            List<ContactInformationDto> contactInformationList
-                = new ArrayList<>();
-            if (contactInformationid == null) {
-                Iterable<ContactInformation> competencys = contactInformationSvc
-                        .findAll();
+  /** */
+  @Autowired private ContactInformationSvc contactInformationSvc;
 
-                for (ContactInformation contactInformation : competencys) {
-                    ContactInformationDto contactInformationDto = mapper.map(
-                            contactInformation, ContactInformationDto.class);
-                    contactInformationList.add(contactInformationDto);
-                }
-            } else {
-                ContactInformation contactInformation = contactInformationSvc
-                        .get(contactInformationid)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "ContactInformation not found for this id :: "
-                                        + contactInformationid));
-                ContactInformationDto contactInformationDto = mapper
-                        .map(contactInformation, ContactInformationDto.class);
-                contactInformationList.add(contactInformationDto);
+  /** */
+  @Autowired private ModelMapper mapper;
 
-            }
+  /**
+   * @param contactInformationid
+   * @return ResponseEntity<List<ContactInformationDto>>
+   * @throws ResourceNotFoundException
+   */
+  @GetMapping("/contactinformation")
+  public ResponseEntity<List<ContactInformationDto>> getAllCompetencys(
+      @RequestParam(value = "id", required = false) final Long contactInformationid)
+      throws ResourceNotFoundException {
+    try {
+      log.info("get contactInformationid:" + contactInformationid);
+      log.info("contactInformationid:....." + contactInformationid);
+      log.info("Getting contactinformation:.......");
+      List<ContactInformationDto> contactInformationList = new ArrayList<>();
+      if (contactInformationid == null) {
+        Iterable<ContactInformation> competencys = contactInformationSvc.findAll();
 
-            if (contactInformationList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(contactInformationList);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        for (ContactInformation contactInformation : competencys) {
+          ContactInformationDto contactInformationDto =
+              mapper.map(contactInformation, ContactInformationDto.class);
+          contactInformationList.add(contactInformationDto);
         }
-    }
-    /**
-     *
-     * @param contactInformationid
-     * @return ResponseEntity<ContactInformationDto>
-     * @throws ResourceNotFoundException
-     */
-    @GetMapping("/contactinformation/{id}")
-    public ResponseEntity<ContactInformationDto> getCompetencyById(
-            @PathVariable(value = "id") final Long contactInformationid)
-            throws ResourceNotFoundException {
-        log.info("Update contactinformation:....." + contactInformationid);
-        log.info("contactinformationid:........." + contactInformationid);
-        log.info("contactinformationrepository:.........");
-        ContactInformation contactInformation = contactInformationSvc
+      } else {
+        ContactInformation contactInformation =
+            contactInformationSvc
                 .get(contactInformationid)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "ContactInformation not found for this id :: "
-                                + contactInformationid));
-        ContactInformationDto contactInformationDto = mapper
-                .map(contactInformation, ContactInformationDto.class);
-        return ResponseEntity.ok().body(contactInformationDto);
+                .orElseThrow(
+                    () ->
+                        new ResourceNotFoundException(
+                            "ContactInformation not found for this id :: " + contactInformationid));
+        ContactInformationDto contactInformationDto =
+            mapper.map(contactInformation, ContactInformationDto.class);
+        contactInformationList.add(contactInformationDto);
+      }
+
+      if (contactInformationList.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      } else {
+        return ResponseEntity.ok(contactInformationList);
+      }
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    /**
-     *
-     * @param contactInformationDto
-     * @return ResponseEntity<ContactInformationDto>
-     */
-    @PostMapping("/contactinformation")
-    public ResponseEntity<ContactInformationDto> createCompetency(
-        @Valid @RequestBody final ContactInformationDto contactInformationDto) {
-        ContactInformation contactInformation = mapper
-                .map(contactInformationDto, ContactInformation.class);
-        mapper.map(contactInformationSvc.save(contactInformation),
-                ContactInformationDto.class);
-        return new ResponseEntity<>(contactInformationDto, HttpStatus.CREATED);
-    }
-    /**
-     *
-     * @param contactInformationid
-     * @param contactInformationDto
-     * @return ResponseEntity<ContactInformationDto>
-     * @throws ResourceNotFoundException
-     */
-    @PutMapping("/contactinformation/{id}")
-    public ResponseEntity<ContactInformationDto> updateCompetency(
-            @PathVariable(value = "id") final long contactInformationid,
-        @Valid @RequestBody final ContactInformationDto contactInformationDto)
-            throws ResourceNotFoundException {
-        log.info("contactinformationDto:..." + contactInformationDto);
-        log.info("contactinformation:......" + contactInformationid);
-        log.info("Update contactinformation:.....");
-        ContactInformation contactInformation = contactInformationSvc
-                .get(contactInformationid)
-                .orElseThrow(() -> new ResourceNotFoundException(
+  }
+
+  /**
+   * @param contactInformationid
+   * @return ResponseEntity<ContactInformationDto>
+   * @throws ResourceNotFoundException
+   */
+  @GetMapping("/contactinformation/{id}")
+  public ResponseEntity<ContactInformationDto> getCompetencyById(
+      @PathVariable(value = "id") final Long contactInformationid)
+      throws ResourceNotFoundException {
+    log.info("Update contactinformation:....." + contactInformationid);
+    log.info("contactinformationid:........." + contactInformationid);
+    log.info("contactinformationrepository:.........");
+    ContactInformation contactInformation =
+        contactInformationSvc
+            .get(contactInformationid)
+            .orElseThrow(
+                () ->
+                    new ResourceNotFoundException(
+                        "ContactInformation not found for this id :: " + contactInformationid));
+    ContactInformationDto contactInformationDto =
+        mapper.map(contactInformation, ContactInformationDto.class);
+    return ResponseEntity.ok().body(contactInformationDto);
+  }
+
+  /**
+   * @param contactInformationDto
+   * @return ResponseEntity<ContactInformationDto>
+   */
+  @PostMapping("/contactinformation")
+  public ResponseEntity<ContactInformationDto> createCompetency(
+      @Valid @RequestBody final ContactInformationDto contactInformationDto) {
+    ContactInformation contactInformation =
+        mapper.map(contactInformationDto, ContactInformation.class);
+    mapper.map(contactInformationSvc.save(contactInformation), ContactInformationDto.class);
+    return new ResponseEntity<>(contactInformationDto, HttpStatus.CREATED);
+  }
+
+  /**
+   * @param contactInformationid
+   * @param contactInformationDto
+   * @return ResponseEntity<ContactInformationDto>
+   * @throws ResourceNotFoundException
+   */
+  @PutMapping("/contactinformation/{id}")
+  public ResponseEntity<ContactInformationDto> updateCompetency(
+      @PathVariable(value = "id") final long contactInformationid,
+      @Valid @RequestBody final ContactInformationDto contactInformationDto)
+      throws ResourceNotFoundException {
+    log.info("contactinformationDto:..." + contactInformationDto);
+    log.info("contactinformation:......" + contactInformationid);
+    log.info("Update contactinformation:.....");
+    ContactInformation contactInformation =
+        contactInformationSvc
+            .get(contactInformationid)
+            .orElseThrow(
+                () ->
+                    new ResourceNotFoundException(
                         "ContactInformation not found for this id to update :: "
-                                + contactInformationid));
-        log.info("Update ContactInformation:........." + contactInformationDto);
-        // Assigning values from request
-        mapper.map(contactInformationDto, contactInformation);
-        // Reset Id / Primary key from query parameter
-        contactInformation.setContactinformationid(contactInformationid);
-        log.info("Update ContactInformation:........." + contactInformation);
-        return ResponseEntity
-                .ok(mapper.map(contactInformationSvc.save(contactInformation),
-                        ContactInformationDto.class));
+                            + contactInformationid));
+    log.info("Update ContactInformation:........." + contactInformationDto);
+    // Assigning values from request
+    mapper.map(contactInformationDto, contactInformation);
+    // Reset Id / Primary key from query parameter
+    contactInformation.setContactinformationid(contactInformationid);
+    log.info("Update ContactInformation:........." + contactInformation);
+    return ResponseEntity.ok(
+        mapper.map(contactInformationSvc.save(contactInformation), ContactInformationDto.class));
+  }
 
+  /**
+   * @param contactInformationid
+   * @return ResponseEntity<HttpStatus>
+   */
+  @DeleteMapping("/contactinformation/{id}")
+  public ResponseEntity<HttpStatus> deleteCompetency(
+      @PathVariable(value = "id") final Long contactInformationid) {
+    try {
+      log.info("Deleting  ContactInformation:........." + contactInformationid);
+      contactInformationSvc.delete(contactInformationid);
+      return ResponseEntity.ok(HttpStatus.NO_CONTENT);
+    } catch (Exception e) {
+      return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    /**
-     *
-     * @param contactInformationid
-     * @return ResponseEntity<HttpStatus>
-     */
-    @DeleteMapping("/contactinformation/{id}")
-    public ResponseEntity<HttpStatus> deleteCompetency(
-            @PathVariable(value = "id") final Long contactInformationid) {
-        try {
-            log.info("Deleting  ContactInformation:........."
-                    + contactInformationid);
-            contactInformationSvc.delete(contactInformationid);
-            return ResponseEntity.ok(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
+  }
 }
