@@ -1,9 +1,6 @@
 package com.deloitte.elrr;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -11,7 +8,10 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JSONRequestSizeLimitFilter extends OncePerRequestFilter {
@@ -21,8 +21,8 @@ public class JSONRequestSizeLimitFilter extends OncePerRequestFilter {
 
   private long MAX_SIZE_LIMIT = maxSizeLimit;
 
-  @Value("${mediaType.json}")
-  private boolean mediaTypeJson;
+  @Value("${check.media.type.json}")
+  private boolean checkMediaTypeJson;
 
   @Override
   protected void doFilterInternal(
@@ -38,7 +38,7 @@ public class JSONRequestSizeLimitFilter extends OncePerRequestFilter {
 
   private boolean isApplicationJson(HttpServletRequest httpRequest) {
 
-    if (mediaTypeJson = false) {
+    if (checkMediaTypeJson == false) {
       return true;
     } else {
       return (MediaType.APPLICATION_JSON.isCompatibleWith(
