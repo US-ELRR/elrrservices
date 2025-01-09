@@ -5,6 +5,7 @@ package com.deloitte.elrr.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import jakarta.validation.Valid;
 
@@ -60,7 +61,7 @@ public class OrganizationController {
     @GetMapping("/organization")
     public ResponseEntity<List<OrganizationDto>> getAllOrganizations(
             @RequestParam(value = "id", required = false)
-            final Long organizationid)
+            final UUID organizationid)
             throws ResourceNotFoundException {
         try {
             log.info("GetMapping  Organization:.........");
@@ -103,7 +104,7 @@ public class OrganizationController {
      */
     @GetMapping("/organization/{id}")
     public ResponseEntity<OrganizationDto> getOrganizationById(
-            @PathVariable(value = "id") final Long organizationid)
+            @PathVariable(value = "id") final UUID organizationid)
             throws ResourceNotFoundException {
         log.info("GetMapping  Organization:.........");
         log.info("GetMapping Organization id:........." + organizationid);
@@ -137,7 +138,7 @@ public class OrganizationController {
      */
     @PutMapping("/organization/{id}")
     public ResponseEntity<OrganizationDto> updateOrganization(
-            @PathVariable(value = "id") final long organizationid,
+            @PathVariable(value = "id") final UUID organizationid,
             @Valid @RequestBody final OrganizationDto organizationDto)
             throws ResourceNotFoundException {
         log.info("Updating  Organization:.........");
@@ -150,7 +151,7 @@ public class OrganizationController {
         // Assigning values from request
         mapper.map(organizationDto, organization);
         // Reset Id / Primary key from query parameter
-        organization.setOrganizationid(organizationid);
+        organization.setId(organizationid);
         log.info("Update Organization:........." + organization);
         return ResponseEntity.ok(mapper.map(organizationSvc.save(organization),
                 OrganizationDto.class));
@@ -163,7 +164,7 @@ public class OrganizationController {
      */
     @DeleteMapping("/organization/{id}")
     public ResponseEntity<HttpStatus> deleteOrganization(
-            @PathVariable(value = "id") final Long organizationid) {
+            @PathVariable(value = "id") final UUID organizationid) {
         try {
             log.info("Deleting  Organization:.........");
             log.info("Deleting Organization id:........." + organizationid);

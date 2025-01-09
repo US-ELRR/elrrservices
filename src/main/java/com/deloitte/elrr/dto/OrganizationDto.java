@@ -4,7 +4,9 @@
 package com.deloitte.elrr.dto;
 
 import java.io.Serializable;
+import java.util.UUID;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -31,51 +33,67 @@ public class OrganizationDto implements Serializable {
     /**
     *
     */
-    private long organizationid;
-    /**
-    *
-    */
+    private UUID id;
+    
+    @Size(max = 255)
     @NotNull
-    @Size(max = 100)
-    private String organizationname;
-    /**
-    *
-    */
-    @Size(max = 100)
-    private String organizationidentifier;
-    /**
-    *
-    */
-    @Size(max = 100)
-    private String organizationidentificationcode;
-    /**
-    *
-    */
-    @Size(max = 100)
-    private String organizationidentificationsystem;
-    /**
-    *
-    */
-    @Size(max = 100)
-    private String industrytypeidentifier;
-    /**
-    *
-    */
-    @Size(max = 100)
-    private String organizationfein;
-    /**
-    *
-    */
-    private String organizationdescription;
-    /**
-    *
-    */
-    @Size(max = 100)
-    private String parentorganization;
-    /**
-    *
-    */
-    @Size(max = 10)
-    private String recordstatus;
+    private String name;
+
+    private String description;
+    
+    @Size(max = 255)
+    private String profitType;
+
+    @Size(max = 255)
+    private String department;
+
+    @Size(max = 255)
+    private String industryCode;
+
+    @Size(max = 255)
+    private String industryCategory;
+
+    @Size(max = 255)
+    private String verticalSpecialization;
+    
+    @Size(max = 255)
+    private String organizationIdentifier;
+
+    @Size(max = 255)
+    private String organizationDUNS;
+
+    @Size(max = 255)
+    private String organizationFEIN;
+
+    @Size(max = 255)
+    private String schoolOPEID;
+
+    @Size(max = 255)
+    private String ipedsType;
+
+    @Size(max = 255)
+    private String organizationISIC;
+
+    @Size(max = 255)
+    private String organizationImage;
+
+    @Size(max = 255)
+    private String organizationWebsite;
+
+    @Size(max = 255)
+    private String institutionLevel;
+    
+    @Size(max = 255)
+    private String institutionRevocationList;
+
+    private Boolean hasVerificationService;
+
+    private String institutionVerification;
+
+    @Size(max = 255)
+    private String organizationalResource;
+
+    @Size(max = 255)
+    private String qualityAssuranceType;
 
 }

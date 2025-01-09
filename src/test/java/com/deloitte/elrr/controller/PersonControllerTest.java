@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -89,6 +90,8 @@ public class PersonControllerTest extends CommonControllerTest {
 
     }
 
+    private static final UUID personId = UUID.randomUUID();
+
     /**
      *
      * @throws Exception
@@ -134,7 +137,7 @@ public class PersonControllerTest extends CommonControllerTest {
     void getPersonByIdTest() throws Exception {
 
         Mockito.doReturn(Optional.of(getPersonList().iterator().next()))
-                .when(getPersonSvc()).get(1L);
+                .when(getPersonSvc()).get(personId);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/person/1").accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -168,7 +171,7 @@ public class PersonControllerTest extends CommonControllerTest {
     void getPersonByIdParameterTest() throws Exception {
 
         Mockito.doReturn(Optional.of(getPersonList().iterator().next()))
-                .when(getPersonSvc()).get(1L);
+                .when(getPersonSvc()).get(personId);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/person?id=1").accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -185,7 +188,7 @@ public class PersonControllerTest extends CommonControllerTest {
     @Test
     void createPersonTest() throws Exception {
         PersonDto personDto = new PersonDto();
-        personDto.setPersonid(1L);
+        personDto.setId(personId);
         Mockito.doReturn(getPersonList().iterator().next()).when(getPersonSvc())
                 .save(getPersonList().iterator().next());
 
@@ -202,9 +205,9 @@ public class PersonControllerTest extends CommonControllerTest {
     @Test
     void updatePersonTest() throws Exception {
         PersonDto personDto = new PersonDto();
-        personDto.setPersonid(1L);
+        personDto.setId(personId);
         Mockito.doReturn(Optional.of(getPersonList().iterator().next()))
-                .when(getPersonSvc()).get(1L);
+                .when(getPersonSvc()).get(personId);
         Mockito.doReturn(getPersonList().iterator().next()).when(getPersonSvc())
                 .save(getPersonList().iterator().next());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -229,7 +232,7 @@ public class PersonControllerTest extends CommonControllerTest {
     @Test
     void updatePersonErrorTest() throws Exception {
         PersonDto personDto = new PersonDto();
-        personDto.setPersonid(1L);
+        personDto.setId(personId);
 
         Mockito.doReturn(getPersonList().iterator().next()).when(getPersonSvc())
                 .save(getPersonList().iterator().next());
@@ -255,7 +258,7 @@ public class PersonControllerTest extends CommonControllerTest {
     @Test
     void deletePersonTest() throws Exception {
 
-        Mockito.doNothing().when(getPersonSvc()).delete(1L);
+        Mockito.doNothing().when(getPersonSvc()).delete(personId);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .delete("/api/person/1").accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -289,7 +292,7 @@ public class PersonControllerTest extends CommonControllerTest {
     private static Iterable<Person> getPersonList() {
         List<Person> personList = new ArrayList<>();
         Person person = new Person();
-        person.setPersonid(1L);
+        person.setId(personId);
         personList.add(person);
         Collection<Person> collections = personList;
         Iterable<Person> iterable = collections;

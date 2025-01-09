@@ -5,6 +5,7 @@ package com.deloitte.elrr.jpa.svc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,7 +42,8 @@ class OrganizationSvcTest {
             OrganizationSvc organizationSvc = new OrganizationSvc(
                     organizationRepository);
             Organization organization = new Organization();
-            organization.setOrganizationid(1L);
+            UUID id = UUID.randomUUID();
+            organization.setId(id);
             List<Organization> organizationList = new ArrayList<>();
             organizationList.add(organization);
             ReflectionTestUtils.setField(organizationSvc,
@@ -49,15 +51,15 @@ class OrganizationSvcTest {
             Mockito.doReturn(organization)
                     .when(organizationRepository).save(organization);
             Mockito.doReturn(true).when(organizationRepository)
-                    .existsById(1L);
-            Mockito.doNothing().when(organizationRepository).deleteById(1L);
+                    .existsById(id);
+            Mockito.doNothing().when(organizationRepository).deleteById(id);
 
-            organizationSvc.getI(organization);
+            organizationSvc.getId(organization);
             organizationSvc.findAll();
-            organizationSvc.get(1L);
+            organizationSvc.get(id);
             organizationSvc.save(organization);
             organizationSvc.deleteAll();
-            organizationSvc.delete(1L);
+            organizationSvc.delete(id);
             organizationSvc.update(organization);
             organizationSvc.saveAll(organizationList);
         }

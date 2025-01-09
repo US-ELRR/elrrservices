@@ -23,7 +23,7 @@ END $$;
 
 CREATE TABLE IF NOT EXISTS organization (
     id                          UUID PRIMARY KEY,
-    name                        VARCHAR(255),
+    name                        VARCHAR(255) NOT NULL,
     description                 TEXT,
     profit_type                 VARCHAR(255), --enum
     department                  VARCHAR(255), --check

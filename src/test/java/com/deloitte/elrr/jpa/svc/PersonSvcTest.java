@@ -5,6 +5,7 @@ package com.deloitte.elrr.jpa.svc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +17,7 @@ import org.mockito.quality.Strictness;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.deloitte.elrr.entity.Person;
-import com.deloitte.elrr.repository.PersonalRepository;
+import com.deloitte.elrr.repository.PersonRepository;
 
 /**
  * @author mnelakurti
@@ -32,7 +33,7 @@ class PersonSvcTest {
         *
         */
         @Mock
-        private PersonalRepository personalRepository;
+        private PersonRepository personalRepository;
 
         /**
          *
@@ -43,7 +44,8 @@ class PersonSvcTest {
             PersonSvc personSvc = new PersonSvc(
                     personalRepository);
             Person person = new Person();
-            person.setPersonid(1L);
+            UUID id = UUID.randomUUID();
+            person.setId(id);
             List<Person> personList = new ArrayList<>();
             personList.add(person);
             ReflectionTestUtils.setField(personSvc,
@@ -51,15 +53,15 @@ class PersonSvcTest {
             Mockito.doReturn(person)
                     .when(personalRepository).save(person);
             Mockito.doReturn(true).when(personalRepository)
-                    .existsById(1L);
-            Mockito.doNothing().when(personalRepository).deleteById(1L);
+                    .existsById(id);
+            Mockito.doNothing().when(personalRepository).deleteById(id);
 
-            personSvc.getI(person);
+            personSvc.getId(person);
             personSvc.findAll();
-            personSvc.get(1L);
+            personSvc.get(id);
             personSvc.save(person);
             personSvc.deleteAll();
-            personSvc.delete(1L);
+            personSvc.delete(id);
             personSvc.update(person);
             personSvc.saveAll(personList);
         }

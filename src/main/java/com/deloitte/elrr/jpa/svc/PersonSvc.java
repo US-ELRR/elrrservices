@@ -3,11 +3,13 @@
  */
 package com.deloitte.elrr.jpa.svc;
 
+import java.util.UUID;
+
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
 import com.deloitte.elrr.entity.Person;
-import com.deloitte.elrr.repository.PersonalRepository;
+import com.deloitte.elrr.repository.PersonRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,33 +20,33 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class PersonSvc implements CommonSvc<Person, Long> {
+public class PersonSvc implements CommonSvc<Person, UUID> {
     /**
      *
      */
-    private final PersonalRepository personalRepository;
+    private final PersonRepository personRepository;
     /**
      *
-     * @param argsPersonalRepository
+     * @param argsPersonRepository
      */
-    public PersonSvc(final PersonalRepository argsPersonalRepository) {
-        this.personalRepository = argsPersonalRepository;
+    public PersonSvc(final PersonRepository argsPersonRepository) {
+        this.personRepository = argsPersonRepository;
     }
     /**
      *
      * @return CrudRepository<Person, Long>
      */
     @Override
-    public CrudRepository<Person, Long> getRepository() {
-        return this.personalRepository;
+    public CrudRepository<Person, UUID> getRepository() {
+        return this.personRepository;
     }
     /**
      *
      * @return Long
      */
     @Override
-    public Long getI(final Person person) {
-        return person.getPersonid();
+    public UUID getId(final Person person) {
+        return person.getId();
     }
     /**
      *

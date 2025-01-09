@@ -35,6 +35,8 @@ import com.deloitte.elrr.entity.Organization;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.UUID;
+
 /**
  * @author mnelakurti
  *
@@ -56,9 +58,7 @@ public class OrganizationControllerTest extends CommonControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    /**
-    *
-    */
+  
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -88,6 +88,8 @@ public class OrganizationControllerTest extends CommonControllerTest {
         return new ObjectMapper().writeValueAsString(obj);
 
     }
+
+    private static final UUID orgId = UUID.randomUUID();
 
     /**
      *
@@ -135,7 +137,7 @@ public class OrganizationControllerTest extends CommonControllerTest {
     void getOrganizationByIdTest() throws Exception {
 
         Mockito.doReturn(Optional.of(getOrganizationList().iterator().next()))
-                .when(getOrganizationSvc()).get(1L);
+                .when(getOrganizationSvc()).get(orgId);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/organization/1").accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -169,7 +171,7 @@ public class OrganizationControllerTest extends CommonControllerTest {
     void getOrganizationByIdParameterTest() throws Exception {
 
         Mockito.doReturn(Optional.of(getOrganizationList().iterator().next()))
-                .when(getOrganizationSvc()).get(1L);
+                .when(getOrganizationSvc()).get(orgId);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/organization?id=1")
                 .accept(MediaType.APPLICATION_JSON)
@@ -181,13 +183,11 @@ public class OrganizationControllerTest extends CommonControllerTest {
         assertNotNull(mvcResult);
     }
 
-    /**
-    *
-    */
+  
     @Test
     void createOrganizationTest() throws Exception {
         OrganizationDto orgnizationDto = new OrganizationDto();
-        orgnizationDto.setOrganizationid(1L);
+        orgnizationDto.setId(orgId);
         Mockito.doReturn(getOrganizationList().iterator().next())
                 .when(getOrganizationSvc())
                 .save(getOrganizationList().iterator().next());
@@ -199,15 +199,13 @@ public class OrganizationControllerTest extends CommonControllerTest {
                 //.andExpect(status().isCreated()).andDo(print());
     }
 
-    /**
-    *
-    */
+  
     @Test
     void updateOrganizationTest() throws Exception {
         OrganizationDto orgnizationDto = new OrganizationDto();
-        orgnizationDto.setOrganizationid(1L);
+        orgnizationDto.setId(orgId);
         Mockito.doReturn(Optional.of(getOrganizationList().iterator().next()))
-                .when(getOrganizationSvc()).get(1L);
+                .when(getOrganizationSvc()).get(orgId);
         Mockito.doReturn(getOrganizationList().iterator().next())
                 .when(getOrganizationSvc())
                 .save(getOrganizationList().iterator().next());
@@ -227,13 +225,11 @@ public class OrganizationControllerTest extends CommonControllerTest {
 
     }
 
-    /**
-    *
-    */
+  
     @Test
     void updateOrganizationErrorTest() throws Exception {
         OrganizationDto orgnizationDto = new OrganizationDto();
-        orgnizationDto.setOrganizationid(1L);
+        orgnizationDto.setId(orgId);
 
         Mockito.doReturn(getOrganizationList().iterator().next())
                 .when(getOrganizationSvc())
@@ -260,7 +256,7 @@ public class OrganizationControllerTest extends CommonControllerTest {
     @Test
     void deleteOrganizationTest() throws Exception {
 
-        Mockito.doNothing().when(getOrganizationSvc()).delete(1L);
+        Mockito.doNothing().when(getOrganizationSvc()).delete(orgId);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .delete("/api/organization/1")
                 .accept(MediaType.APPLICATION_JSON)
@@ -272,9 +268,7 @@ public class OrganizationControllerTest extends CommonControllerTest {
         assertNotNull(mvcResult);
     }
 
-    /**
-    *
-    */
+  
     @Test
     void deleteOrganizationErrorTest() throws Exception {
 
@@ -295,7 +289,8 @@ public class OrganizationControllerTest extends CommonControllerTest {
     private static Iterable<Organization> getOrganizationList() {
         List<Organization> orgnizationList = new ArrayList<>();
         Organization orgnization = new Organization();
-        orgnization.setOrganizationid(1L);
+
+        orgnization.setId(orgId);
         orgnizationList.add(orgnization);
         Collection<Organization> collections = orgnizationList;
         Iterable<Organization> iterable = collections;

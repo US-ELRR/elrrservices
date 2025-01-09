@@ -1,6 +1,8 @@
 package com.deloitte.elrr.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,123 +18,105 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "PERSON")
-//, schema="CMTR")
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 public class Person extends Auditable<String> {
-    /**
-    *
-    */
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long personid;
-    /**
-    *
-    */
+    private UUID id;
+    
     @Column(name = "name")
     private String name;
-    /**
-    *
-    */
-    @Column(name = "firstname")
-    private String firstname;
-    /**
-    *
-    */
-    @Column(name = "middlename")
-    private String middlename;
-    /**
-    *
-    */
-    @Column(name = "lastname")
-    private String lastname;
-    /**
-    *
-    */
-    @Column(name = "nameprefix")
-    private String nameprefix;
-    /**
-    *
-    */
-    @Column(name = "titleaffixcode")
-    private String titleaffixcode;
-    /**
-    *
-    */
-    @Column(name = "namenuffix")
-    private String namenuffix;
-    /**
-    *
-    */
-    @Column(name = "qualificationaffixcode")
-    private String qualificationaffixcode;
-    /**
-    *
-    */
-    @Column(name = "maidenname")
-    private String maidenname;
-    /**
-    *
-    */
-    @Column(name = "preferredname")
-    private String preferredname;
-    /**
-    *
-    */
-    @Column(name = "humanresourceidentifier")
-    private String humanresourceidentifier;
-    /**
-    *
-    */
-    @Column(name = "personnelidentificationsystem")
-    private String personnelidentificationsystem;
-    /**
-    *
-    */
+    
+    @Column(name = "first_name")
+    private String firstName;
+    
+    @Column(name = "middle_name")
+    private String middleName;
+    
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "name_prefix")
+    private String namePrefix;
+
+    @Column(name = "title_affix_code")
+    private String titleAffixCode;
+
+    @Column(name = "name_suffix")
+    private String nameSuffix;
+
+    @Column(name = "qualification_affix_code")
+    private String qualificationAffixCode;
+
+    @Column(name = "maiden_name")
+    private String maidenName;
+
+    //mailing_address_id -- locations
+    //physical_address_id
+    //shipping_address_id
+    //billing_address_id
+    //on_campus_address_id
+    //off_campus_address_id
+    //temporary_address_id
+    //permanent_student_address_id
+    //employment_address_id
+    //time_of_admission_address_id
+    //father_address_id
+    //mother_address_id
+    //guardian_address_id
+    //birthplace
+
     @Column(name = "birthdate")
     private Date birthdate;
-    /**
-    *
-    */
-    @Column(name = "sex")
-    private String sex;
-    /**
-    *
-    */
-    @Column(name = "primarylanguage")
-    private String primarylanguage;
-    /**
-    *
-    */
-    @Column(name = "militaryveteranindicator")
-    private String militaryveteranindicator;
-    /**
-    *
-    */
-    @Column(name = "recordstatus")
-    private String recordstatus;
 
-    /**
-     *
-     */
+    @Column(name = "citizenship")
+    private String citizenship;
+
+    @Column(name = "height")
+    private BigDecimal height;
+    
+    @Column(name = "height_unit")
+    private String heightUnit;
+    
+    @Column(name = "weight")
+    private String weight;
+
+    @Column(name = "weight_unit")
+    private String weightUnit;
+
+    @Column(name = "interpupillary_distance")
+    private Long interpupillaryDistance;
+
+    @Column(name = "handedness")
+    private String handedness;
+
+    @Column(name = "primary_language")
+    private String primaryLanguage;
+
+    @Column(name = "current_security_clearance")
+    private String currentSecurityClearance;
+
+    @Column(name = "highest_security_clearance")
+    private String highestSecurityClearance;
+
+    @Column(name = "union_membership")
+    private Boolean unionMembership;
+
+    //@Column(name = "union_id") - org
+    //private String unionId;
+
+    //@Column(name = "professional_membership_id") -- org
+    //private String professionalMembershipId;
+
     @Override
     public String toString() {
-        return "Person [id=" + personid + ", name=" + name + ",firstName="
-                + firstname + ", middleName=" + middlename + ",lastName="
-                + lastname + ",  namePrefix=" + nameprefix
-                + ",   titleAffixcode=" + titleaffixcode + ",nameSuffix="
-                + namenuffix + ",qualificationAffixcode="
-                + qualificationaffixcode + ",maidenName=" + maidenname
-                + ",preferredName=" + preferredname
-                + ", humanResourceIdentifier=" + humanresourceidentifier
-                + ", personnelIdentificationSystem="
-                + personnelidentificationsystem + ", birthdate=" + birthdate
-                + ", sex=" + sex + ", primaryLanguage=" + primarylanguage
-                + ",militaryVeteranindicator=" + militaryveteranindicator
-                + ",recordStatus=" + recordstatus + "]";
+        return "Person [id=" + id + ", name=" + name + ",firstName="
+                + firstName + ", middleName=" + middleName + ",lastName="
+                + lastName + ",  namePrefix=" + namePrefix + "]";
     }
 
 }

@@ -5,6 +5,7 @@ package com.deloitte.elrr.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import jakarta.validation.Valid;
 
@@ -58,7 +59,7 @@ public class PersonController {
      */
     @GetMapping("/person")
     public ResponseEntity<List<PersonDto>> getAllPersons(
-            @RequestParam(value = "id", required = false) final Long personId)
+            @RequestParam(value = "id", required = false) final UUID personId)
             throws ResourceNotFoundException {
         try {
             log.info("getting  PersonDto:.........");
@@ -97,7 +98,7 @@ public class PersonController {
      */
     @GetMapping("/person/{id}")
     public ResponseEntity<PersonDto> getPersonById(
-            @PathVariable(value = "id") final Long personId)
+            @PathVariable(value = "id") final UUID personId)
             throws ResourceNotFoundException {
         log.info("getting  Organization:.........");
         log.info("getting Organization id:........." + personId);
@@ -128,7 +129,7 @@ public class PersonController {
      */
     @PutMapping("/person/{id}")
     public ResponseEntity<PersonDto> updatePerson(
-            @PathVariable(value = "id") final long personId,
+            @PathVariable(value = "id") final UUID personId,
             @Valid @RequestBody final PersonDto personDto)
             throws ResourceNotFoundException {
         log.info("Updating  personId:.........");
@@ -141,7 +142,7 @@ public class PersonController {
         // Assigning values from request
         mapper.map(personDto, person);
         // Reset Id / Primary key from query parameter
-        person.setPersonid(personId);
+        person.setId(personId);
         log.info("Update Person:........." + person);
         return ResponseEntity
                 .ok(mapper.map(personaSvc.save(person), PersonDto.class));
@@ -154,7 +155,7 @@ public class PersonController {
      */
     @DeleteMapping("/person/{id}")
     public ResponseEntity<HttpStatus> deletePerson(
-            @PathVariable(value = "id") final Long personId) {
+            @PathVariable(value = "id") final UUID personId) {
         try {
             log.info("deleting  person:.........");
             log.info("Deleting  Person:........." + personId);

@@ -4,10 +4,13 @@
 package com.deloitte.elrr.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -28,120 +31,65 @@ import lombok.Setter;
 
 public class PersonDto implements Serializable {
 
-    /**
-     *
-    */
     private static final long serialVersionUID = -8031955138252824918L;
-    /**
-    *
-    */
 
-    private long personid;
-    /**
-    *
-    */
-    @NotNull
-    @Size(max = 250)
+    private UUID id;
+  
+    @Size(max = 255)
     private String name;
-    /**
-    *
-    */
-    @NotNull
-    @Size(max = 50)
+    
+    @Size(max = 255)
     private String firstName;
-    /**
-    *
-    */
-    @Size(max = 50)
+    
+    @Size(max = 255)
     private String middleName;
-    /**
-    *
-    */
-    @NotNull
-    @Size(max = 50)
+    
+    @Size(max = 255)
     private String lastName;
-    /**
-    *
-    */
-    @Size(max = 50)
-    private String namePrefix;
-    /**
-    *
-    */
-    @Size(max = 50)
-    private String titleAffixcode;
-    /**
-    *
-    */
-    @Size(max = 50)
-    private String nameSuffix;
-    /**
-    *
-    */
-    @Size(max = 50)
-    private String qualificationAffixcode;
-    /**
-    *
-    */
-    @Size(max = 50)
-    private String maidenName;
-    /**
-    *
-    */
-    @Size(max = 50)
-    private String preferredName;
-    /**
-    *
-    */
-    private String humanResourceIdentifier;
-    /**
-    *
-    */
-    private String personnelIdentificationSystem;
-    /**
-    *
-    */
-    @JsonFormat(pattern = "MM/dd/yyyy")
-    private Date birthdate;
-    /**
-    *
-    */
-    @Size(max = 1)
-    private String sex;
-    /**
-    *
-    */
-    @Size(max = 50)
-    private String primaryLanguage;
-    /**
-    *
-    */
-    @Size(max = 1)
-    private String militaryVeteranindicator;
-    /**
-    *
-    */
-    @Size(max = 10)
-    private String recordStatus;
 
-    /**
-     *
-     */
-    @Override
-    public String toString() {
-        return "PersonDto [id=" + personid + ", name=" + name + ",firstName="
-                + firstName + ", middleName=" + middleName + ",lastName="
-                + lastName + ",  namePrefix=" + namePrefix
-                + ",   titleAffixcode=" + titleAffixcode + ",nameSuffix="
-                + nameSuffix + ",qualificationAffixcode="
-                + qualificationAffixcode + ",maidenName=" + maidenName
-                + ",preferredName=" + preferredName
-                + ", humanResourceIdentifier=" + humanResourceIdentifier
-                + ", personnelIdentificationSystem="
-                + personnelIdentificationSystem
-                + ", sex=" + sex + ", primaryLanguage=" + primaryLanguage
-                + ", militaryVeteranindicator=" + militaryVeteranindicator
-                + ",birthdate=" + birthdate
-                + ",recordStatus=" + recordStatus + "]";
-    }
+    @Size(max = 255)
+    private String namePrefix;
+
+    @Size(max = 255)
+    private String titleAffixCode;
+
+    @Size(max = 255)
+    private String nameSuffix;
+
+    @Size(max = 255)
+    private String qualificationAffixCode;
+
+    @Size(max = 255)
+    private String maidenName;
+
+    private Date birthdate;
+
+    @Size(max = 255)
+    private String citizenship;
+
+    private BigDecimal height;
+    
+    @Size(max = 255)
+    private String heightUnit;
+    
+    private String weight;
+
+    @Size(max = 255)
+    private String weightUnit;
+
+    private Long interpupillaryDistance;
+
+    @Size(max = 255)
+    private String handedness;
+
+    @Size(max = 255)
+    private String primaryLanguage;
+
+    @Size(max = 255)
+    private String currentSecurityClearance;
+
+    @Size(max = 255)
+    private String highestSecurityClearance;
+
+    private Boolean unionMembership;
 }

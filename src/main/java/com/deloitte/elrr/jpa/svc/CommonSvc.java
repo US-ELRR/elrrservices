@@ -71,7 +71,7 @@ public interface CommonSvc<T, I extends Serializable> {
      * @param entity
      */
     default void update(T entity) {
-        if (getRepository().existsById(getI(entity))) {
+        if (getRepository().existsById(getId(entity))) {
             getRepository().save(entity);
         } else {
 
@@ -84,7 +84,7 @@ public interface CommonSvc<T, I extends Serializable> {
      * @param entity
      * @return Id
      */
-    I getI(T entity);
+    I getId(T entity);
     /**
      *
      * @return CrudRepository<T, ID>

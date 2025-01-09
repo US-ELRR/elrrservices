@@ -9,11 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.client.RestTemplate;
 
-import com.deloitte.elrr.repository.CompetencyRepository;
-import com.deloitte.elrr.repository.CourseRepository;
-import com.deloitte.elrr.repository.EmploymentRepository;
 import com.deloitte.elrr.repository.OrganizationRepository;
-import com.deloitte.elrr.repository.PersonalRepository;
+import com.deloitte.elrr.repository.PersonRepository;
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 
 @SpringBootApplication
@@ -32,22 +29,7 @@ public class ElrrApplication  {
      *
      */
     @Autowired
-    private CourseRepository courseRepository;
-    /**
-     *
-     */
-    @Autowired
-    private CompetencyRepository competencyListRepository;
-    /**
-     *
-     */
-    @Autowired
-    private PersonalRepository personalRepository;
-    /**
-     *
-     */
-    @Autowired
-    private EmploymentRepository employmentRepository;
+    private PersonRepository personalRepository;
     /**
      *
      */

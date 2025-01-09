@@ -3,6 +3,8 @@
  */
 package com.deloitte.elrr.jpa.svc;
 
+import java.util.UUID;
+
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +17,7 @@ import com.deloitte.elrr.repository.OrganizationRepository;
  */
 
 @Service
-public class OrganizationSvc implements CommonSvc<Organization, Long> {
+public class OrganizationSvc implements CommonSvc<Organization, UUID> {
     /**
      *
      */
@@ -32,15 +34,15 @@ public class OrganizationSvc implements CommonSvc<Organization, Long> {
      *
      */
     @Override
-    public CrudRepository<Organization, Long> getRepository() {
+    public CrudRepository<Organization, UUID> getRepository() {
         return this.organizationRepository;
     }
     /**
      *
      */
     @Override
-    public Long getI(final Organization organization) {
-        return organization.getOrganizationid();
+    public UUID getId(final Organization organization) {
+        return organization.getId();
     }
     /**
      *
