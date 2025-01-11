@@ -17,9 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class JSONRequestSizeLimitFilter extends OncePerRequestFilter {
 
   @Value("${json.max.size.limit}")
-  private long maxSizeLimit;
-
-  private long MAX_SIZE_LIMIT = maxSizeLimit;
+  private long MAX_SIZE_LIMIT;
 
   @Value("${check.media.type.json}")
   private boolean checkMediaTypeJson;
