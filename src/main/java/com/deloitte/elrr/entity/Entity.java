@@ -19,7 +19,7 @@ import lombok.Setter;
 @Setter
 public class Entity {
 
-@Id
+    @Id
     @GenericGenerator(name = "semi_seq_uuid", strategy = "com.deloitte.elrr.util.SemiSeqUUIdGenerator")
     @GeneratedValue(generator = "semi_seq_uuid")  
     protected UUID id;
