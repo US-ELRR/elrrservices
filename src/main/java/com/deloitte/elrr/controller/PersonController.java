@@ -45,7 +45,7 @@ public class PersonController {
      *
      */
     @Autowired
-    private PersonSvc personaSvc;
+    private PersonSvc personSvc;
     /**
      *
      */
@@ -66,14 +66,14 @@ public class PersonController {
             log.info("getting Organization id:........." + personId);
             List<PersonDto> persontoList = new ArrayList<>();
             if (personId == null) {
-                Iterable<Person> persons = personaSvc.findAll();
+                Iterable<Person> persons = personSvc.findAll();
 
                 for (Person person : persons) {
                     PersonDto personDto = mapper.map(person, PersonDto.class);
                     persontoList.add(personDto);
                 }
             } else {
-                Person person = personaSvc.get(personId)
+                Person person = personSvc.get(personId)
                         .orElseThrow(() -> new ResourceNotFoundException(
                                 "Person not found for this id :: " + personId));
                 PersonDto personDto = mapper.map(person, PersonDto.class);
@@ -102,7 +102,7 @@ public class PersonController {
             throws ResourceNotFoundException {
         log.info("getting  Organization:.........");
         log.info("getting Organization id:........." + personId);
-        Person person = personaSvc.get(personId)
+        Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Person not found for this id :: " + personId));
         PersonDto personDto = mapper.map(person, PersonDto.class);
@@ -117,8 +117,8 @@ public class PersonController {
     public ResponseEntity<PersonDto> createPerson(
             @Valid @RequestBody final PersonDto personDto) {
         Person person = mapper.map(personDto, Person.class);
-        mapper.map(personaSvc.save(person), PersonDto.class);
-        return new ResponseEntity<>(personDto, HttpStatus.CREATED);
+        PersonDto response = mapper.map(personSvc.save(person), PersonDto.class);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     /**
      *
@@ -134,7 +134,7 @@ public class PersonController {
             throws ResourceNotFoundException {
         log.info("Updating  personId:.........");
         log.info("Updating personId id:........." + personId);
-        Person person = personaSvc.get(personId)
+        Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Person not found for this id to update :: "
                                 + personId));
@@ -145,7 +145,7 @@ public class PersonController {
         person.setId(personId);
         log.info("Update Person:........." + person);
         return ResponseEntity
-                .ok(mapper.map(personaSvc.save(person), PersonDto.class));
+                .ok(mapper.map(personSvc.save(person), PersonDto.class));
 
     }
     /**
@@ -159,7 +159,7 @@ public class PersonController {
         try {
             log.info("deleting  person:.........");
             log.info("Deleting  Person:........." + personId);
-            personaSvc.delete(personId);
+            personSvc.delete(personId);
             return ResponseEntity.ok(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);

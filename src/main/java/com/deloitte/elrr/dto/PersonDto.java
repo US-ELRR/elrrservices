@@ -1,6 +1,3 @@
-/**
- *
- */
 package com.deloitte.elrr.dto;
 
 import java.io.Serializable;
@@ -24,7 +21,6 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-
 public class PersonDto implements Serializable {
 
     private static final long serialVersionUID = -8031955138252824918L;

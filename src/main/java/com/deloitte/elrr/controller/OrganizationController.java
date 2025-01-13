@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -124,10 +125,9 @@ public class OrganizationController {
     @PostMapping("/organization")
     public ResponseEntity<OrganizationDto> createOrganization(
             @Valid @RequestBody final OrganizationDto organizationDto) {
-        Organization organization = mapper.map(organizationDto,
-                Organization.class);
-        OrganizationDto responseEntity = mapper.map(organizationSvc.save(organization), OrganizationDto.class);
-        return new ResponseEntity<>(responseEntity, HttpStatus.CREATED);
+        Organization org = mapper.map(organizationDto, Organization.class);
+        OrganizationDto response = mapper.map(organizationSvc.save(org), OrganizationDto.class);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     /**
