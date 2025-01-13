@@ -1,6 +1,3 @@
-/**
- *
- */
 package com.deloitte.elrr.controller;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;

@@ -6,7 +6,6 @@ package com.deloitte.elrr.dto;
 import java.io.Serializable;
 import java.util.UUID;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;

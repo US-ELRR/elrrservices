@@ -8,10 +8,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -11,7 +11,7 @@ import jakarta.servlet.ServletException;
 
 public class FilterTest {
 
-  private final SanatizingFilter sf = new SanatizingFilter();
+  private final SanitizingFilter sf = new SanitizingFilter();
   private WrappedHttp http;
 
   @Test

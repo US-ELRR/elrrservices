@@ -70,7 +70,7 @@ public class OrganizationController {
             if (organizationid == null) {
                 Iterable<Organization> organizations = organizationSvc
                         .findAll();
-
+                        
                 for (Organization organization : organizations) {
                     OrganizationDto organizationDto = mapper.map(organization,
                             OrganizationDto.class);
@@ -126,9 +126,10 @@ public class OrganizationController {
             @Valid @RequestBody final OrganizationDto organizationDto) {
         Organization organization = mapper.map(organizationDto,
                 Organization.class);
-        mapper.map(organizationSvc.save(organization), OrganizationDto.class);
-        return new ResponseEntity<>(organizationDto, HttpStatus.CREATED);
+        OrganizationDto responseEntity = mapper.map(organizationSvc.save(organization), OrganizationDto.class);
+        return new ResponseEntity<>(responseEntity, HttpStatus.CREATED);
     }
+
     /**
      *
      * @param organizationid

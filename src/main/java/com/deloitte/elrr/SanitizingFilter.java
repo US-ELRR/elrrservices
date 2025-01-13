@@ -19,7 +19,7 @@ import java.util.Iterator;
  * 
  */
 @Component
-public class SanatizingFilter implements Filter {
+public class SanitizingFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
@@ -29,7 +29,7 @@ public class SanatizingFilter implements Filter {
 
         StringBuilder body = new StringBuilder();
         for (String line : request.getReader().lines().toList()) {
-            if (InputSanatizer.isValidInput(line)) {
+            if (InputSanitizer.isValidInput(line)) {
                 body.append(line);
                 body.append('\n');
 
@@ -52,8 +52,8 @@ public class SanatizingFilter implements Filter {
         // strings
         httpRequest.getParameterNames().asIterator().forEachRemaining(param -> {
             String paramVal = request.getParameter(param);
-            if (!InputSanatizer.isValidInput(paramVal)
-                    || !InputSanatizer.isValidInput(param)) {
+            if (!InputSanitizer.isValidInput(paramVal)
+                    || !InputSanitizer.isValidInput(param)) {
                 try {
                     httpResponse.sendError(HttpStatus.BAD_REQUEST.value(),
                             "Illegal Parameter Value");
