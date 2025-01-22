@@ -81,15 +81,22 @@ public class Organization extends Auditable<String> {
     @Column(name = "quality_assurance_type")
     private String qualityAssuranceType;
 
-    //organization_accredits
-
-    /**
-     *
-     */
     @Override
     public String toString() {
-        return "Organization [id=" + id + ", organizationName="
-                + name + "]";
+        return "Organization [name=" + name + ", description=" + description + ", profitType=" + profitType + ", id="
+                + id + ", department=" + department + ", industryCode=" + industryCode + ", industryCategory="
+                + industryCategory + ", verticalSpecialization=" + verticalSpecialization + ", organizationIdentifier="
+                + organizationIdentifier + ", organizationDUNS=" + organizationDUNS + ", organizationFEIN="
+                + organizationFEIN + ", schoolOPEID=" + schoolOPEID + ", ipedsType=" + ipedsType + ", organizationISIC="
+                + organizationISIC + ", organizationImage=" + organizationImage + ", organizationWebsite="
+                + organizationWebsite + ", institutionLevel=" + institutionLevel + ", institutionRevocationList="
+                + institutionRevocationList + ", hasVerificationService=" + hasVerificationService
+                + ", institutionVerification=" + institutionVerification + ", organizationalResource="
+                + organizationalResource + ", qualityAssuranceType=" + qualityAssuranceType + "]";
     }
+
+    //organization_accredits
+
+   
 
 }

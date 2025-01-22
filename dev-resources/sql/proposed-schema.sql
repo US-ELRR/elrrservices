@@ -7,6 +7,15 @@ EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;
 
+
+-- needs expansion
+DO $$ BEGIN
+    CREATE TYPE person_org_relation AS ENUM (
+        'UNION', 'PROFESSIONAL ORGANIZATION');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
 DO $$ BEGIN
     CREATE TYPE learning_status AS ENUM (
         'ATTEMPTED', 'COMPLETED', 'PASSED', 'FAILED');
@@ -108,18 +117,18 @@ CREATE TABLE IF NOT EXISTS person (
     current_security_clearance  VARCHAR(255), --check on this
     highest_security_clearance  VARCHAR(255), --check on this
     union_membership            BOOLEAN,
-    union_id                    UUID REFERENCES organization (id),
-    professional_membership_id  UUID REFERENCES organization (id),
     updated_by                  VARCHAR(20),
     inserted_date               TIMESTAMP WITH TIME ZONE,
     last_modified               TIMESTAMP WITH TIME ZONE
 );
 
+
+
 CREATE TABLE IF NOT EXISTS person_organization (
     id                          UUID PRIMARY KEY,
     person_id                   UUID NOT NULL REFERENCES person (id),
     organization_id             UUID NOT NULL REFERENCES organization (id),
-    relationship_type           VARCHAR(255),  --controlled vocabulary
+    relationship_type           person_org_relation NOT NULL,
     updated_by                  VARCHAR(20),
     inserted_date               TIMESTAMP WITH TIME ZONE,
     last_modified               TIMESTAMP WITH TIME ZONE

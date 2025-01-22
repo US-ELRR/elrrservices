@@ -5,6 +5,8 @@ import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -46,6 +48,10 @@ public class Person extends Auditable<String> {
 
     @Column(name = "maiden_name")
     private String maidenName;
+
+    @ManyToOne
+    @JoinColumn(name="mailing_address_id")
+    private Location mailingAddress;
 
     //mailing_address_id -- locations
     //physical_address_id
@@ -98,17 +104,17 @@ public class Person extends Auditable<String> {
     @Column(name = "union_membership")
     private Boolean unionMembership;
 
-    //@Column(name = "union_id") - org
-    //private String unionId;
-
-    //@Column(name = "professional_membership_id") -- org
-    //private String professionalMembershipId;
-
     @Override
     public String toString() {
-        return "Person [id=" + id + ", name=" + name + ",firstName="
-                + firstName + ", middleName=" + middleName + ",lastName="
-                + lastName + ",  namePrefix=" + namePrefix + "]";
+        return "Person [name=" + name + ", firstName=" + firstName + ", id=" + id + ", middleName=" + middleName
+                + ", lastName=" + lastName + ", namePrefix=" + namePrefix + ", titleAffixCode=" + titleAffixCode
+                + ", nameSuffix=" + nameSuffix + ", qualificationAffixCode=" + qualificationAffixCode + ", maidenName="
+                + maidenName + ", birthdate=" + birthdate + ", citizenship=" + citizenship + ", height=" + height
+                + ", heightUnit=" + heightUnit + ", weight=" + weight + ", weightUnit=" + weightUnit
+                + ", interpupillaryDistance=" + interpupillaryDistance + ", handedness=" + handedness
+                + ", primaryLanguage=" + primaryLanguage + ", currentSecurityClearance=" + currentSecurityClearance
+                + ", highestSecurityClearance=" + highestSecurityClearance + ", unionMembership=" + unionMembership
+                + "]";
     }
 
 }

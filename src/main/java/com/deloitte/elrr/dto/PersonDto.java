@@ -5,22 +5,15 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
-/**
- * @author mnelakurti
- *
- */
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Data
-@Getter
-@Setter
 public class PersonDto implements Serializable {
 
     private static final long serialVersionUID = -8031955138252824918L;
@@ -64,7 +57,7 @@ public class PersonDto implements Serializable {
     @Size(max = 255)
     private String heightUnit;
     
-    private String weight;
+    private BigDecimal weight;
 
     @Size(max = 255)
     private String weightUnit;
@@ -84,4 +77,7 @@ public class PersonDto implements Serializable {
     private String highestSecurityClearance;
 
     private Boolean unionMembership;
+
+    @Valid
+    private LocationDto mailingAddress;
 }

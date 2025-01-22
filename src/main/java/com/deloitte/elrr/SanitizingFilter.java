@@ -66,7 +66,7 @@ public class SanitizingFilter implements Filter {
         });
 
         try {
-            if (hasHomoGlyphs(httpRequest)) {
+            if (hasHomoGlyphs(new JSONObject(httpRequest.getBody()))) {
                 httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST,
                         "Request body contains homoglyphs.");
                 return;
@@ -79,23 +79,20 @@ public class SanitizingFilter implements Filter {
         chain.doFilter(httpRequest, response);
     }
 
-    private static boolean hasHomoGlyphs(WrappedHttp httpRequest) {
-
-        if (httpRequest.getBody().isEmpty())
-            return false;
+    private static boolean hasHomoGlyphs(JSONObject jo){
         Confusables confusables = Confusables.fromInternal();
-        JSONObject jsonObject = new JSONObject(httpRequest.getBody());
-        Iterator<String> keys = jsonObject.keys();
+        
+        Iterator<String> keys = jo.keys();
         while (keys.hasNext()) {
             String key = keys.next();
-            String value = (String) jsonObject.get(key);
-            boolean dangerousKey = confusables.isDangerous(key);
-            boolean dangerousValue = confusables.isDangerous(value);
-            if (dangerousKey || dangerousValue) {
-                return true;
+            Object val = jo.get(key);
+            if (val instanceof JSONObject) {
+                if (hasHomoGlyphs((JSONObject) val)) return true;
+            } else if (confusables.isDangerous(key) 
+                || confusables.isDangerous((String) val)) {
+                    return true;
             }
         }
         return false;
     }
-
 }

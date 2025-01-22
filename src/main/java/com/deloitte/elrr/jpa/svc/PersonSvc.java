@@ -5,6 +5,7 @@ package com.deloitte.elrr.jpa.svc;
 
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,11 @@ public class PersonSvc implements CommonSvc<Person, UUID> {
     /**
      *
      */
+    
     private final PersonRepository personRepository;
+    
+    @Autowired
+    private LocationSvc locationSvc;
     /**
      *
      * @param argsPersonRepository
@@ -54,7 +59,9 @@ public class PersonSvc implements CommonSvc<Person, UUID> {
      */
     @Override
     public Person save(final Person person) {
-        log.info("" + person);
+        if (person.getMailingAddress() != null)
+            person.setMailingAddress(locationSvc.save(person.getMailingAddress()));
+            
         return CommonSvc.super.save(person);
     }
 

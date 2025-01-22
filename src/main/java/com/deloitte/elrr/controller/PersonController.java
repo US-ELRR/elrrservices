@@ -117,6 +117,7 @@ public class PersonController {
     public ResponseEntity<PersonDto> createPerson(
             @Valid @RequestBody final PersonDto personDto) {
         Person person = mapper.map(personDto, Person.class);
+        log.info(person.getMailingAddress().getApartmentRoomSuiteNumber());
         PersonDto response = mapper.map(personSvc.save(person), PersonDto.class);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
