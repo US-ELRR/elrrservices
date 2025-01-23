@@ -25,6 +25,8 @@ POST /person
 PUT /person/[id]
 - update and return person
 
+DELETE /person/[id]
+
 #### Person-Org
 
 GET /person/[id]/organization
