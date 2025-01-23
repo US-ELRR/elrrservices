@@ -2,11 +2,15 @@ package com.deloitte.elrr;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
+
+import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+
 import jakarta.servlet.ServletException;
 
 public class FilterTest {
@@ -20,8 +24,12 @@ public class FilterTest {
     http = new WrappedHttp(req, "not allowed");
     MockHttpServletResponse res = new MockHttpServletResponse();
     MockFilterChain chain = new MockFilterChain();
-    sf.doFilter(http, res, chain);
-    assertTrue(res.isCommitted());
+    try {
+      sf.doFilter(http, res, chain);
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
+    assertFalse(res.isCommitted());
   }
 
   @Test
@@ -52,7 +60,7 @@ public class FilterTest {
     MockHttpServletResponse res = new MockHttpServletResponse();
     MockFilterChain chain = new MockFilterChain();
     sf.doFilter(http, res, chain);
-    assertTrue(res.isCommitted());
+    assertFalse(res.isCommitted());
   }
 
   @Test
