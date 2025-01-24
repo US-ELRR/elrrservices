@@ -66,7 +66,8 @@ public class SanitizingFilter implements Filter {
         });
 
         try {
-            if (hasHomoGlyphs(new JSONObject(httpRequest.getBody()))) {
+            if (httpRequest.getBody().length() > 0 && 
+            hasHomoGlyphs(new JSONObject(httpRequest.getBody()))) {
                 httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST,
                         "Request body contains homoglyphs.");
                 return;

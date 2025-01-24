@@ -1,15 +1,10 @@
-/**
- *
- */
 package com.deloitte.elrr.dto;
-
-import java.io.Serializable;
-import java.util.UUID;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -19,17 +14,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Data
-public class OrganizationDto implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class OrganizationDto extends AbstractDto {
 
-    /**
-     *
-    */
-    private static final long serialVersionUID = 1L;
-    /**
-    *
-    */
-    private UUID id;
-    
     @Size(max = 255)
     @NotNull
     private String name;

@@ -6,21 +6,17 @@ GET /person
 - list of all people
 
 GET /person/[id]
-- single person including address rels but no others
+- single person including address rels, phone, email
 
 GET /person/[id]/learningrecord
 - list learner learningrecords
-
-GET /person/[id]/phones
-
-GET /person/[id]/emails
 
 GET /person/[id]/employmentrecord
 
 GET /person/[id]/militaryrecord
 
 POST /person
-- Save new person. Included addresses might be IDs, or full address DTOs without IDs (which will save new location objects)
+- Save new person. Included addresses might be IDs, or full address DTOs without IDs (which will save new location objects). Can include phones and emails, will resolve list.
 
 PUT /person/[id]
 - update and return person
@@ -46,6 +42,65 @@ PUT /person/[id]/organization/[id]
 DELETE /person/[id]/organization/[id]
 - Removes Rel, return success
 
+#### Person-Phone
+
+GET /person/[id]/phone
+- a person's phone numbers
+
+POST /person/[id]/phone
+- Creates a new phone and adds it to the person
+- Returns phone
+
+POST /person/[id]/phone/[id]
+- no body
+- associates a person with an existing phone, returns phones
+
+DELETE /person/[id]/phone/[id]
+- Removes association
+
+#### Person-Email
+
+GET /person/[id]/email
+- a person's emails
+
+POST /person/[id]/email
+- Creates a new email and adds it to the person
+- Returns email
+
+POST /person/[id]/email/[id]
+- no body
+- associates a person with an existing email, returns emails
+
+DELETE /person/[id]/email/[id]
+- Removes association
+
+#### Person-Learning Record
+
+GET /person/[id]/learningrecord
+- a person's learning records
+
+POST /person/[id]/learningrecord
+- Creates a new learning record for the person
+- Returns learning records
+
+#### Person-Military Record
+
+GET /person/[id]/militaryrecord
+- a person's military records
+
+POST /person/[id]/militaryrecord
+- Creates a new military record for the person
+- Returns military records
+
+#### Person-Employment Record
+
+GET /person/[id]/employmentrecord
+- a person's employment records
+
+POST /person/[id]/employmentrecord
+- Creates a new employment record for the person
+- Returns employment records
+
 #### Person-Comp
 
 The calls below are the same for /competency and /credential
@@ -67,6 +122,24 @@ PUT /person/[id]/competency/[id]
 DELETE /person/[id]/competency/[id]
 - Removes Rel, return success
 
+## Learning Resource
+
+GET /learningresource
+- All learning resources
+- Might have query params
+
+POST /learningresource
+- Create a new learning resource
+
+GET /learningresource/[id]
+- Get one
+
+PUT /learningresource/[id]
+- update learning resource by id.
+
+DELETE /learningresource/[id]
+- delete learning resource by id
+
 ## Learning Record
 
 GET /learningrecord
@@ -74,11 +147,7 @@ GET /learningrecord
 - Might have query params
 
 GET /learningrecord/[id]
-- Get All
-
-POST /learningrecord
-- Body must contain existing person and learning resource with valid IDs
-- Creates learning record
+- Get one
 
 PUT /learningrecord/[id]
 - update learning record by id. Cannot change learner or resource
@@ -93,11 +162,7 @@ GET /employmentrecord
 - Might have query params
 
 GET /employmentrecord/[id]
-- Get All
-
-POST /employmentrecord
-- Body must contain existing person and org resource with valid IDs
-- Creates employment record
+- Get one
 
 PUT /employmentrecord/[id]
 - update employment record by id. Cannot change learner or employer
@@ -112,11 +177,7 @@ GET /militaryrecord
 - Might have query params
 
 GET /militaryrecord/[id]
-- Get All
-
-POST /militaryrecord
-- Body must contain existing person and org resource with valid IDs
-- Creates military record
+- Get one
 
 PUT /militaryrecord/[id]
 - update military record by id. Cannot change learner or employer
@@ -142,26 +203,62 @@ DELETE /organization/[id]
 
 ## Comp / Creds
 
-GET /competency (& /credential)
+*GET /competency (& /credential)
 
-GET /competency/[id]    
+*GET /competency/[id]    
 
 GET /competency/[id]/people
 
-POST /competency
+*POST /competency
 
-PUT /competency/[id]
+*PUT /competency/[id]
 
-DELETE /competency/[id]
+*DELETE /competency/[id]
 
 ## Facility
 
-GET /facility
+*GET /facility
 
-GET /facility/[id]
+*GET /facility/[id]
 
-POST /facility
+*POST /facility
 
-PUT /facility/[id]
+*PUT /facility/[id]
 
-DELETE /facility/[id]
+*DELETE /facility/[id]
+
+## Location
+
+*GET /location
+
+*GET /location/[id]
+
+*POST /location
+
+*PUT /location/[id]
+
+*DELETE /location/[id]
+
+## Phone
+
+*GET /phone
+
+*GET /phone/[id]
+
+*POST /phone
+
+*PUT /phone/[id]
+
+*DELETE /phone/[id]
+
+## Email
+
+*GET /email
+
+*GET /email/[id]
+
+*POST /email
+
+*PUT /email/[id]
+
+*DELETE /email/[id]

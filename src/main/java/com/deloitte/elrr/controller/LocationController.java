@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.deloitte.elrr.dto.LocationDto;
 import com.deloitte.elrr.entity.Location;
 import com.deloitte.elrr.exception.ResourceNotFoundException;
-import com.deloitte.elrr.jpa.svc.LocationSvc;
 import com.deloitte.elrr.jpa.svc.LocationSvc;
 
 import lombok.extern.slf4j.Slf4j;
@@ -113,8 +111,8 @@ public class LocationController {
     @PostMapping("/location")
     public ResponseEntity<LocationDto> createLocation(
             @Valid @RequestBody final LocationDto locationDto) {
-        Location org = mapper.map(locationDto, Location.class);
-        LocationDto response = mapper.map(locationSvc.save(org), LocationDto.class);
+        Location location = mapper.map(locationDto, Location.class);
+        LocationDto response = mapper.map(locationSvc.save(location), LocationDto.class);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -151,18 +149,18 @@ public class LocationController {
      *
      * @param locationId
      * @return ResponseEntity<HttpStatus>
-     */
-    @DeleteMapping("/location/{id}")
-    public ResponseEntity<HttpStatus> deleteLocation(
-            @PathVariable(value = "id") final UUID locationId) {
-        try {
-            log.info("Deleting  Location:.........");
-            log.info("Deleting Location id:........." + locationId);
-            locationSvc.delete(locationId);
-            return ResponseEntity.ok(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+          * @throws ResourceNotFoundException 
+          */
+          @DeleteMapping("/location/{id}")
+          public ResponseEntity<HttpStatus> deleteFacility(
+                  @PathVariable(value = "id") final UUID locationId) 
+                  throws ResourceNotFoundException {
+         log.info("Deleting  Location:.........");
+         log.info("Deleting Location id:........." + locationId);
+         locationSvc.get(locationId).orElseThrow(() -> new ResourceNotFoundException(
+                     "Location not found for this id to delete :: " + locationId));
+         locationSvc.delete(locationId);
+         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+     }
 
 }

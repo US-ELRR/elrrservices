@@ -1,3 +1,5 @@
+SET search_path TO elrr;
+
 -- Service Database Schema for P2997 Alignment
 
 DO $$ BEGIN
@@ -24,7 +26,7 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
-    CREATE TYPE comp_cred_type AS ENUM (
+    CREATE TYPE qualification_type AS ENUM (
         'COMPETENCY', 'CREDENTIAL');
 EXCEPTION
     WHEN duplicate_object THEN null;
@@ -134,9 +136,9 @@ CREATE TABLE IF NOT EXISTS person_organization (
     last_modified               TIMESTAMP WITH TIME ZONE
 );
 
-CREATE TABLE IF NOT EXISTS comp_creds (
+CREATE TABLE IF NOT EXISTS qualification (
     id                          UUID PRIMARY KEY,
-    type                        comp_cred_type NOT NULL,
+    type                        qualification_type NOT NULL,
     identifier                  VARCHAR(100),
     identifier_url              TEXT,
     taxonomy_id                 VARCHAR(100),
@@ -161,9 +163,9 @@ CREATE TABLE IF NOT EXISTS comp_creds (
     last_modified               TIMESTAMP WITH TIME ZONE
 );
 
-CREATE TABLE IF NOT EXISTS person_comp_cred (
+CREATE TABLE IF NOT EXISTS person_qualification (
     employment_record_id        UUID NOT NULL REFERENCES person (id),
-    comp_cred_id                UUID NOT NULL REFERENCES comp_creds (id),
+    qualification_id            UUID NOT NULL REFERENCES qualification (id),
     hasRecord                   BOOLEAN,
     updated_by                  VARCHAR(20),
     inserted_date               TIMESTAMP WITH TIME ZONE,
@@ -185,7 +187,7 @@ CREATE TABLE IF NOT EXISTS learning_resource (
     department_name             VARCHAR(100),
     grade_scale_code            VARCHAR(50),
     metadata_repository         VARCHAR(50),
-    lrsendpoint                 VARCHAR(50),
+    lrs_endpoint                 VARCHAR(50),
     description                 TEXT,
     updated_by                  VARCHAR(20),
     inserted_date               TIMESTAMP WITH TIME ZONE,
@@ -215,12 +217,8 @@ CREATE TABLE IF NOT EXISTS phone (
 );
 
 CREATE TABLE IF NOT EXISTS person_phone (
-    id                          UUID PRIMARY KEY,
     person_id                   UUID NOT NULL REFERENCES person (id),
-    phone_id                    UUID NOT NULL REFERENCES phone (id),
-    updated_by                  VARCHAR(20),
-    inserted_date               TIMESTAMP WITH TIME ZONE,
-    last_modified               TIMESTAMP WITH TIME ZONE
+    phone_id                    UUID NOT NULL REFERENCES phone (id)
 );
 
 CREATE TABLE IF NOT EXISTS email (
@@ -233,12 +231,8 @@ CREATE TABLE IF NOT EXISTS email (
 );
 
 CREATE TABLE IF NOT EXISTS person_email (
-    id                          UUID PRIMARY KEY,
     person_id                   UUID NOT NULL REFERENCES person (id),
-    email_id                    UUID NOT NULL REFERENCES email (id),
-    updated_by                  VARCHAR(20),
-    inserted_date               TIMESTAMP WITH TIME ZONE,
-    last_modified               TIMESTAMP WITH TIME ZONE                 
+    email_id                    UUID NOT NULL REFERENCES email (id)
 );
 
 CREATE TABLE IF NOT EXISTS facility (
@@ -254,13 +248,9 @@ CREATE TABLE IF NOT EXISTS facility (
 );
 
 CREATE TABLE IF NOT EXISTS organization_facility (
-    id                          UUID PRIMARY KEY,
     facility_id                 UUID NOT NULL REFERENCES facility (id),
-    organization_id             UUID NOT NULL REFERENCES organization (id),
-    updated_by                  VARCHAR(20),
-    inserted_date               TIMESTAMP WITH TIME ZONE,
-    last_modified               TIMESTAMP WITH TIME ZONE
-);
+    organization_id             UUID NOT NULL REFERENCES organization (id)
+);  
 
 CREATE TABLE IF NOT EXISTS employment_record (
     id                          UUID PRIMARY KEY,
@@ -285,12 +275,9 @@ CREATE TABLE IF NOT EXISTS employment_record (
     last_modified               TIMESTAMP WITH TIME ZONE
 );
 
-CREATE TABLE IF NOT EXISTS employment_comp_cred (
+CREATE TABLE IF NOT EXISTS employment_qualification (
     employment_record_id        UUID NOT NULL REFERENCES person (id),
-    comp_cred_id                UUID NOT NULL REFERENCES comp_creds (id),
-    updated_by                  VARCHAR(20),
-    inserted_date               TIMESTAMP WITH TIME ZONE,
-    last_modified               TIMESTAMP WITH TIME ZONE
+    qualification_id            UUID NOT NULL REFERENCES qualification (id)
 );
 
 CREATE TABLE IF NOT EXISTS military_record (

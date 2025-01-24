@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "LOCATION")
+@Table(name = "location")
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Getter

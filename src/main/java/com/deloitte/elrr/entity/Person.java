@@ -2,10 +2,13 @@ package com.deloitte.elrr.entity;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -15,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "PERSON")
+@Table(name = "person")
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -53,23 +56,68 @@ public class Person extends Auditable<String> {
     @JoinColumn(name="mailing_address_id")
     private Location mailingAddress;
 
-    //mailing_address_id -- locations
-    //physical_address_id
-    //shipping_address_id
-    //billing_address_id
-    //on_campus_address_id
-    //off_campus_address_id
-    //temporary_address_id
-    //permanent_student_address_id
-    //employment_address_id
-    //time_of_admission_address_id
-    //father_address_id
-    //mother_address_id
-    //guardian_address_id
-    //birthplace
+    @ManyToOne
+    @JoinColumn(name="physical_address_id")
+    private Location physicalAddress;
+
+    @ManyToOne
+    @JoinColumn(name="shipping_address_id")
+    private Location shippingAddress;
+
+    @ManyToOne
+    @JoinColumn(name="billing_address_id")
+    private Location billingAddress;
+
+    @ManyToOne
+    @JoinColumn(name="on_campus_address_id")
+    private Location onCampusAddress;
+
+    @ManyToOne
+    @JoinColumn(name="off_campus_address_id")
+    private Location offCampusAddress;
+
+    @ManyToOne
+    @JoinColumn(name="permanent_student_address_id")
+    private Location permanentStudentAddress;
+
+    @ManyToOne
+    @JoinColumn(name="employment_address_id")
+    private Location employmentAddress;
+
+    @ManyToOne
+    @JoinColumn(name="time_of_admission_address_id")
+    private Location timeOfAdmissionAddress;
+
+    @ManyToOne
+    @JoinColumn(name="father_address_id")
+    private Location fatherAddress;
+
+    @ManyToOne
+    @JoinColumn(name="mother_address_id")
+    private Location motherAddress;
+
+    @ManyToOne
+    @JoinColumn(name="guardian_address_id")
+    private Location guardianAddress;
+
+    @ManyToOne
+    @JoinColumn(name="birthplace_id")
+    private Location birthplaceAddress;
 
     @Column(name = "birthdate")
     private Date birthdate;
+
+    @ManyToMany
+    @JoinTable(name="person_phone",
+        joinColumns=@JoinColumn(name="person_id", referencedColumnName="id"),
+        inverseJoinColumns=@JoinColumn(name="phone_id", referencedColumnName="id"))
+    private Set<Phone> phoneNumbers;
+
+    @ManyToMany
+    @JoinTable(name="person_email",
+        joinColumns=@JoinColumn(name="person_id", referencedColumnName="id"),
+        inverseJoinColumns=@JoinColumn(name="email_id", referencedColumnName="id"))
+    private Set<Email> emailAddresses;
 
     @Column(name = "citizenship")
     private String citizenship;

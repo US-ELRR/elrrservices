@@ -1,24 +1,21 @@
 package com.deloitte.elrr.dto;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.UUID;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Data
-public class PersonDto implements Serializable {
-
-    private static final long serialVersionUID = -8031955138252824918L;
-
-    private UUID id;
+@EqualsAndHashCode(callSuper = true)
+public class PersonDto extends AbstractDto {
   
     @Size(max = 255)
     private String name;
@@ -79,5 +76,6 @@ public class PersonDto implements Serializable {
     private Boolean unionMembership;
 
     @Valid
+    //@Nullable
     private LocationDto mailingAddress;
 }

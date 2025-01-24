@@ -3,7 +3,7 @@
  */
 package com.deloitte.elrr.entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -34,7 +34,7 @@ public abstract class Auditable<U> extends Entity {
 
     @Column(name = "inserted_date", updatable = false)
     @CreationTimestamp
-    private Timestamp insertedDate;
+    private LocalDateTime insertedDate;
 
     @Column(name = "updated_by")
     @LastModifiedBy
@@ -42,5 +42,5 @@ public abstract class Auditable<U> extends Entity {
 
     @Column(name = "last_modified")
     @UpdateTimestamp
-    private Timestamp lastModified;
+    private LocalDateTime lastModified;
 }

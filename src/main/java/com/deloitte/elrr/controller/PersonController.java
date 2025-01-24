@@ -5,10 +5,13 @@ package com.deloitte.elrr.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
+import org.apache.tomcat.util.file.ConfigurationSource.Resource;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,9 +28,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.deloitte.elrr.dto.PersonDto;
+import com.deloitte.elrr.dto.PhoneDto;
 import com.deloitte.elrr.entity.Person;
+import com.deloitte.elrr.entity.Phone;
 import com.deloitte.elrr.exception.ResourceNotFoundException;
 import com.deloitte.elrr.jpa.svc.PersonSvc;
+import com.deloitte.elrr.jpa.svc.PhoneSvc;
+import com.jayway.jsonpath.PathNotFoundException;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -51,6 +59,7 @@ public class PersonController {
      */
     @Autowired
     private ModelMapper mapper;
+
     /**
      *
      * @param personId
@@ -63,7 +72,7 @@ public class PersonController {
             throws ResourceNotFoundException {
         try {
             log.info("getting  PersonDto:.........");
-            log.info("getting Organization id:........." + personId);
+            log.info("getting Person id:........." + personId);
             List<PersonDto> persontoList = new ArrayList<>();
             if (personId == null) {
                 Iterable<Person> persons = personSvc.findAll();
@@ -90,6 +99,7 @@ public class PersonController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     /**
      *
      * @param personId
@@ -100,14 +110,15 @@ public class PersonController {
     public ResponseEntity<PersonDto> getPersonById(
             @PathVariable(value = "id") final UUID personId)
             throws ResourceNotFoundException {
-        log.info("getting  Organization:.........");
-        log.info("getting Organization id:........." + personId);
+        log.info("getting  Person:.........");
+        log.info("getting Person id:........." + personId);
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Person not found for this id :: " + personId));
         PersonDto personDto = mapper.map(person, PersonDto.class);
         return ResponseEntity.ok().body(personDto);
     }
+
     /**
      *
      * @param personDto
@@ -117,10 +128,10 @@ public class PersonController {
     public ResponseEntity<PersonDto> createPerson(
             @Valid @RequestBody final PersonDto personDto) {
         Person person = mapper.map(personDto, Person.class);
-        log.info(person.getMailingAddress().getApartmentRoomSuiteNumber());
         PersonDto response = mapper.map(personSvc.save(person), PersonDto.class);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
     /**
      *
      * @param personId
@@ -149,22 +160,54 @@ public class PersonController {
                 .ok(mapper.map(personSvc.save(person), PersonDto.class));
 
     }
+
     /**
      *
      * @param personId
      * @return ResponseEntity<HttpStatus>
+     * @throws ResourceNotFoundException
      */
     @DeleteMapping("/person/{id}")
-    public ResponseEntity<HttpStatus> deletePerson(
-            @PathVariable(value = "id") final UUID personId) {
-        try {
-            log.info("deleting  person:.........");
-            log.info("Deleting  Person:........." + personId);
-            personSvc.delete(personId);
-            return ResponseEntity.ok(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<HttpStatus> deleteFacility(
+            @PathVariable(value = "id") final UUID personId)
+            throws ResourceNotFoundException {
+        log.info("Deleting  Person:.........");
+        log.info("Deleting Person id:........." + personId);
+        personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
+                "Person not found for this id to delete :: " + personId));
+        personSvc.delete(personId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @Autowired
+    private PhoneSvc phoneSvc;
+
+    /*
+     * Phone
+     */
+    @PostMapping("/person/{personId}/phone")
+    public ResponseEntity<PhoneDto> addPhoneToPerson(
+            @PathVariable(value = "personId") final UUID personId,
+            @Valid @RequestBody final PhoneDto phoneDto)
+            throws ResourceNotFoundException {
+        log.info("Adding Phone to Person with id:......" + personId);
+        Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
+                "Person not found for this id to delete :: " + personId));
+        Phone phone = phoneSvc.save(mapper.map(phoneDto, Phone.class));
+        person.getPhoneNumbers().add(phone);
+        personSvc.save(person);
+        return ResponseEntity.ok(mapper.map(phone, PhoneDto.class));
+    }
+
+    @GetMapping("/person/{personId}/phone")
+    public ResponseEntity<List<PhoneDto>> getPhones(
+            @PathVariable(value = "personId") final UUID personId)
+            throws ResourceNotFoundException {
+        log.info("Getting phones for Person with id:......" + personId);
+        Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
+                "Person not found for this id to delete :: " + personId));
+        return ResponseEntity.ok(person.getPhoneNumbers().stream()
+            .map(p -> mapper.map(p, PhoneDto.class))
+            .collect(Collectors.toList()));
+    }
 }
