@@ -149,18 +149,18 @@ public class EmailController {
      *
      * @param emailId
      * @return ResponseEntity<HttpStatus>
-          * @throws ResourceNotFoundException 
-          */
-          @DeleteMapping("/email/{id}")
-          public ResponseEntity<HttpStatus> deleteFacility(
-                  @PathVariable(value = "id") final UUID emailId) 
-                  throws ResourceNotFoundException {
-         log.info("Deleting  Email:.........");
-         log.info("Deleting Email id:........." + emailId);
-         emailSvc.get(emailId).orElseThrow(() -> new ResourceNotFoundException(
-                     "Email not found for this id to delete :: " + emailId));
-         emailSvc.delete(emailId);
-         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-     }
+     * @throws ResourceNotFoundException
+     */
+    @DeleteMapping("/email/{id}")
+    public ResponseEntity<HttpStatus> deleteEmail(
+            @PathVariable(value = "id") final UUID emailId)
+            throws ResourceNotFoundException {
+        log.info("Deleting  Email:.........");
+        log.info("Deleting Email id:........." + emailId);
+        emailSvc.get(emailId).orElseThrow(() -> new ResourceNotFoundException(
+                "Email not found for this id to delete :: " + emailId));
+        emailSvc.delete(emailId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 
 }

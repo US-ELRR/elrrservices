@@ -53,6 +53,7 @@ public class OrganizationController {
      */
     @Autowired
     private ModelMapper mapper;
+
     /**
      *
      * @param organizationid
@@ -61,8 +62,7 @@ public class OrganizationController {
      */
     @GetMapping("/organization")
     public ResponseEntity<List<OrganizationDto>> getAllOrganizations(
-            @RequestParam(value = "id", required = false)
-            final UUID organizationid)
+            @RequestParam(value = "id", required = false) final UUID organizationid)
             throws ResourceNotFoundException {
         try {
             log.info("GetMapping  Organization:.........");
@@ -71,7 +71,7 @@ public class OrganizationController {
             if (organizationid == null) {
                 Iterable<Organization> organizations = organizationSvc
                         .findAll();
-                        
+
                 for (Organization organization : organizations) {
                     OrganizationDto organizationDto = mapper.map(organization,
                             OrganizationDto.class);
@@ -97,6 +97,7 @@ public class OrganizationController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     /**
      *
      * @param organizationid
@@ -117,6 +118,7 @@ public class OrganizationController {
                 OrganizationDto.class);
         return ResponseEntity.ok().body(organizationDto);
     }
+
     /**
      *
      * @param organizationDto
@@ -158,23 +160,23 @@ public class OrganizationController {
                 OrganizationDto.class));
 
     }
-    
+
     /**
      *
      * @param organizationId
      * @return ResponseEntity<HttpStatus>
-          * @throws ResourceNotFoundException 
-          */
-          @DeleteMapping("/organization/{id}")
-          public ResponseEntity<HttpStatus> deleteFacility(
-                  @PathVariable(value = "id") final UUID organizationId) 
-                  throws ResourceNotFoundException {
-         log.info("Deleting  Organization:.........");
-         log.info("Deleting Organization id:........." + organizationId);
-         organizationSvc.get(organizationId).orElseThrow(() -> new ResourceNotFoundException(
-                     "Organization not found for this id to delete :: " + organizationId));
-         organizationSvc.delete(organizationId);
-         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-     }
+     * @throws ResourceNotFoundException
+     */
+    @DeleteMapping("/organization/{id}")
+    public ResponseEntity<HttpStatus> deleteOrganization(
+            @PathVariable(value = "id") final UUID organizationId)
+            throws ResourceNotFoundException {
+        log.info("Deleting  Organization:.........");
+        log.info("Deleting Organization id:........." + organizationId);
+        organizationSvc.get(organizationId).orElseThrow(() -> new ResourceNotFoundException(
+                "Organization not found for this id to delete :: " + organizationId));
+        organizationSvc.delete(organizationId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 
 }

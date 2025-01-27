@@ -149,18 +149,18 @@ public class PhoneController {
      *
      * @param phoneId
      * @return ResponseEntity<HttpStatus>
-          * @throws ResourceNotFoundException 
-          */
-          @DeleteMapping("/phone/{id}")
-          public ResponseEntity<HttpStatus> deleteFacility(
-                  @PathVariable(value = "id") final UUID phoneId) 
-                  throws ResourceNotFoundException {
-         log.info("Deleting  Phone:.........");
-         log.info("Deleting Phone id:........." + phoneId);
-         phoneSvc.get(phoneId).orElseThrow(() -> new ResourceNotFoundException(
-                     "Phone not found for this id to delete :: " + phoneId));
-         phoneSvc.delete(phoneId);
-         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-     }
+     * @throws ResourceNotFoundException
+     */
+    @DeleteMapping("/phone/{id}")
+    public ResponseEntity<HttpStatus> deletePhone(
+            @PathVariable(value = "id") final UUID phoneId)
+            throws ResourceNotFoundException {
+        log.info("Deleting  Phone:.........");
+        log.info("Deleting Phone id:........." + phoneId);
+        phoneSvc.get(phoneId).orElseThrow(() -> new ResourceNotFoundException(
+                "Phone not found for this id to delete :: " + phoneId));
+        phoneSvc.delete(phoneId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 
 }

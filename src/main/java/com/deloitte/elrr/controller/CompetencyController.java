@@ -149,18 +149,18 @@ public class CompetencyController {
      *
      * @param competencyId
      * @return ResponseEntity<HttpStatus>
-          * @throws ResourceNotFoundException 
-          */
-          @DeleteMapping("/competency/{id}")
-          public ResponseEntity<HttpStatus> deleteFacility(
-                  @PathVariable(value = "id") final UUID competencyId) 
-                  throws ResourceNotFoundException {
-         log.info("Deleting  Competency:.........");
-         log.info("Deleting Competency id:........." + competencyId);
-         competencySvc.get(competencyId).orElseThrow(() -> new ResourceNotFoundException(
-                     "Competency not found for this id to delete :: " + competencyId));
-         competencySvc.delete(competencyId);
-         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-     }
+     * @throws ResourceNotFoundException
+     */
+    @DeleteMapping("/competency/{id}")
+    public ResponseEntity<HttpStatus> deleteCompetency(
+            @PathVariable(value = "id") final UUID competencyId)
+            throws ResourceNotFoundException {
+        log.info("Deleting  Competency:.........");
+        log.info("Deleting Competency id:........." + competencyId);
+        competencySvc.get(competencyId).orElseThrow(() -> new ResourceNotFoundException(
+                "Competency not found for this id to delete :: " + competencyId));
+        competencySvc.delete(competencyId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 
 }

@@ -152,7 +152,7 @@ public class CredentialController {
      * @throws ResourceNotFoundException
      */
     @DeleteMapping("/credential/{id}")
-    public ResponseEntity<HttpStatus> deleteFacility(
+    public ResponseEntity<HttpStatus> deleteCredential(
             @PathVariable(value = "id") final UUID credentialId)
             throws ResourceNotFoundException {
         log.info("Deleting  Credential:.........");
@@ -162,6 +162,5 @@ public class CredentialController {
         credentialSvc.delete(credentialId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 
 }

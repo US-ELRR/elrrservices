@@ -168,7 +168,7 @@ public class PersonController {
      * @throws ResourceNotFoundException
      */
     @DeleteMapping("/person/{id}")
-    public ResponseEntity<HttpStatus> deleteFacility(
+    public ResponseEntity<HttpStatus> deletePerson(
             @PathVariable(value = "id") final UUID personId)
             throws ResourceNotFoundException {
         log.info("Deleting  Person:.........");
@@ -207,7 +207,7 @@ public class PersonController {
         Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
                 "Person not found for this id to delete :: " + personId));
         return ResponseEntity.ok(person.getPhoneNumbers().stream()
-            .map(p -> mapper.map(p, PhoneDto.class))
-            .collect(Collectors.toList()));
+                .map(p -> mapper.map(p, PhoneDto.class))
+                .collect(Collectors.toList()));
     }
 }

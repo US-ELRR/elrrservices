@@ -149,18 +149,18 @@ public class LocationController {
      *
      * @param locationId
      * @return ResponseEntity<HttpStatus>
-          * @throws ResourceNotFoundException 
-          */
-          @DeleteMapping("/location/{id}")
-          public ResponseEntity<HttpStatus> deleteFacility(
-                  @PathVariable(value = "id") final UUID locationId) 
-                  throws ResourceNotFoundException {
-         log.info("Deleting  Location:.........");
-         log.info("Deleting Location id:........." + locationId);
-         locationSvc.get(locationId).orElseThrow(() -> new ResourceNotFoundException(
-                     "Location not found for this id to delete :: " + locationId));
-         locationSvc.delete(locationId);
-         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-     }
+     * @throws ResourceNotFoundException
+     */
+    @DeleteMapping("/location/{id}")
+    public ResponseEntity<HttpStatus> deleteLocation(
+            @PathVariable(value = "id") final UUID locationId)
+            throws ResourceNotFoundException {
+        log.info("Deleting  Location:.........");
+        log.info("Deleting Location id:........." + locationId);
+        locationSvc.get(locationId).orElseThrow(() -> new ResourceNotFoundException(
+                "Location not found for this id to delete :: " + locationId));
+        locationSvc.delete(locationId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 
 }

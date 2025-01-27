@@ -38,10 +38,10 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("api")
 @Slf4j
 public class FacilityController {
-    
+
     @Autowired
     private FacilitySvc facilitySvc;
-    
+
     @Autowired
     private ModelMapper mapper;
 
@@ -145,16 +145,16 @@ public class FacilityController {
      *
      * @param facilityId
      * @return ResponseEntity<HttpStatus>
-          * @throws ResourceNotFoundException 
-          */
-         @DeleteMapping("/facility/{id}")
-         public ResponseEntity<HttpStatus> deleteFacility(
-                 @PathVariable(value = "id") final UUID facilityId) 
-                 throws ResourceNotFoundException {
+     * @throws ResourceNotFoundException
+     */
+    @DeleteMapping("/facility/{id}")
+    public ResponseEntity<HttpStatus> deleteFacility(
+            @PathVariable(value = "id") final UUID facilityId)
+            throws ResourceNotFoundException {
         log.info("Deleting  Facility:.........");
         log.info("Deleting Facility id:........." + facilityId);
         facilitySvc.get(facilityId).orElseThrow(() -> new ResourceNotFoundException(
-                    "Facility not found for this id to delete :: " + facilityId));
+                "Facility not found for this id to delete :: " + facilityId));
         facilitySvc.delete(facilityId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
