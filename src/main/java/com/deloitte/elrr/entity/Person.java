@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -118,6 +119,12 @@ public class Person extends Auditable<String> {
         joinColumns=@JoinColumn(name="person_id", referencedColumnName="id"),
         inverseJoinColumns=@JoinColumn(name="email_id", referencedColumnName="id"))
     private Set<Email> emailAddresses;
+
+    @OneToMany(mappedBy="person")
+    private Set<PersonalCompetency> competencies;
+
+    @OneToMany(mappedBy="person")
+    private Set<PersonalCredential> credentials;
 
     @Column(name = "citizenship")
     private String citizenship;

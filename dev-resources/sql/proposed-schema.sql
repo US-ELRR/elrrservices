@@ -128,8 +128,8 @@ CREATE TABLE IF NOT EXISTS person (
 
 CREATE TABLE IF NOT EXISTS person_organization (
     id                          UUID PRIMARY KEY,
-    person_id                   UUID NOT NULL REFERENCES person (id),
-    organization_id             UUID NOT NULL REFERENCES organization (id),
+    person_id                   UUID NOT NULL REFERENCES person (id) ON DELETE CASCADE,
+    organization_id             UUID NOT NULL REFERENCES organization (id) ON DELETE CASCADE,
     relationship_type           person_org_relation NOT NULL,
     updated_by                  VARCHAR(20),
     inserted_date               TIMESTAMP WITH TIME ZONE,
@@ -164,8 +164,8 @@ CREATE TABLE IF NOT EXISTS qualification (
 );
 
 CREATE TABLE IF NOT EXISTS person_qualification (
-    employment_record_id        UUID NOT NULL REFERENCES person (id),
-    qualification_id            UUID NOT NULL REFERENCES qualification (id),
+    person_id                   UUID NOT NULL REFERENCES person (id) ON DELETE CASCADE,
+    qualification_id            UUID NOT NULL REFERENCES qualification (id) ON DELETE CASCADE,
     hasRecord                   BOOLEAN,
     updated_by                  VARCHAR(20),
     inserted_date               TIMESTAMP WITH TIME ZONE,
@@ -196,8 +196,8 @@ CREATE TABLE IF NOT EXISTS learning_resource (
 
 CREATE TABLE IF NOT EXISTS learning_record (
     id                          UUID PRIMARY KEY,
-    person_id                   UUID NOT NULL REFERENCES person (id),
-    learning_resource_id        UUID NOT NULL REFERENCES learning_resource (id),
+    person_id                   UUID NOT NULL REFERENCES person (id) ON DELETE CASCADE,
+    learning_resource_id        UUID NOT NULL REFERENCES learning_resource (id) ON DELETE CASCADE,
     enrollment_date             DATE,
     record_status               learning_status NOT NULL,
     academic_grade              VARCHAR(50),
@@ -217,8 +217,8 @@ CREATE TABLE IF NOT EXISTS phone (
 );
 
 CREATE TABLE IF NOT EXISTS person_phone (
-    person_id                   UUID NOT NULL REFERENCES person (id),
-    phone_id                    UUID NOT NULL REFERENCES phone (id)
+    person_id                   UUID NOT NULL REFERENCES person (id) ON DELETE CASCADE,
+    phone_id                    UUID NOT NULL REFERENCES phone (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS email (
@@ -231,8 +231,8 @@ CREATE TABLE IF NOT EXISTS email (
 );
 
 CREATE TABLE IF NOT EXISTS person_email (
-    person_id                   UUID NOT NULL REFERENCES person (id),
-    email_id                    UUID NOT NULL REFERENCES email (id)
+    person_id                   UUID NOT NULL REFERENCES person (id) ON DELETE CASCADE,
+    email_id                    UUID NOT NULL REFERENCES email (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS facility (
@@ -248,14 +248,14 @@ CREATE TABLE IF NOT EXISTS facility (
 );
 
 CREATE TABLE IF NOT EXISTS organization_facility (
-    facility_id                 UUID NOT NULL REFERENCES facility (id),
-    organization_id             UUID NOT NULL REFERENCES organization (id)
+    facility_id                 UUID NOT NULL REFERENCES facility (id) ON DELETE CASCADE,
+    organization_id             UUID NOT NULL REFERENCES organization (id) ON DELETE CASCADE
 );  
 
 CREATE TABLE IF NOT EXISTS employment_record (
     id                          UUID PRIMARY KEY,
-    employer_organization       UUID NOT NULL REFERENCES organization (id),
-    employee                    UUID NOT NULL REFERENCES person (id),
+    employer_organization       UUID NOT NULL REFERENCES organization (id) ON DELETE CASCADE,
+    employee                    UUID NOT NULL REFERENCES person (id) ON DELETE CASCADE,
     employee_id                 VARCHAR(255),
     custom_employment_record_id VARCHAR(255),
     employee_type               VARCHAR(255), --enum/controlled?
@@ -276,13 +276,13 @@ CREATE TABLE IF NOT EXISTS employment_record (
 );
 
 CREATE TABLE IF NOT EXISTS employment_qualification (
-    employment_record_id        UUID NOT NULL REFERENCES person (id),
-    qualification_id            UUID NOT NULL REFERENCES qualification (id)
+    employment_record_id        UUID NOT NULL REFERENCES person (id) ON DELETE CASCADE,
+    qualification_id            UUID NOT NULL REFERENCES qualification (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS military_record (
     id                          UUID PRIMARY KEY,
-    person_id                   UUID NOT NULL REFERENCES person (id),
+    person_id                   UUID NOT NULL REFERENCES person (id)  ON DELETE CASCADE,
     branch                      VARCHAR(100) NOT NULL, -- ENUM? CONTROLLED?
     country                     VARCHAR(100) NOT NULL, -- VALIDATED?
     induction_date              DATE,

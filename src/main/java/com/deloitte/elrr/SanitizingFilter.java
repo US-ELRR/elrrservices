@@ -90,7 +90,7 @@ public class SanitizingFilter implements Filter {
             if (val instanceof JSONObject) {
                 if (hasHomoGlyphs((JSONObject) val)) return true;
             } else if (confusables.isDangerous(key) 
-                || confusables.isDangerous((String) val)) {
+                || confusables.isDangerous(String.valueOf(val))) {
                     return true;
             }
         }

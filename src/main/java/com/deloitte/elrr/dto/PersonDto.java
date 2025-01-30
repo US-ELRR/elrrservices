@@ -2,6 +2,7 @@ package com.deloitte.elrr.dto;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Set;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
@@ -76,6 +77,8 @@ public class PersonDto extends AbstractDto {
     private Boolean unionMembership;
 
     @Valid
-    //@Nullable
     private LocationDto mailingAddress;
+
+    @Valid
+    private Set<PhoneDto> phones;
 }

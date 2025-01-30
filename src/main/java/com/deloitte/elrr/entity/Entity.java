@@ -17,7 +17,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Entity {
+public abstract class Entity {
 
     @Id
     @GenericGenerator(name = "semi_seq_uuid", strategy = "com.deloitte.elrr.util.SemiSeqUUIdGenerator")

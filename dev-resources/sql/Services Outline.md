@@ -8,15 +8,8 @@ GET /person
 GET /person/[id]
 - single person including address rels, phone, email
 
-GET /person/[id]/learningrecord
-- list learner learningrecords
-
-GET /person/[id]/employmentrecord
-
-GET /person/[id]/militaryrecord
-
 POST /person
-- Save new person. Included addresses might be IDs, or full address DTOs without IDs (which will save new location objects). Can include phones and emails, will resolve list.
+- Save new person. Included addresses might be IDs, or full address DTOs without IDs (which will save new location objects).
 
 PUT /person/[id]
 - update and return person
@@ -44,34 +37,34 @@ DELETE /person/[id]/organization/[id]
 
 #### Person-Phone
 
-GET /person/[id]/phone
+*GET /person/[id]/phone
 - a person's phone numbers
 
-POST /person/[id]/phone
+*POST /person/[id]/phone
 - Creates a new phone and adds it to the person
 - Returns phone
 
-POST /person/[id]/phone/[id]
+*POST /person/[id]/phone/[id]
 - no body
 - associates a person with an existing phone, returns phones
 
-DELETE /person/[id]/phone/[id]
+*DELETE /person/[id]/phone/[id]
 - Removes association
 
 #### Person-Email
 
-GET /person/[id]/email
+*GET /person/[id]/email
 - a person's emails
 
-POST /person/[id]/email
+*POST /person/[id]/email
 - Creates a new email and adds it to the person
 - Returns email
 
-POST /person/[id]/email/[id]
+*POST /person/[id]/email/[id]
 - no body
 - associates a person with an existing email, returns emails
 
-DELETE /person/[id]/email/[id]
+*DELETE /person/[id]/email/[id]
 - Removes association
 
 #### Person-Learning Record
@@ -105,21 +98,20 @@ POST /person/[id]/employmentrecord
 
 The calls below are the same for /competency and /credential
 
-GET /person/[id]/competency
+*GET /person/[id]/competency
 - list learner competencies
 
-GET /person/[id]/competency/[id]
+?GET /person/[id]/competency/[id]
 - returns rel if exists
 
-POST /person/[id]/competency/[id] (& credential)
+*POST /person/[id]/competency/[id] (& credential)
 - may contain hasRecord
-- inserts comp
 
-PUT /person/[id]/competency/[id]
+?PUT /person/[id]/competency/[id]
 - Updates hasRecord
 - Returns rel
 
-DELETE /person/[id]/competency/[id]
+?DELETE /person/[id]/competency/[id]
 - Removes Rel, return success
 
 ## Learning Resource

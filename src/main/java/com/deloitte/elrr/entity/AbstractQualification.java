@@ -15,14 +15,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "qualification")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Table(name = "qualification")
 @DiscriminatorColumn(name = "type")
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public abstract class AbstractQualification extends Auditable<String> {
+public class AbstractQualification extends Auditable<String> {
 
     @Column(name = "identifier")
     private String identifier;

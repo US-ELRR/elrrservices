@@ -17,11 +17,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author mnelakurti
  *
  */
 @ControllerAdvice
+@Slf4j
 public class ELRRExceptionHandler extends ResponseEntityExceptionHandler {
     /**
      *
@@ -65,6 +68,7 @@ public class ELRRExceptionHandler extends ResponseEntityExceptionHandler {
             final WebRequest request) {
         ELRRErrorDetails errorDetails = new ELRRErrorDetails(new Date(),
                 ex.getMessage(), request.getDescription(false), null);
+                log.error("General Error", ex);
         return new ResponseEntity<>(errorDetails,
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
