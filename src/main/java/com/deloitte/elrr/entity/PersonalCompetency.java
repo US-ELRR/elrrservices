@@ -1,6 +1,5 @@
 package com.deloitte.elrr.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -27,10 +26,4 @@ public class PersonalCompetency extends PersonalQualification {
         this.setHasRecord(hasRecord);
         this.setPerson(p);
     }
-
-    //@Override
-    //public AbstractQualification getQualification() {
-    //    return competency;
-    //}
-
 }

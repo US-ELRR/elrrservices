@@ -126,6 +126,9 @@ public class Person extends Auditable<String> {
     @OneToMany(mappedBy="person")
     private Set<PersonalCredential> credentials;
 
+    @OneToMany(mappedBy="person")
+    private Set<LearningRecord> learningRecords;
+
     @Column(name = "citizenship")
     private String citizenship;
 

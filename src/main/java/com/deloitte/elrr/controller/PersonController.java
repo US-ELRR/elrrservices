@@ -28,12 +28,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.deloitte.elrr.dto.CompetencyDto;
 import com.deloitte.elrr.dto.CredentialDto;
 import com.deloitte.elrr.dto.EmailDto;
+import com.deloitte.elrr.dto.LearningRecordDto;
 import com.deloitte.elrr.dto.PersonDto;
 import com.deloitte.elrr.dto.PersonalQualificationDto;
 import com.deloitte.elrr.dto.PhoneDto;
 import com.deloitte.elrr.entity.Competency;
 import com.deloitte.elrr.entity.Credential;
 import com.deloitte.elrr.entity.Email;
+import com.deloitte.elrr.entity.LearningRecord;
+import com.deloitte.elrr.entity.LearningResource;
 import com.deloitte.elrr.entity.Person;
 import com.deloitte.elrr.entity.PersonalCompetency;
 import com.deloitte.elrr.entity.PersonalCredential;
@@ -43,6 +46,8 @@ import com.deloitte.elrr.exception.ResourceNotFoundException;
 import com.deloitte.elrr.jpa.svc.CompetencySvc;
 import com.deloitte.elrr.jpa.svc.CredentialSvc;
 import com.deloitte.elrr.jpa.svc.EmailSvc;
+import com.deloitte.elrr.jpa.svc.LearningRecordSvc;
+import com.deloitte.elrr.jpa.svc.LearningResourceSvc;
 import com.deloitte.elrr.jpa.svc.PersonSvc;
 import com.deloitte.elrr.jpa.svc.PersonalCompetencySvc;
 import com.deloitte.elrr.jpa.svc.PersonalCredentialSvc;
@@ -360,8 +365,8 @@ public class PersonController {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Competency not found this id :: " + personId));
         return ResponseEntity.ok(new PersonalQualificationDto<CompetencyDto>(
-            mapper.map(pc.getCompetency(), CompetencyDto.class),
-            pc.getHasRecord()));
+                mapper.map(pc.getCompetency(), CompetencyDto.class),
+                pc.getHasRecord()));
     }
 
     @PostMapping("/person/{personId}/competency/{competencyId}")
@@ -401,7 +406,7 @@ public class PersonController {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Competency not found this id :: " + personId));
         pc.setHasRecord(compDto.getHasRecord());
-        personalCompetencySvc.save(pc);        
+        personalCompetencySvc.save(pc);
         return ResponseEntity.ok(person.getCompetencies().stream()
                 .map(c -> new PersonalQualificationDto<CompetencyDto>(
                         mapper.map(c.getCompetency(), CompetencyDto.class),
@@ -410,7 +415,7 @@ public class PersonController {
     }
 
     @DeleteMapping("/person/{personId}/competency/{competencyId}")
-    public ResponseEntity<HttpStatus> deleteCompetencyAssociation (
+    public ResponseEntity<HttpStatus> deleteCompetencyAssociation(
             @PathVariable(value = "personId") final UUID personId,
             @PathVariable(value = "competencyId") final UUID competencyId)
             throws ResourceNotFoundException {
@@ -432,107 +437,153 @@ public class PersonController {
      * CREDENTIAL
      */
 
-     @Autowired
-     private CredentialSvc credentialSvc;
- 
-     @Autowired
-     private PersonalCredentialSvc personalCredentialSvc;
- 
-     @GetMapping("/person/{personId}/credential")
-     public ResponseEntity<List<PersonalQualificationDto<CredentialDto>>> getCredentials(
-             @PathVariable(value = "personId") final UUID personId)
-             throws ResourceNotFoundException {
-         log.info("Getting competencies for Person with id:......" + personId);
-         Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
-                 "Person not found for this id :: " + personId));
- 
-         return ResponseEntity.ok(person.getCredentials().stream()
-                 .map(c -> new PersonalQualificationDto<CredentialDto>(
-                         mapper.map(c.getCredential(), CredentialDto.class),
-                         c.getHasRecord()))
-                 .collect(Collectors.toList()));
-     }
- 
-     @GetMapping("/person/{personId}/credential/{credentialId}")
-     public ResponseEntity<PersonalQualificationDto<CredentialDto>> getCredential(
-             @PathVariable(value = "personId") final UUID personId,
-             @PathVariable(value = "credentialId") final UUID credentialId)
-             throws ResourceNotFoundException {
-         log.info("Getting competencies for Person with id:......" + personId);
-         Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
-                 "Person not found for this id :: " + personId));
-         PersonalCredential pc = person.getCredentials().stream()
-                 .filter(c -> c.getCredential().getId().equals(credentialId))
-                 .findFirst()
-                 .orElseThrow(() -> new ResourceNotFoundException(
-                         "Credential not found this id :: " + personId));
-         return ResponseEntity.ok(new PersonalQualificationDto<CredentialDto>(
-             mapper.map(pc.getCredential(), CredentialDto.class),
-             pc.getHasRecord()));
-     }
- 
-     @PostMapping("/person/{personId}/credential/{credentialId}")
-     public ResponseEntity<List<PersonalQualificationDto<CredentialDto>>> associateCredential(
-             @PathVariable(value = "personId") final UUID personId,
-             @PathVariable(value = "credentialId") final UUID credentialId,
-             @Valid @RequestBody final PersonalQualificationDto<CredentialDto> compDto)
-             throws ResourceNotFoundException {
-         log.info("Adding Credential to Person with id:......" + personId);
-         Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
-                 "Person not found for this id :: " + personId));
-         Credential comp = credentialSvc.get(credentialId).orElseThrow(() -> new ResourceNotFoundException(
-                 "Credential not found for this id :: " + credentialId));
-         PersonalCredential pc = (PersonalCredential) personalCredentialSvc.save(
-                 new PersonalCredential(person, comp, compDto.getHasRecord()));
-         person.getCredentials().add(pc);
-         personSvc.save(person);
-         return ResponseEntity.ok(person.getCredentials().stream()
-                 .map(c -> new PersonalQualificationDto<CredentialDto>(
-                         mapper.map(c.getCredential(), CredentialDto.class),
-                         c.getHasRecord()))
-                 .collect(Collectors.toList()));
-     }
- 
-     @PutMapping("/person/{personId}/credential/{credentialId}")
-     public ResponseEntity<List<PersonalQualificationDto<CredentialDto>>> updateCredentialAssociation(
-             @PathVariable(value = "personId") final UUID personId,
-             @PathVariable(value = "credentialId") final UUID credentialId,
-             @Valid @RequestBody final PersonalQualificationDto<CredentialDto> compDto)
-             throws ResourceNotFoundException {
-         log.info("Adding Credential to Person with id:......" + personId);
-         Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
-                 "Person not found for this id :: " + personId));
-         PersonalCredential pc = person.getCredentials().stream()
-                 .filter(c -> c.getCredential().getId().equals(credentialId))
-                 .findFirst()
-                 .orElseThrow(() -> new ResourceNotFoundException(
-                         "Credential not found this id :: " + personId));
-         pc.setHasRecord(compDto.getHasRecord());
-         personalCredentialSvc.save(pc);        
-         return ResponseEntity.ok(person.getCredentials().stream()
-                 .map(c -> new PersonalQualificationDto<CredentialDto>(
-                         mapper.map(c.getCredential(), CredentialDto.class),
-                         c.getHasRecord()))
-                 .collect(Collectors.toList()));
-     }
- 
-     @DeleteMapping("/person/{personId}/credential/{credentialId}")
-     public ResponseEntity<HttpStatus> deleteCredentialAssociation (
-             @PathVariable(value = "personId") final UUID personId,
-             @PathVariable(value = "credentialId") final UUID credentialId)
-             throws ResourceNotFoundException {
-         log.info("Adding Credential to Person with id:......" + personId);
-         Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
-                 "Person not found for this id :: " + personId));
-         PersonalCredential pc = person.getCredentials().stream()
-                 .filter(c -> c.getCredential().getId().equals(credentialId))
-                 .findFirst()
-                 .orElseThrow(() -> new ResourceNotFoundException(
-                         "Person->Credential not found for this credential id :: " + personId));
-         person.getCredentials().remove(pc);
-         personalCredentialSvc.delete(pc.getId());
-         personSvc.save(person);
-         return new ResponseEntity<HttpStatus>(HttpStatus.NO_CONTENT);
-     }
+    @Autowired
+    private CredentialSvc credentialSvc;
+
+    @Autowired
+    private PersonalCredentialSvc personalCredentialSvc;
+
+    @GetMapping("/person/{personId}/credential")
+    public ResponseEntity<List<PersonalQualificationDto<CredentialDto>>> getCredentials(
+            @PathVariable(value = "personId") final UUID personId)
+            throws ResourceNotFoundException {
+        log.info("Getting competencies for Person with id:......" + personId);
+        Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
+                "Person not found for this id :: " + personId));
+
+        return ResponseEntity.ok(person.getCredentials().stream()
+                .map(c -> new PersonalQualificationDto<CredentialDto>(
+                        mapper.map(c.getCredential(), CredentialDto.class),
+                        c.getHasRecord()))
+                .collect(Collectors.toList()));
+    }
+
+    @GetMapping("/person/{personId}/credential/{credentialId}")
+    public ResponseEntity<PersonalQualificationDto<CredentialDto>> getCredential(
+            @PathVariable(value = "personId") final UUID personId,
+            @PathVariable(value = "credentialId") final UUID credentialId)
+            throws ResourceNotFoundException {
+        log.info("Getting competencies for Person with id:......" + personId);
+        Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
+                "Person not found for this id :: " + personId));
+        PersonalCredential pc = person.getCredentials().stream()
+                .filter(c -> c.getCredential().getId().equals(credentialId))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Credential not found this id :: " + personId));
+        return ResponseEntity.ok(new PersonalQualificationDto<CredentialDto>(
+                mapper.map(pc.getCredential(), CredentialDto.class),
+                pc.getHasRecord()));
+    }
+
+    @PostMapping("/person/{personId}/credential/{credentialId}")
+    public ResponseEntity<List<PersonalQualificationDto<CredentialDto>>> associateCredential(
+            @PathVariable(value = "personId") final UUID personId,
+            @PathVariable(value = "credentialId") final UUID credentialId,
+            @Valid @RequestBody final PersonalQualificationDto<CredentialDto> compDto)
+            throws ResourceNotFoundException {
+        log.info("Adding Credential to Person with id:......" + personId);
+        Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
+                "Person not found for this id :: " + personId));
+        Credential comp = credentialSvc.get(credentialId).orElseThrow(() -> new ResourceNotFoundException(
+                "Credential not found for this id :: " + credentialId));
+        PersonalCredential pc = (PersonalCredential) personalCredentialSvc.save(
+                new PersonalCredential(person, comp, compDto.getHasRecord()));
+        person.getCredentials().add(pc);
+        personSvc.save(person);
+        return ResponseEntity.ok(person.getCredentials().stream()
+                .map(c -> new PersonalQualificationDto<CredentialDto>(
+                        mapper.map(c.getCredential(), CredentialDto.class),
+                        c.getHasRecord()))
+                .collect(Collectors.toList()));
+    }
+
+    @PutMapping("/person/{personId}/credential/{credentialId}")
+    public ResponseEntity<List<PersonalQualificationDto<CredentialDto>>> updateCredentialAssociation(
+            @PathVariable(value = "personId") final UUID personId,
+            @PathVariable(value = "credentialId") final UUID credentialId,
+            @Valid @RequestBody final PersonalQualificationDto<CredentialDto> compDto)
+            throws ResourceNotFoundException {
+        log.info("Adding Credential to Person with id:......" + personId);
+        Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
+                "Person not found for this id :: " + personId));
+        PersonalCredential pc = person.getCredentials().stream()
+                .filter(c -> c.getCredential().getId().equals(credentialId))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Credential not found this id :: " + personId));
+        pc.setHasRecord(compDto.getHasRecord());
+        personalCredentialSvc.save(pc);
+        return ResponseEntity.ok(person.getCredentials().stream()
+                .map(c -> new PersonalQualificationDto<CredentialDto>(
+                        mapper.map(c.getCredential(), CredentialDto.class),
+                        c.getHasRecord()))
+                .collect(Collectors.toList()));
+    }
+
+    @DeleteMapping("/person/{personId}/credential/{credentialId}")
+    public ResponseEntity<HttpStatus> deleteCredentialAssociation(
+            @PathVariable(value = "personId") final UUID personId,
+            @PathVariable(value = "credentialId") final UUID credentialId)
+            throws ResourceNotFoundException {
+        log.info("Adding Credential to Person with id:......" + personId);
+        Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
+                "Person not found for this id :: " + personId));
+        PersonalCredential pc = person.getCredentials().stream()
+                .filter(c -> c.getCredential().getId().equals(credentialId))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Person->Credential not found for this credential id :: " + personId));
+        person.getCredentials().remove(pc);
+        personalCredentialSvc.delete(pc.getId());
+        personSvc.save(person);
+        return new ResponseEntity<HttpStatus>(HttpStatus.NO_CONTENT);
+    }
+
+    /**
+     * LEARNING RECORD
+     */
+
+    @Autowired
+    private LearningResourceSvc learningResourceSvc;
+
+    @Autowired
+    private LearningRecordSvc learningRecordSvc;
+
+    @GetMapping("/person/{personId}/learningrecord")
+    public ResponseEntity<List<LearningRecordDto>> getLearningRecords(
+            @PathVariable(value = "personId") final UUID personId)
+            throws ResourceNotFoundException {
+        log.info("Getting competencies for Person with id:......" + personId);
+        Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
+                "Person not found for this id :: " + personId));
+
+        return ResponseEntity.ok(person.getLearningRecords().stream()
+                .map(record -> mapper.map(record, LearningRecordDto.class))
+                .collect(Collectors.toList()));
+    }
+
+    @PostMapping("/person/{personId}/learningrecord")
+    public ResponseEntity<List<LearningRecordDto>> associateCredential(
+            @PathVariable(value = "personId") final UUID personId,
+            @Valid @RequestBody final LearningRecordDto learningRecordDto)
+            throws ResourceNotFoundException {
+        log.info("Adding Credential to Person with id:......" + personId);
+        
+        Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
+                "Person not found for this id :: " + personId));
+        UUID learningResourceId = learningRecordDto.getLearningResource().getId();
+        LearningResource resource = learningResourceSvc.get(learningResourceId).orElseThrow(() -> 
+                new ResourceNotFoundException("Learning Resource not found for this id :: " + learningResourceId));
+        LearningRecord record = mapper.map(learningRecordDto, LearningRecord.class);
+        record.setPerson(person);
+        record.setLearningResource(resource);
+        learningRecordSvc.save(record);
+        person.getLearningRecords().add(record);
+        personSvc.save(person);
+        return ResponseEntity.ok(person.getLearningRecords().stream()
+                .map(rec -> mapper.map(rec, LearningRecordDto.class))
+                .collect(Collectors.toList()));
+    }
 
 }
