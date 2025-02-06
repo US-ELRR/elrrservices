@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import jakarta.validation.Valid;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,6 +31,7 @@ import com.deloitte.elrr.dto.LearningRecordDto;
 import com.deloitte.elrr.dto.PersonDto;
 import com.deloitte.elrr.dto.PersonalQualificationDto;
 import com.deloitte.elrr.dto.PhoneDto;
+import com.deloitte.elrr.entity.Association;
 import com.deloitte.elrr.entity.Competency;
 import com.deloitte.elrr.entity.Credential;
 import com.deloitte.elrr.entity.Email;
@@ -40,10 +39,8 @@ import com.deloitte.elrr.entity.LearningRecord;
 import com.deloitte.elrr.entity.LearningResource;
 import com.deloitte.elrr.entity.Organization;
 import com.deloitte.elrr.entity.Person;
-import com.deloitte.elrr.entity.Association;
 import com.deloitte.elrr.entity.PersonalCompetency;
 import com.deloitte.elrr.entity.PersonalCredential;
-import com.deloitte.elrr.entity.PersonalQualification;
 import com.deloitte.elrr.entity.Phone;
 import com.deloitte.elrr.exception.ResourceNotFoundException;
 import com.deloitte.elrr.jpa.svc.AssociationSvc;
@@ -58,6 +55,7 @@ import com.deloitte.elrr.jpa.svc.PersonalCompetencySvc;
 import com.deloitte.elrr.jpa.svc.PersonalCredentialSvc;
 import com.deloitte.elrr.jpa.svc.PhoneSvc;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 /**
