@@ -1,8 +1,11 @@
 package com.deloitte.elrr.entity;
 
 
+import java.util.Set;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -80,6 +83,9 @@ public class Organization extends Auditable<String> {
 
     @Column(name = "quality_assurance_type")
     private String qualityAssuranceType;
+
+    @OneToMany(mappedBy="organization")
+    private Set<Association> associations;
 
     @Override
     public String toString() {

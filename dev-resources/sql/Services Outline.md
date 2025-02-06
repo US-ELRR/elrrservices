@@ -1,38 +1,40 @@
 Services Outline
 
+* = done
+
 ## Person
 
-GET /person
+*GET /person
 - list of all people
 
-GET /person/[id]
+*GET /person/[id]
 - single person including address rels, phone, email
 
-POST /person
+*POST /person
 - Save new person. Included addresses might be IDs, or full address DTOs without IDs (which will save new location objects).
 
-PUT /person/[id]
+*PUT /person/[id]
 - update and return person
 
-DELETE /person/[id]
+*DELETE /person/[id]
 
 #### Person-Org
 
-GET /person/[id]/organization
+*GET /person/[id]/organization
 - All orgs
 
-GET /person/[id]/organization/[id]
+*GET /person/[id]/organization/[id]
 - returns rel if exists
 
-POST /person/[id]/organization/[id]
+*POST /person/[id]/organization/[id]
 - Body only contains relationship_type
 - Establishes rel, returns rel
 
-PUT /person/[id]/organization/[id]
+*PUT /person/[id]/organization/[id]
 - Updates rel_type
 - Returns rel
 
-DELETE /person/[id]/organization/[id]
+*DELETE /person/[id]/organization/[id]
 - Removes Rel, return success
 
 #### Person-Phone
@@ -69,10 +71,10 @@ DELETE /person/[id]/organization/[id]
 
 #### Person-Learning Record
 
-GET /person/[id]/learningrecord
+*GET /person/[id]/learningrecord
 - a person's learning records
 
-POST /person/[id]/learningrecord
+*POST /person/[id]/learningrecord
 - Creates a new learning record for the person
 - Returns learning records
 
@@ -101,13 +103,13 @@ The calls below are the same for /competency and /credential
 *GET /person/[id]/competency
 - list learner competencies
 
-?GET /person/[id]/competency/[id]
+*GET /person/[id]/competency/[id]
 - returns rel if exists
 
 *POST /person/[id]/competency/[id] (& credential)
 - may contain hasRecord
 
-?PUT /person/[id]/competency/[id]
+*PUT /person/[id]/competency/[id]
 - Updates hasRecord
 - Returns rel
 
@@ -116,35 +118,35 @@ The calls below are the same for /competency and /credential
 
 ## Learning Resource
 
-GET /learningresource
+*GET /learningresource
 - All learning resources
 - Might have query params
 
-POST /learningresource
+*POST /learningresource
 - Create a new learning resource
 
-GET /learningresource/[id]
+*GET /learningresource/[id]
 - Get one
 
-PUT /learningresource/[id]
+*PUT /learningresource/[id]
 - update learning resource by id.
 
-DELETE /learningresource/[id]
+*DELETE /learningresource/[id]
 - delete learning resource by id
 
 ## Learning Record
 
-GET /learningrecord
+*GET /learningrecord
 - All learning records
 - Might have query params
 
-GET /learningrecord/[id]
+*GET /learningrecord/[id]
 - Get one
 
-PUT /learningrecord/[id]
+*PUT /learningrecord/[id]
 - update learning record by id. Cannot change learner or resource
 
-DELETE /learningrecord/[id]
+*DELETE /learningrecord/[id]
 - delete learning record by id
 
 ## Employment Record
@@ -179,19 +181,19 @@ DELETE /militaryrecord/[id]
 
 ## Organization
 
-GET /organization
+*GET /organization
 
-GET /organization/[id]
+*GET /organization/[id]
 
 GET /organization/[id]/person
 
 GET /organization/[id]/facility
 
-POST /organization
+*POST /organization
 
-PUT /organization/[id]
+*PUT /organization/[id]
 
-DELETE /organization/[id]
+*DELETE /organization/[id]
 
 ## Comp / Creds
 

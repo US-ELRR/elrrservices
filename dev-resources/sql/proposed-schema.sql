@@ -12,8 +12,8 @@ END $$;
 
 -- needs expansion
 DO $$ BEGIN
-    CREATE TYPE person_org_relation AS ENUM (
-        'UNION', 'PROFESSIONAL ORGANIZATION');
+    CREATE TYPE association_type AS ENUM (
+        'UNION', 'PROFESSIONAL_ORGANIZATION');
 EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;
@@ -126,11 +126,11 @@ CREATE TABLE IF NOT EXISTS person (
 
 
 
-CREATE TABLE IF NOT EXISTS person_organization (
+CREATE TABLE IF NOT EXISTS association (
     id                          UUID PRIMARY KEY,
     person_id                   UUID NOT NULL REFERENCES person (id) ON DELETE CASCADE,
     organization_id             UUID NOT NULL REFERENCES organization (id) ON DELETE CASCADE,
-    relationship_type           person_org_relation NOT NULL,
+    association_type            association_type NOT NULL,
     updated_by                  VARCHAR(20),
     inserted_date               TIMESTAMP WITH TIME ZONE,
     last_modified               TIMESTAMP WITH TIME ZONE
@@ -174,20 +174,20 @@ CREATE TABLE IF NOT EXISTS person_qualification (
 
 CREATE TABLE IF NOT EXISTS learning_resource (
     id                          UUID PRIMARY KEY,
-    iri                         VARCHAR(300) NOT NULL UNIQUE,
-    title                       VARCHAR(300) NOT NULL,
-    subject_matter              VARCHAR(100),
+    iri                         VARCHAR(255) NOT NULL UNIQUE,
+    title                       VARCHAR(255) NOT NULL,
+    subject_matter              VARCHAR(255),
     subject_abbreviation        VARCHAR(20),
-    level                       VARCHAR(50),
-    number                      VARCHAR(50),
-    instruction_method          VARCHAR(50),
+    level                       VARCHAR(255),
+    number                      VARCHAR(255),
+    instruction_method          VARCHAR(255),
     start_date                  DATE,
     end_date                    DATE,
-    provider_name               VARCHAR(100),
-    department_name             VARCHAR(100),
-    grade_scale_code            VARCHAR(50),
-    metadata_repository         VARCHAR(50),
-    lrs_endpoint                 VARCHAR(50),
+    provider_name               VARCHAR(255),
+    department_name             VARCHAR(255),
+    grade_scale_code            VARCHAR(255),
+    metadata_repository         VARCHAR(255),
+    lrs_endpoint                VARCHAR(255),
     description                 TEXT,
     updated_by                  VARCHAR(20),
     inserted_date               TIMESTAMP WITH TIME ZONE,

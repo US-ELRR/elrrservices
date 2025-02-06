@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.deloitte.elrr.dto.AssociationDto;
 import com.deloitte.elrr.dto.CompetencyDto;
 import com.deloitte.elrr.dto.CredentialDto;
 import com.deloitte.elrr.dto.EmailDto;
@@ -37,17 +38,21 @@ import com.deloitte.elrr.entity.Credential;
 import com.deloitte.elrr.entity.Email;
 import com.deloitte.elrr.entity.LearningRecord;
 import com.deloitte.elrr.entity.LearningResource;
+import com.deloitte.elrr.entity.Organization;
 import com.deloitte.elrr.entity.Person;
+import com.deloitte.elrr.entity.Association;
 import com.deloitte.elrr.entity.PersonalCompetency;
 import com.deloitte.elrr.entity.PersonalCredential;
 import com.deloitte.elrr.entity.PersonalQualification;
 import com.deloitte.elrr.entity.Phone;
 import com.deloitte.elrr.exception.ResourceNotFoundException;
+import com.deloitte.elrr.jpa.svc.AssociationSvc;
 import com.deloitte.elrr.jpa.svc.CompetencySvc;
 import com.deloitte.elrr.jpa.svc.CredentialSvc;
 import com.deloitte.elrr.jpa.svc.EmailSvc;
 import com.deloitte.elrr.jpa.svc.LearningRecordSvc;
 import com.deloitte.elrr.jpa.svc.LearningResourceSvc;
+import com.deloitte.elrr.jpa.svc.OrganizationSvc;
 import com.deloitte.elrr.jpa.svc.PersonSvc;
 import com.deloitte.elrr.jpa.svc.PersonalCompetencySvc;
 import com.deloitte.elrr.jpa.svc.PersonalCredentialSvc;
@@ -569,12 +574,13 @@ public class PersonController {
             @Valid @RequestBody final LearningRecordDto learningRecordDto)
             throws ResourceNotFoundException {
         log.info("Adding Credential to Person with id:......" + personId);
-        
+
         Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
                 "Person not found for this id :: " + personId));
         UUID learningResourceId = learningRecordDto.getLearningResource().getId();
-        LearningResource resource = learningResourceSvc.get(learningResourceId).orElseThrow(() -> 
-                new ResourceNotFoundException("Learning Resource not found for this id :: " + learningResourceId));
+        LearningResource resource = learningResourceSvc.get(learningResourceId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Learning Resource not found for this id :: " + learningResourceId));
         LearningRecord record = mapper.map(learningRecordDto, LearningRecord.class);
         record.setPerson(person);
         record.setLearningResource(resource);
@@ -586,4 +592,118 @@ public class PersonController {
                 .collect(Collectors.toList()));
     }
 
+    /**
+     * ORGANIZATION
+     */
+
+    @Autowired
+    private OrganizationSvc organizationSvc;
+
+    @Autowired
+    private AssociationSvc associationSvc;
+
+    @GetMapping("/person/{personId}/organization")
+    public ResponseEntity<List<AssociationDto>> getOrganizationsByPerson(
+            @PathVariable(value = "personId") final UUID personId)
+            throws ResourceNotFoundException {
+        log.info("Getting orgs for Person with id:......" + personId);
+        Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
+                "Person not found for this id :: " + personId));
+
+        return ResponseEntity.ok(person.getAssociations().stream()
+                .map(assoc -> mapper.map(assoc, AssociationDto.class))
+                .collect(Collectors.toList()));
+    }
+
+    @GetMapping("/person/{personId}/organization/{organizationId}")
+    public ResponseEntity<AssociationDto> getOrganizationsByPerson(
+            @PathVariable(value = "personId") final UUID personId,
+            @PathVariable(value = "organizationId") final UUID organizationId)
+            throws ResourceNotFoundException {
+        log.info("Getting orgs for Person with id:......" + personId);
+        Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
+                "Person not found for this id :: " + personId));
+        Association association = person.getAssociations().stream()
+                .filter(assoc -> assoc.getOrganization().getId().equals(organizationId))
+                .findAny()
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No Association Exists for orgId::" + organizationId));
+        return ResponseEntity.ok(mapper.map(association, AssociationDto.class));
+    }
+
+    @PostMapping("/person/{personId}/organization/{organizationId}")
+    public ResponseEntity<List<AssociationDto>> associateOrg(
+            @PathVariable(value = "personId") final UUID personId,
+            @PathVariable(value = "organizationId") final UUID organizationId,
+            @Valid @RequestBody final AssociationDto associationDto)
+            throws ResourceNotFoundException {
+        log.info("Adding Organization to Person with id:......" + personId);
+
+        Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
+                "Person not found for this id :: " + personId));
+        Organization organization = organizationSvc.get(organizationId).orElseThrow(
+                () -> new ResourceNotFoundException("Organization not found for this id :: " + organizationId));
+
+        Association association = person.getAssociations().stream()
+                .filter(assoc -> assoc.getOrganization().getId().equals(organizationId))
+                .findAny()
+                .orElse(new Association());
+        association.setOrganization(organization);
+        association.setPerson(person);
+        association.setAssociationType(associationDto.getAssociationType());
+
+        person.getAssociations().add(association);
+
+        associationSvc.save(association);
+        personSvc.save(person);
+        return ResponseEntity.ok(person.getAssociations().stream()
+                .map(assoc -> mapper.map(assoc, AssociationDto.class))
+                .collect(Collectors.toList()));
+    }
+
+    @PutMapping("/person/{personId}/organization/{organizationId}")
+    public ResponseEntity<List<AssociationDto>> updateOrgAssociation(
+            @PathVariable(value = "personId") final UUID personId,
+            @PathVariable(value = "organizationId") final UUID organizationId,
+            @Valid @RequestBody final AssociationDto associationDto)
+            throws ResourceNotFoundException {
+        log.info("Updating Organization association to Person with id:......" + personId);
+
+        Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
+                "Person not found for this id :: " + personId));
+        organizationSvc.get(organizationId).orElseThrow(
+                () -> new ResourceNotFoundException("Organization not found for this id :: " + organizationId));
+
+        Association association = person.getAssociations().stream()
+                .filter(assoc -> assoc.getOrganization().getId().equals(organizationId))
+                .findAny()
+                .orElseThrow(() -> new ResourceNotFoundException("No association found for org"));
+        association.setAssociationType(associationDto.getAssociationType());
+
+        associationSvc.save(association);
+        personSvc.save(person);
+        return ResponseEntity.ok(person.getAssociations().stream()
+                .map(assoc -> mapper.map(assoc, AssociationDto.class))
+                .collect(Collectors.toList()));
+    }
+
+    @DeleteMapping("/person/{personId}/organization/{organizationId}")
+    public ResponseEntity<HttpStatus> deleteOrgAssociation(
+            @PathVariable(value = "personId") final UUID personId,
+            @PathVariable(value = "organizationId") final UUID organizationId)
+            throws ResourceNotFoundException {
+        log.info("Updating Organization association to Person with id:......" + personId);
+
+        Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
+                "Person not found for this id :: " + personId));
+
+        Association association = person.getAssociations().stream()
+                .filter(assoc -> assoc.getOrganization().getId().equals(organizationId))
+                .findAny()
+                .orElseThrow(() -> new ResourceNotFoundException("No association found for org"));
+        person.getAssociations().remove(association);
+        associationSvc.delete(association.getId());
+        personSvc.save(person);
+        return new ResponseEntity<HttpStatus>(HttpStatus.NO_CONTENT);
+    }
 }
