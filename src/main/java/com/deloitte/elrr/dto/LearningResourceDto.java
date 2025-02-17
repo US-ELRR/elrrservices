@@ -1,6 +1,6 @@
 package com.deloitte.elrr.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -35,9 +35,9 @@ public class LearningResourceDto extends AbstractDto {
     @Size(max = 255)
     private String instructionMethod;
 
-    private Date startDate;
+    private LocalDate startDate;
 
-    private Date endDate;
+    private LocalDate endDate;
 
     @Size(max = 255)
     private String providerName;

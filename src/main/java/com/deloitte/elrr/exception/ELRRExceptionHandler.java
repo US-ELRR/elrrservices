@@ -72,4 +72,6 @@ public class ELRRExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails,
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    
 }

@@ -1,0 +1,217 @@
+/**
+ *
+ */
+package com.deloitte.elrr.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import jakarta.validation.Valid;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.deloitte.elrr.dto.CompetencyDto;
+import com.deloitte.elrr.dto.CredentialDto;
+import com.deloitte.elrr.dto.EmploymentRecordDto;
+import com.deloitte.elrr.dto.FacilityDto;
+import com.deloitte.elrr.dto.LocationDto;
+import com.deloitte.elrr.entity.Competency;
+import com.deloitte.elrr.entity.Credential;
+import com.deloitte.elrr.entity.EmploymentRecord;
+import com.deloitte.elrr.entity.Organization;
+import com.deloitte.elrr.entity.Person;
+import com.deloitte.elrr.exception.ResourceNotFoundException;
+import com.deloitte.elrr.jpa.svc.CompetencySvc;
+import com.deloitte.elrr.jpa.svc.CredentialSvc;
+import com.deloitte.elrr.jpa.svc.EmploymentRecordSvc;
+import com.deloitte.elrr.jpa.svc.FacilitySvc;
+import com.deloitte.elrr.jpa.svc.LocationSvc;
+
+import lombok.extern.slf4j.Slf4j;
+
+@CrossOrigin(origins = {
+        "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:3001",
+        "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:5000" })
+@RestController
+@RequestMapping("api")
+@Slf4j
+public class EmploymentRecordController {
+    /**
+     *
+     */
+    @Autowired
+    private EmploymentRecordSvc employmentRecordSvc;
+
+    @Autowired
+    private LocationSvc locationSvc;
+
+    @Autowired
+    private FacilitySvc facilitySvc;
+
+    @Autowired
+    private CompetencySvc competencySvc;
+
+    @Autowired
+    private CredentialSvc credentialSvc;
+    /**
+     *
+     */
+    @Autowired
+    private ModelMapper mapper;
+
+    /**
+     *
+     * @param employmentRecordId
+     * @return ResponseEntity<List<EmploymentRecordDto>>
+     * @throws ResourceNotFoundException
+     */
+    @GetMapping("/employmentrecord")
+    public ResponseEntity<List<EmploymentRecordDto>> getAllEmploymentRecords(
+            @RequestParam(value = "id", required = false) final UUID employmentRecordId)
+            throws ResourceNotFoundException {
+        try {
+            log.debug("Get EmploymentRecord id:........." + employmentRecordId);
+            List<EmploymentRecordDto> employmentRecordList = new ArrayList<>();
+            if (employmentRecordId == null) {
+                employmentRecordSvc.findAll().forEach(loc -> employmentRecordList.add(
+                        mapper.map(loc, EmploymentRecordDto.class)));
+            } else {
+                EmploymentRecord employmentRecord = employmentRecordSvc.get(employmentRecordId)
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "EmploymentRecord not found for this id :: "
+                                        + employmentRecordId));
+                EmploymentRecordDto employmentRecordDto = mapper.map(employmentRecord, EmploymentRecordDto.class);
+                employmentRecordList.add(employmentRecordDto);
+            }
+
+            if (employmentRecordList.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            } else {
+                return ResponseEntity.ok(employmentRecordList);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     *
+     * @param employmentRecordId
+     * @return ResponseEntity<EmploymentRecordDto>
+     * @throws ResourceNotFoundException
+     */
+    @GetMapping("/employmentrecord/{id}")
+    public ResponseEntity<EmploymentRecordDto> getEmploymentRecordById(
+            @PathVariable(value = "id") final UUID employmentRecordId)
+            throws ResourceNotFoundException {
+        log.debug("Get EmploymentRecord id:........." + employmentRecordId);
+        EmploymentRecord employmentRecord = employmentRecordSvc.get(employmentRecordId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "EmploymentRecord not found for this id :: "
+                                + employmentRecordId));
+        EmploymentRecordDto employmentRecordDto = mapper.map(employmentRecord,
+                EmploymentRecordDto.class);
+        return ResponseEntity.ok().body(employmentRecordDto);
+    }
+
+    /**
+     *
+     * @param employmentRecordId
+     * @param employmentRecordDto
+     * @return ResponseEntity<EmploymentRecordDto>
+     * @throws ResourceNotFoundException
+     */
+    @PutMapping("/employmentrecord/{id}")
+    public ResponseEntity<EmploymentRecordDto> updateEmploymentRecord(
+            @PathVariable(value = "id") final UUID employmentRecordId,
+            @Valid @RequestBody final EmploymentRecordDto employmentRecordDto)
+            throws ResourceNotFoundException {
+        log.info("Updating  EmploymentRecord:.........");
+        log.info("Updating EmploymentRecord id:........." + employmentRecordId);
+        EmploymentRecord employmentRecord = employmentRecordSvc.get(employmentRecordId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "EmploymentRecord not found for this id to update :: "
+                                + employmentRecordId));
+        Person employee = employmentRecord.getEmployee();
+        Organization organization = employmentRecord.getEmployerOrganization();
+
+        log.info("Update EmploymentRecord:........." + employmentRecordDto);
+
+        LocationDto newLocation = employmentRecordDto.getEmploymentLocation();
+        FacilityDto newFacility = employmentRecordDto.getEmploymentFacility();
+        Set<CompetencyDto> newCompetencies = employmentRecordDto.getCompetencies();
+        Set<CredentialDto> newCredentials = employmentRecordDto.getCredentials();
+        //temporarily null associated objects so that mapper call does not corrupt entities
+        employmentRecordDto.setEmploymentFacility(null);
+        employmentRecordDto.setEmploymentLocation(null);
+        employmentRecordDto.setCompetencies(null);
+        employmentRecordDto.setCredentials(null);
+
+        mapper.map(employmentRecordDto, employmentRecord);
+
+        employmentRecord.setId(employmentRecordId);
+        employmentRecord.setEmployee(employee);
+        employmentRecord.setEmployerOrganization(organization);
+
+        //Set Facility and Location
+        employmentRecord.setEmploymentLocation(
+                (newLocation != null && newLocation.getId() != null) ? locationSvc.get(newLocation.getId())
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "Location not found for this id :: " + newLocation.getId()))
+                        : null);
+        employmentRecord.setEmploymentFacility(
+                (newFacility != null && newFacility.getId() != null) ? facilitySvc.get(newFacility.getId())
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "Facility not found for this id :: " + newFacility.getId()))
+                        : null);
+        
+        //Set Competencies and Credentials
+        if (newCompetencies != null)
+            employmentRecord.setCompetencies(newCompetencies.stream()
+                .map(c -> competencySvc.get(c.getId()).orElse(null))
+                .collect(Collectors.toSet()));
+        if (newCredentials != null)
+            employmentRecord.setCredentials(newCredentials.stream()
+                .map(c -> credentialSvc.get(c.getId()).orElse(null))
+                .collect(Collectors.toSet()));
+
+        log.info("Update EmploymentRecord:........." + employmentRecord);
+        return ResponseEntity.ok(mapper.map(employmentRecordSvc.save(employmentRecord),
+                EmploymentRecordDto.class));
+
+    }
+
+    /**
+     *
+     * @param employmentRecordId
+     * @return ResponseEntity<HttpStatus>
+     * @throws ResourceNotFoundException
+     */
+    @DeleteMapping("/employmentrecord/{id}")
+    public ResponseEntity<HttpStatus> deleteEmploymentRecord(
+            @PathVariable(value = "id") final UUID employmentRecordId)
+            throws ResourceNotFoundException {
+        log.info("Deleting  EmploymentRecord:.........");
+        log.info("Deleting EmploymentRecord id:........." + employmentRecordId);
+        employmentRecordSvc.get(employmentRecordId).orElseThrow(() -> new ResourceNotFoundException(
+                "EmploymentRecord not found for this id to delete :: " + employmentRecordId));
+        employmentRecordSvc.delete(employmentRecordId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+}

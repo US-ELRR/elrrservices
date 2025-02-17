@@ -1,6 +1,6 @@
 package com.deloitte.elrr.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -25,9 +25,9 @@ public class QualificationDto extends AbstractDto {
     @Size(max = 100)
     private String taxonomyId;
 
-    private Date validStartDate;
+    private LocalDate validStartDate;
 
-    private Date validEndDate;
+    private LocalDate validEndDate;
 
     @Size(max = 100)
     private String parentId;
@@ -55,9 +55,9 @@ public class QualificationDto extends AbstractDto {
     @Size(max = 100)
     private String frameworkSubject;
 
-    private Date frameworkValidStartDate;
+    private LocalDate frameworkValidStartDate;
 
-    private Date frameworkValidEndDate;
+    private LocalDate frameworkValidEndDate;
 
     @Size(max = 10)
     private String recordStatus;

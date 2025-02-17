@@ -1,7 +1,5 @@
 package com.deloitte.elrr.dto;
 
-import com.deloitte.elrr.entity.types.AssociationType;
-
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +15,6 @@ public class AssociationDto extends AbstractDto {
     @Valid
     private OrganizationDto organization;
 
-    private AssociationType associationType;
+    private String associationType;
 
 }

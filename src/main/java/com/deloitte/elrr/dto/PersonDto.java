@@ -1,7 +1,7 @@
 package com.deloitte.elrr.dto;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Set;
 
 import jakarta.validation.Valid;
@@ -44,7 +44,7 @@ public class PersonDto extends AbstractDto {
     @Size(max = 255)
     private String maidenName;
 
-    private Date birthdate;
+    private LocalDate birthdate;
 
     @Size(max = 255)
     private String citizenship;

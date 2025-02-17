@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,10 @@ import com.deloitte.elrr.dto.AssociationDto;
 import com.deloitte.elrr.dto.CompetencyDto;
 import com.deloitte.elrr.dto.CredentialDto;
 import com.deloitte.elrr.dto.EmailDto;
+import com.deloitte.elrr.dto.EmploymentRecordDto;
+import com.deloitte.elrr.dto.FacilityDto;
 import com.deloitte.elrr.dto.LearningRecordDto;
+import com.deloitte.elrr.dto.LocationDto;
 import com.deloitte.elrr.dto.PersonDto;
 import com.deloitte.elrr.dto.PersonalQualificationDto;
 import com.deloitte.elrr.dto.PhoneDto;
@@ -35,6 +39,7 @@ import com.deloitte.elrr.entity.Association;
 import com.deloitte.elrr.entity.Competency;
 import com.deloitte.elrr.entity.Credential;
 import com.deloitte.elrr.entity.Email;
+import com.deloitte.elrr.entity.EmploymentRecord;
 import com.deloitte.elrr.entity.LearningRecord;
 import com.deloitte.elrr.entity.LearningResource;
 import com.deloitte.elrr.entity.Organization;
@@ -47,8 +52,11 @@ import com.deloitte.elrr.jpa.svc.AssociationSvc;
 import com.deloitte.elrr.jpa.svc.CompetencySvc;
 import com.deloitte.elrr.jpa.svc.CredentialSvc;
 import com.deloitte.elrr.jpa.svc.EmailSvc;
+import com.deloitte.elrr.jpa.svc.EmploymentRecordSvc;
+import com.deloitte.elrr.jpa.svc.FacilitySvc;
 import com.deloitte.elrr.jpa.svc.LearningRecordSvc;
 import com.deloitte.elrr.jpa.svc.LearningResourceSvc;
+import com.deloitte.elrr.jpa.svc.LocationSvc;
 import com.deloitte.elrr.jpa.svc.OrganizationSvc;
 import com.deloitte.elrr.jpa.svc.PersonSvc;
 import com.deloitte.elrr.jpa.svc.PersonalCompetencySvc;
@@ -334,7 +342,7 @@ public class PersonController {
      */
 
     @Autowired
-    private CompetencySvc compSvc;
+    private CompetencySvc competencySvc;
 
     @Autowired
     private PersonalCompetencySvc personalCompetencySvc;
@@ -381,7 +389,7 @@ public class PersonController {
         log.info("Adding Competency to Person with id:......" + personId);
         Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
                 "Person not found for this id :: " + personId));
-        Competency comp = compSvc.get(competencyId).orElseThrow(() -> new ResourceNotFoundException(
+        Competency comp = competencySvc.get(competencyId).orElseThrow(() -> new ResourceNotFoundException(
                 "Competency not found for this id :: " + competencyId));
         PersonalCompetency pc = (PersonalCompetency) personalCompetencySvc.save(
                 new PersonalCompetency(person, comp, compDto.getHasRecord()));
@@ -557,7 +565,7 @@ public class PersonController {
     public ResponseEntity<List<LearningRecordDto>> getLearningRecords(
             @PathVariable(value = "personId") final UUID personId)
             throws ResourceNotFoundException {
-        log.info("Getting competencies for Person with id:......" + personId);
+        log.info("Getting learning records for Person with id:......" + personId);
         Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
                 "Person not found for this id :: " + personId));
 
@@ -571,7 +579,7 @@ public class PersonController {
             @PathVariable(value = "personId") final UUID personId,
             @Valid @RequestBody final LearningRecordDto learningRecordDto)
             throws ResourceNotFoundException {
-        log.info("Adding Credential to Person with id:......" + personId);
+        log.info("Adding learning record to Person with id:......" + personId);
 
         Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
                 "Person not found for this id :: " + personId));
@@ -587,6 +595,85 @@ public class PersonController {
         personSvc.save(person);
         return ResponseEntity.ok(person.getLearningRecords().stream()
                 .map(rec -> mapper.map(rec, LearningRecordDto.class))
+                .collect(Collectors.toList()));
+    }
+
+    /*
+     * Employment Record
+     */
+
+    @Autowired
+    private LocationSvc locationSvc;
+
+    @Autowired
+    private FacilitySvc facilitySvc;
+
+    @Autowired
+    private EmploymentRecordSvc employmentRecordSvc;
+
+
+    @GetMapping("/person/{personId}/employmentrecord")
+    public ResponseEntity<List<EmploymentRecordDto>> getEmploymentRecords(
+            @PathVariable(value = "personId") final UUID personId)
+            throws ResourceNotFoundException {
+        log.info("Getting employment records for Person with id:......" + personId);
+        Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
+                "Person not found for this id :: " + personId));
+
+        return ResponseEntity.ok(person.getEmploymentRecords().stream()
+                .map(record -> mapper.map(record, EmploymentRecordDto.class))
+                .collect(Collectors.toList()));
+    }
+
+    @PostMapping("/person/{personId}/employmentrecord")
+    public ResponseEntity<List<EmploymentRecordDto>> addEmploymentRecord(
+            @PathVariable(value = "personId") final UUID personId,
+            @Valid @RequestBody final EmploymentRecordDto employmentRecordDto)
+            throws ResourceNotFoundException {
+        log.info("Adding Employment Record to Person with id:......" + personId);
+
+        Person employee = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
+                "Person not found for this id :: " + personId));
+        UUID orgId = employmentRecordDto.getEmployerOrganization().getId();
+        Organization organization = organizationSvc.get(orgId)
+                .orElseThrow(() -> new ResourceNotFoundException("Org not found for::" + orgId));
+        
+        log.info("Update EmploymentRecord:........." + employmentRecordDto);
+        EmploymentRecord employmentRecord = mapper.map(employmentRecordDto, EmploymentRecord.class);
+
+        employmentRecord.setEmployee(employee);
+        employmentRecord.setEmployerOrganization(organization);
+
+        //Facility and Location
+        LocationDto newLocation = employmentRecordDto.getEmploymentLocation();
+        employmentRecord.setEmploymentLocation(
+                (newLocation != null && newLocation.getId() != null) ? locationSvc.get(newLocation.getId())
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "Location not found for this id :: " + newLocation.getId()))
+                        : null);
+        FacilityDto newFacility = employmentRecordDto.getEmploymentFacility();
+        employmentRecord.setEmploymentFacility(
+                (newFacility != null && newFacility.getId() != null) ? facilitySvc.get(newFacility.getId())
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "Facility not found for this id :: " + newFacility.getId()))
+                        : null);
+        
+        //Role Competencies and Credentials
+        if (employmentRecordDto.getCompetencies() != null)
+            employmentRecord.setCompetencies(employmentRecordDto.getCompetencies().stream()
+                .map(c -> competencySvc.get(c.getId()).orElse(null))
+                .collect(Collectors.toSet()));
+        if (employmentRecordDto.getCredentials() != null)
+            employmentRecord.setCredentials(employmentRecordDto.getCredentials().stream()
+                .map(c -> credentialSvc.get(c.getId()).orElse(null))
+                .collect(Collectors.toSet()));
+            
+        
+        employmentRecordSvc.save(employmentRecord);
+        employee.getEmploymentRecords().add(employmentRecord);
+        personSvc.save(employee);
+        return ResponseEntity.ok(employee.getEmploymentRecords().stream()
+                .map(rec -> mapper.map(rec, EmploymentRecordDto.class))
                 .collect(Collectors.toList()));
     }
 
