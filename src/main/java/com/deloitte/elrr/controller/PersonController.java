@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +31,7 @@ import com.deloitte.elrr.dto.EmploymentRecordDto;
 import com.deloitte.elrr.dto.FacilityDto;
 import com.deloitte.elrr.dto.LearningRecordDto;
 import com.deloitte.elrr.dto.LocationDto;
+import com.deloitte.elrr.dto.MilitaryRecordDto;
 import com.deloitte.elrr.dto.PersonDto;
 import com.deloitte.elrr.dto.PersonalQualificationDto;
 import com.deloitte.elrr.dto.PhoneDto;
@@ -42,6 +42,7 @@ import com.deloitte.elrr.entity.Email;
 import com.deloitte.elrr.entity.EmploymentRecord;
 import com.deloitte.elrr.entity.LearningRecord;
 import com.deloitte.elrr.entity.LearningResource;
+import com.deloitte.elrr.entity.MilitaryRecord;
 import com.deloitte.elrr.entity.Organization;
 import com.deloitte.elrr.entity.Person;
 import com.deloitte.elrr.entity.PersonalCompetency;
@@ -57,6 +58,7 @@ import com.deloitte.elrr.jpa.svc.FacilitySvc;
 import com.deloitte.elrr.jpa.svc.LearningRecordSvc;
 import com.deloitte.elrr.jpa.svc.LearningResourceSvc;
 import com.deloitte.elrr.jpa.svc.LocationSvc;
+import com.deloitte.elrr.jpa.svc.MilitaryRecordSvc;
 import com.deloitte.elrr.jpa.svc.OrganizationSvc;
 import com.deloitte.elrr.jpa.svc.PersonSvc;
 import com.deloitte.elrr.jpa.svc.PersonalCompetencySvc;
@@ -611,7 +613,6 @@ public class PersonController {
     @Autowired
     private EmploymentRecordSvc employmentRecordSvc;
 
-
     @GetMapping("/person/{personId}/employmentrecord")
     public ResponseEntity<List<EmploymentRecordDto>> getEmploymentRecords(
             @PathVariable(value = "personId") final UUID personId)
@@ -637,14 +638,14 @@ public class PersonController {
         UUID orgId = employmentRecordDto.getEmployerOrganization().getId();
         Organization organization = organizationSvc.get(orgId)
                 .orElseThrow(() -> new ResourceNotFoundException("Org not found for::" + orgId));
-        
+
         log.info("Update EmploymentRecord:........." + employmentRecordDto);
         EmploymentRecord employmentRecord = mapper.map(employmentRecordDto, EmploymentRecord.class);
 
         employmentRecord.setEmployee(employee);
         employmentRecord.setEmployerOrganization(organization);
 
-        //Facility and Location
+        // Facility and Location
         LocationDto newLocation = employmentRecordDto.getEmploymentLocation();
         employmentRecord.setEmploymentLocation(
                 (newLocation != null && newLocation.getId() != null) ? locationSvc.get(newLocation.getId())
@@ -657,23 +658,64 @@ public class PersonController {
                         .orElseThrow(() -> new ResourceNotFoundException(
                                 "Facility not found for this id :: " + newFacility.getId()))
                         : null);
-        
-        //Role Competencies and Credentials
+
+        // Role Competencies and Credentials
         if (employmentRecordDto.getCompetencies() != null)
             employmentRecord.setCompetencies(employmentRecordDto.getCompetencies().stream()
-                .map(c -> competencySvc.get(c.getId()).orElse(null))
-                .collect(Collectors.toSet()));
+                    .map(c -> competencySvc.get(c.getId()).orElse(null))
+                    .collect(Collectors.toSet()));
         if (employmentRecordDto.getCredentials() != null)
             employmentRecord.setCredentials(employmentRecordDto.getCredentials().stream()
-                .map(c -> credentialSvc.get(c.getId()).orElse(null))
-                .collect(Collectors.toSet()));
-            
-        
+                    .map(c -> credentialSvc.get(c.getId()).orElse(null))
+                    .collect(Collectors.toSet()));
+
         employmentRecordSvc.save(employmentRecord);
         employee.getEmploymentRecords().add(employmentRecord);
         personSvc.save(employee);
         return ResponseEntity.ok(employee.getEmploymentRecords().stream()
                 .map(rec -> mapper.map(rec, EmploymentRecordDto.class))
+                .collect(Collectors.toList()));
+    }
+
+    /*
+     * Military Record
+     */
+
+    @Autowired
+    private MilitaryRecordSvc militaryRecordSvc;
+
+    @GetMapping("/person/{personId}/militaryrecord")
+    public ResponseEntity<List<MilitaryRecordDto>> getMilitaryRecords(
+            @PathVariable(value = "personId") final UUID personId)
+            throws ResourceNotFoundException {
+        log.info("Getting employment records for Person with id:......" + personId);
+        Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
+                "Person not found for this id :: " + personId));
+
+        return ResponseEntity.ok(person.getMilitaryRecords().stream()
+                .map(record -> mapper.map(record, MilitaryRecordDto.class))
+                .collect(Collectors.toList()));
+    }
+
+    @PostMapping("/person/{personId}/militaryrecord")
+    public ResponseEntity<List<MilitaryRecordDto>> addMilitaryRecord(
+            @PathVariable(value = "personId") final UUID personId,
+            @Valid @RequestBody final MilitaryRecordDto militaryRecordDto)
+            throws ResourceNotFoundException {
+        log.info("Adding Employment Record to Person with id:......" + personId);
+
+        Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
+                "Person not found for this id :: " + personId));
+        
+        log.info("Update MilitaryRecord:........." + militaryRecordDto);
+        MilitaryRecord militaryRecord = mapper.map(militaryRecordDto, MilitaryRecord.class);
+        militaryRecord.setPerson(person);
+
+        militaryRecordSvc.save(militaryRecord);
+        person.getMilitaryRecords().add(militaryRecord);
+        personSvc.save(person);
+        return ResponseEntity.ok(person.getMilitaryRecords().stream()
+                .map(rec -> mapper.map(rec, MilitaryRecordDto.class))
                 .collect(Collectors.toList()));
     }
 

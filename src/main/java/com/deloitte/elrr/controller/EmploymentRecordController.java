@@ -30,8 +30,6 @@ import com.deloitte.elrr.dto.CredentialDto;
 import com.deloitte.elrr.dto.EmploymentRecordDto;
 import com.deloitte.elrr.dto.FacilityDto;
 import com.deloitte.elrr.dto.LocationDto;
-import com.deloitte.elrr.entity.Competency;
-import com.deloitte.elrr.entity.Credential;
 import com.deloitte.elrr.entity.EmploymentRecord;
 import com.deloitte.elrr.entity.Organization;
 import com.deloitte.elrr.entity.Person;
