@@ -29,6 +29,7 @@ import com.deloitte.elrr.dto.CredentialDto;
 import com.deloitte.elrr.dto.EmailDto;
 import com.deloitte.elrr.dto.EmploymentRecordDto;
 import com.deloitte.elrr.dto.FacilityDto;
+import com.deloitte.elrr.dto.IdentityDto;
 import com.deloitte.elrr.dto.LearningRecordDto;
 import com.deloitte.elrr.dto.LocationDto;
 import com.deloitte.elrr.dto.MilitaryRecordDto;
@@ -40,6 +41,7 @@ import com.deloitte.elrr.entity.Competency;
 import com.deloitte.elrr.entity.Credential;
 import com.deloitte.elrr.entity.Email;
 import com.deloitte.elrr.entity.EmploymentRecord;
+import com.deloitte.elrr.entity.Identity;
 import com.deloitte.elrr.entity.LearningRecord;
 import com.deloitte.elrr.entity.LearningResource;
 import com.deloitte.elrr.entity.MilitaryRecord;
@@ -55,6 +57,7 @@ import com.deloitte.elrr.jpa.svc.CredentialSvc;
 import com.deloitte.elrr.jpa.svc.EmailSvc;
 import com.deloitte.elrr.jpa.svc.EmploymentRecordSvc;
 import com.deloitte.elrr.jpa.svc.FacilitySvc;
+import com.deloitte.elrr.jpa.svc.IdentitySvc;
 import com.deloitte.elrr.jpa.svc.LearningRecordSvc;
 import com.deloitte.elrr.jpa.svc.LearningResourceSvc;
 import com.deloitte.elrr.jpa.svc.LocationSvc;
@@ -208,6 +211,73 @@ public class PersonController {
         personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
                 "Person not found for this id to delete :: " + personId));
         personSvc.delete(personId);
+        return new ResponseEntity<HttpStatus>(HttpStatus.NO_CONTENT);
+    }
+
+
+    /**
+     * IDENTITY
+     */
+
+    @Autowired
+    private IdentitySvc identitySvc;
+
+    @GetMapping("/person/{personId}/identity")
+    public ResponseEntity<List<IdentityDto>> getIdentities(
+            @PathVariable(value = "personId") final UUID personId)
+            throws ResourceNotFoundException {
+        log.info("Getting identities for Person with id:......" + personId);
+        Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
+                "Person not found for this id :: " + personId));
+        return ResponseEntity.ok(person.getIdentities().stream()
+                .map(p -> mapper.map(p, IdentityDto.class))
+                .collect(Collectors.toList()));
+    }
+
+    @GetMapping("/person/{personId}/identity/{identityId}")
+    public ResponseEntity<IdentityDto> getIdentity(
+            @PathVariable(value = "personId") final UUID personId,
+            @PathVariable(value = "identityId") final UUID identityId)
+            throws ResourceNotFoundException {
+        log.info("Getting identity for Person with id:......" + personId);
+        
+        Identity identity = identitySvc.get(identityId).orElseThrow(() -> new ResourceNotFoundException(
+            "Identity not found for this id :: " + identityId));
+        
+        if (!identity.getPerson().getId().equals(personId))
+                throw new ResourceNotFoundException("Person does not match identity.");
+        return ResponseEntity.ok(mapper.map(identity, IdentityDto.class));
+    }
+
+    @PostMapping("/person/{personId}/identity")
+    public ResponseEntity<List<IdentityDto>> addIdentityToPerson(
+            @PathVariable(value = "personId") final UUID personId,
+            @Valid @RequestBody final IdentityDto identityDto)
+            throws ResourceNotFoundException {
+        log.info("Adding Identity to Person with id:......" + personId);
+        Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
+                "Person not found for this id :: " + personId));
+        Identity identity = mapper.map(identityDto, Identity.class);
+        identity.setPerson(person);
+        identitySvc.save(identity);
+        person.getIdentities().add(identity);
+        personSvc.save(person);
+        return ResponseEntity.ok(person.getIdentities().stream()
+                .map(p -> mapper.map(p, IdentityDto.class))
+                .collect(Collectors.toList()));
+    }
+
+    @DeleteMapping("/person/{personId}/identity/{identityId}")
+    public ResponseEntity<HttpStatus> deleteIdentity(
+            @PathVariable(value = "personId") final UUID personId,
+            @PathVariable(value = "identityId") final UUID identityId)
+            throws ResourceNotFoundException {
+        log.info("Deleting identity for Person with id:......" + personId);
+        Identity identity = identitySvc.get(identityId).orElseThrow(() -> new ResourceNotFoundException(
+            "Identity not found for this id :: " + identityId));
+        if (!identity.getPerson().getId().equals(personId))
+                throw new ResourceNotFoundException("Person does not match identity.");
+        identitySvc.delete(identityId);
         return new ResponseEntity<HttpStatus>(HttpStatus.NO_CONTENT);
     }
 
