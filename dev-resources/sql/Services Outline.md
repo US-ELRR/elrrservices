@@ -6,6 +6,7 @@ Services Outline
 
 *GET /person
 - list of all people
+- ifi param
 
 *GET /person/[id]
 - single person including address rels, phone, email
@@ -17,6 +18,15 @@ Services Outline
 - update and return person
 
 *DELETE /person/[id]
+
+#### Person-Identity
+*GET /person/[id]/identity
+
+*GET /person/[id]/identity/[id]
+
+*POST /person/[id]/identity
+
+*DELETE /person/[id]/identity/[id]
 
 #### Person-Org
 
@@ -80,19 +90,19 @@ Services Outline
 
 #### Person-Military Record
 
-GET /person/[id]/militaryrecord
+*GET /person/[id]/militaryrecord
 - a person's military records
 
-POST /person/[id]/militaryrecord
+*POST /person/[id]/militaryrecord
 - Creates a new military record for the person
 - Returns military records
 
 #### Person-Employment Record
 
-GET /person/[id]/employmentrecord
+*GET /person/[id]/employmentrecord
 - a person's employment records
 
-POST /person/[id]/employmentrecord
+*POST /person/[id]/employmentrecord
 - Creates a new employment record for the person
 - Returns employment records
 
@@ -151,32 +161,32 @@ The calls below are the same for /competency and /credential
 
 ## Employment Record
 
-GET /employmentrecord
+*GET /employmentrecord
 - All employment records
 - Might have query params
 
-GET /employmentrecord/[id]
+*GET /employmentrecord/[id]
 - Get one
 
-PUT /employmentrecord/[id]
+*PUT /employmentrecord/[id]
 - update employment record by id. Cannot change learner or employer
 
-DELETE /employmentrecord/[id]
+*DELETE /employmentrecord/[id]
 - delete employment record by id
 
 ## Military Record
 
-GET /militaryrecord
+*GET /militaryrecord
 - All military records
 - Might have query params
 
-GET /militaryrecord/[id]
+*GET /militaryrecord/[id]
 - Get one
 
-PUT /militaryrecord/[id]
+*PUT /militaryrecord/[id]
 - update military record by id. Cannot change learner or employer
 
-DELETE /militaryrecord/[id]
+*DELETE /militaryrecord/[id]
 - delete military record by id
 
 ## Organization

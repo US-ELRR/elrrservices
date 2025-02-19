@@ -95,6 +95,45 @@ public class PersonController {
     @Autowired
     private EmailSvc emailSvc;
 
+    @Autowired
+    private IdentitySvc identitySvc;
+
+    @Autowired
+    private OrganizationSvc organizationSvc;
+
+    @Autowired
+    private AssociationSvc associationSvc;
+
+    @Autowired
+    private MilitaryRecordSvc militaryRecordSvc;
+
+    @Autowired
+    private LocationSvc locationSvc;
+
+    @Autowired
+    private FacilitySvc facilitySvc;
+
+    @Autowired
+    private EmploymentRecordSvc employmentRecordSvc;
+
+    @Autowired
+    private CompetencySvc competencySvc;
+
+    @Autowired
+    private PersonalCompetencySvc personalCompetencySvc;
+
+    @Autowired
+    private CredentialSvc credentialSvc;
+
+    @Autowired
+    private PersonalCredentialSvc personalCredentialSvc;
+
+    @Autowired
+    private LearningResourceSvc learningResourceSvc;
+
+    @Autowired
+    private LearningRecordSvc learningRecordSvc;
+
     /**
      *
      * @param personId
@@ -103,26 +142,29 @@ public class PersonController {
      */
     @GetMapping("/person")
     public ResponseEntity<List<PersonDto>> getAllPersons(
-            @RequestParam(value = "id", required = false) final UUID personId)
+            @RequestParam(value = "id", required = false) final UUID personId,
+            @RequestParam(value = "ifi", required = false) final String ifi)
             throws ResourceNotFoundException {
         try {
             log.info("getting  PersonDto:.........");
             log.info("getting Person id:........." + personId);
             List<PersonDto> persontoList = new ArrayList<>();
-            if (personId == null) {
+            if (personId != null) {
+                Person person = personSvc.get(personId)
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "Person not found for this id :: " + personId));
+                PersonDto personDto = mapper.map(person, PersonDto.class);
+                persontoList.add(personDto);
+            } else if (ifi != null) {
+                Person person = identitySvc.getByIfi(ifi).getPerson();
+                persontoList.add(mapper.map(person, PersonDto.class));
+            } else {
                 Iterable<Person> persons = personSvc.findAll();
 
                 for (Person person : persons) {
                     PersonDto personDto = mapper.map(person, PersonDto.class);
                     persontoList.add(personDto);
                 }
-            } else {
-                Person person = personSvc.get(personId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "Person not found for this id :: " + personId));
-                PersonDto personDto = mapper.map(person, PersonDto.class);
-                persontoList.add(personDto);
-
             }
 
             if (persontoList.isEmpty()) {
@@ -214,13 +256,9 @@ public class PersonController {
         return new ResponseEntity<HttpStatus>(HttpStatus.NO_CONTENT);
     }
 
-
     /**
      * IDENTITY
      */
-
-    @Autowired
-    private IdentitySvc identitySvc;
 
     @GetMapping("/person/{personId}/identity")
     public ResponseEntity<List<IdentityDto>> getIdentities(
@@ -240,12 +278,12 @@ public class PersonController {
             @PathVariable(value = "identityId") final UUID identityId)
             throws ResourceNotFoundException {
         log.info("Getting identity for Person with id:......" + personId);
-        
+
         Identity identity = identitySvc.get(identityId).orElseThrow(() -> new ResourceNotFoundException(
-            "Identity not found for this id :: " + identityId));
-        
+                "Identity not found for this id :: " + identityId));
+
         if (!identity.getPerson().getId().equals(personId))
-                throw new ResourceNotFoundException("Person does not match identity.");
+            throw new ResourceNotFoundException("Person does not match identity.");
         return ResponseEntity.ok(mapper.map(identity, IdentityDto.class));
     }
 
@@ -274,9 +312,9 @@ public class PersonController {
             throws ResourceNotFoundException {
         log.info("Deleting identity for Person with id:......" + personId);
         Identity identity = identitySvc.get(identityId).orElseThrow(() -> new ResourceNotFoundException(
-            "Identity not found for this id :: " + identityId));
+                "Identity not found for this id :: " + identityId));
         if (!identity.getPerson().getId().equals(personId))
-                throw new ResourceNotFoundException("Person does not match identity.");
+            throw new ResourceNotFoundException("Person does not match identity.");
         identitySvc.delete(identityId);
         return new ResponseEntity<HttpStatus>(HttpStatus.NO_CONTENT);
     }
@@ -413,12 +451,6 @@ public class PersonController {
      * COMPETENCY
      */
 
-    @Autowired
-    private CompetencySvc competencySvc;
-
-    @Autowired
-    private PersonalCompetencySvc personalCompetencySvc;
-
     @GetMapping("/person/{personId}/competency")
     public ResponseEntity<List<PersonalQualificationDto<CompetencyDto>>> getCompetencies(
             @PathVariable(value = "personId") final UUID personId)
@@ -519,12 +551,6 @@ public class PersonController {
     /**
      * CREDENTIAL
      */
-
-    @Autowired
-    private CredentialSvc credentialSvc;
-
-    @Autowired
-    private PersonalCredentialSvc personalCredentialSvc;
 
     @GetMapping("/person/{personId}/credential")
     public ResponseEntity<List<PersonalQualificationDto<CredentialDto>>> getCredentials(
@@ -627,12 +653,6 @@ public class PersonController {
      * LEARNING RECORD
      */
 
-    @Autowired
-    private LearningResourceSvc learningResourceSvc;
-
-    @Autowired
-    private LearningRecordSvc learningRecordSvc;
-
     @GetMapping("/person/{personId}/learningrecord")
     public ResponseEntity<List<LearningRecordDto>> getLearningRecords(
             @PathVariable(value = "personId") final UUID personId)
@@ -673,15 +693,6 @@ public class PersonController {
     /*
      * Employment Record
      */
-
-    @Autowired
-    private LocationSvc locationSvc;
-
-    @Autowired
-    private FacilitySvc facilitySvc;
-
-    @Autowired
-    private EmploymentRecordSvc employmentRecordSvc;
 
     @GetMapping("/person/{personId}/employmentrecord")
     public ResponseEntity<List<EmploymentRecordDto>> getEmploymentRecords(
@@ -751,9 +762,6 @@ public class PersonController {
      * Military Record
      */
 
-    @Autowired
-    private MilitaryRecordSvc militaryRecordSvc;
-
     @GetMapping("/person/{personId}/militaryrecord")
     public ResponseEntity<List<MilitaryRecordDto>> getMilitaryRecords(
             @PathVariable(value = "personId") final UUID personId)
@@ -776,7 +784,7 @@ public class PersonController {
 
         Person person = personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
                 "Person not found for this id :: " + personId));
-        
+
         log.info("Update MilitaryRecord:........." + militaryRecordDto);
         MilitaryRecord militaryRecord = mapper.map(militaryRecordDto, MilitaryRecord.class);
         militaryRecord.setPerson(person);
@@ -792,12 +800,6 @@ public class PersonController {
     /**
      * ORGANIZATION
      */
-
-    @Autowired
-    private OrganizationSvc organizationSvc;
-
-    @Autowired
-    private AssociationSvc associationSvc;
 
     @GetMapping("/person/{personId}/organization")
     public ResponseEntity<List<AssociationDto>> getOrganizationsByPerson(
