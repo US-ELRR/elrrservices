@@ -14,10 +14,8 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -41,12 +39,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ContextConfiguration
 @WithMockUser
 public class PersonControllerTest extends CommonControllerTest {
-
-    /**
-     *
-     */
-    @MockBean
-    private ModelMapper mapper;
 
     /**
      *
@@ -218,8 +210,7 @@ public class PersonControllerTest extends CommonControllerTest {
         mockMvc.perform(
                 put("/api/person/1").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(personDto))
-                        .headers(headers));
-        // .andExpect(status().isCreated()).andDo(print());
+                        .headers(headers));        
 
     }
 

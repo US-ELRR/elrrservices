@@ -33,7 +33,7 @@ class PersonSvcTest {
         *
         */
         @Mock
-        private PersonRepository personalRepository;
+        private PersonRepository personRepository;
 
         /**
          *
@@ -42,19 +42,19 @@ class PersonSvcTest {
         @Test
         void test() {
             PersonSvc personSvc = new PersonSvc(
-                    personalRepository);
+                    personRepository);
             Person person = new Person();
             UUID id = UUID.randomUUID();
             person.setId(id);
             List<Person> personList = new ArrayList<>();
             personList.add(person);
             ReflectionTestUtils.setField(personSvc,
-                    "personalRepository", personalRepository);
+                    "personRepository", personRepository);
             Mockito.doReturn(person)
-                    .when(personalRepository).save(person);
-            Mockito.doReturn(true).when(personalRepository)
+                    .when(personRepository).save(person);
+            Mockito.doReturn(true).when(personRepository)
                     .existsById(id);
-            Mockito.doNothing().when(personalRepository).deleteById(id);
+            Mockito.doNothing().when(personRepository).deleteById(id);
 
             personSvc.getId(person);
             personSvc.findAll();
