@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+// import com.deloitte.elrr.elrrconsolidate.HeaderFilter;
+
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -27,16 +29,22 @@ public class HeaderFilter implements Filter {
 
     HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 
-    if (checkHttpHeader == false) {
-      chain.doFilter(request, response);
-    } else {
-      if ("https".equalsIgnoreCase(httpServletRequest.getHeader("X-Forwarded-Proto"))) {
+    try {
+      if (checkHttpHeader == false) {
         chain.doFilter(request, response);
       } else {
-        log.error("Not a HTTPS request.");
-        ((HttpServletResponse) response)
-            .sendError(HttpServletResponse.SC_BAD_REQUEST, "Not a HTTPS request.");
+        if ("https".equalsIgnoreCase(httpServletRequest.getHeader("X-Forwarded-Proto"))) {
+          chain.doFilter(request, response);
+        } else {
+          log.error("Not a HTTPS request.");
+          ((HttpServletResponse) response)
+              .sendError(HttpServletResponse.SC_BAD_REQUEST, "Not a HTTPS request.");
+        }
       }
+    } catch (IOException | ServletException e) {
+      log.error("Error: " + e.getMessage());
+      e.printStackTrace();
+      return;
     }
   }
 }

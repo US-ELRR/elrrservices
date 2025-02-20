@@ -11,9 +11,9 @@ import org.springframework.web.client.RestTemplate;
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 
 @SpringBootApplication
-@Import({ JacksonAutoConfiguration.class })
+@Import({JacksonAutoConfiguration.class})
 @EnableEncryptableProperties
-public class ElrrApplication  {
+public class ElrrApplication {
 
     /**
      *
