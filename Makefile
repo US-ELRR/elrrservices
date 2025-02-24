@@ -12,5 +12,9 @@ debug:
 test:
 	mvn test
 
+test-debug:
+	mvn -Dmaven.surefire.debug="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=localhost:8000" test
+
+
 build:
 	mvn install
