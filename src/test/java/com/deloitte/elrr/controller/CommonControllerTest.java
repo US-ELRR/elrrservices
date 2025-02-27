@@ -3,7 +3,7 @@
  */
 package com.deloitte.elrr.controller;
 
-import org.modelmapper.ModelMapper;
+import java.io.IOException;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import com.deloitte.elrr.jpa.svc.AssociationSvc;
@@ -25,6 +25,9 @@ import com.deloitte.elrr.jpa.svc.PhoneSvc;
 import com.deloitte.elrr.repository.OrganizationRepository;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Getter;
@@ -45,9 +48,6 @@ class CommonControllerTest {
 
     @MockitoBean
     private PersonSvc personSvc;
-
-    @MockitoBean
-    private ModelMapper mapper;
 
     @MockitoBean
     private PhoneSvc phoneSvc;
@@ -104,6 +104,10 @@ class CommonControllerTest {
             throws JsonProcessingException {
 
         return new ObjectMapper().writeValueAsString(obj);
+    }
 
+    public static <T> T resultsAsObject(String results, TypeReference<T> type) 
+            throws StreamReadException, DatabindException, IOException {
+        return (T) new ObjectMapper().readValue(results, type);
     }
 }

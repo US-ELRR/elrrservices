@@ -30,18 +30,13 @@ import com.deloitte.elrr.entity.Person;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/**
- * @author mnelakurti
- *
- */
-
 @WebMvcTest(PersonController.class)
 @ContextConfiguration
 @WithMockUser
 public class PersonControllerTest extends CommonControllerTest {
 
     /**
-     *
+     * ADDD TESTS FOR ADDITIONAL PERSON METHODS
      */
     @Autowired
     private MockMvc mockMvc;

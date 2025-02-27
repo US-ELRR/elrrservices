@@ -1,0 +1,230 @@
+package com.deloitte.elrr.controller;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import com.deloitte.elrr.dto.OrganizationDto;
+import com.deloitte.elrr.entity.Organization;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.extern.slf4j.Slf4j;
+
+@WebMvcTest(OrganizationController.class)
+@ContextConfiguration
+@AutoConfigureMockMvc(addFilters = false)
+@Slf4j
+public class OrganizationControllerTest extends CommonControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+    
+    private HttpHeaders headers;
+
+    @BeforeEach
+    void addHeaders() {
+        headers = new HttpHeaders();
+        headers.set("Content-Type", " */*");
+        headers.set("X-Forwarded-Proto", "https");
+    }
+
+    /**
+     *
+     * @param obj
+     * @return String
+     * @throws JsonProcessingException
+     */
+    public static String asJsonString(final Object obj)
+            throws JsonProcessingException {
+
+        return new ObjectMapper().writeValueAsString(obj);
+
+    }
+
+    private static final UUID organizationId = UUID.randomUUID();
+
+    /**
+     *
+     * @throws Exception
+     */
+    @Test
+    void getAllOrganizationsTest() throws Exception {
+
+        Mockito.doReturn(getOrganizationList()).when(getOrganizationSvc()).findAll();
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/organization")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        List<OrganizationDto> result = resultsAsObject(mvcResult.getResponse().getContentAsString(), new TypeReference<List<OrganizationDto>>() { });
+        assertEquals(organizationId, result.get(0).getId());
+    }
+
+    
+    @Test
+    void getOrganizationByIdTest() throws Exception {
+
+        Mockito.doReturn(Optional.of(getOrganizationList().iterator().next()))
+                .when(getOrganizationSvc()).get(organizationId);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/organization/"+organizationId)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        OrganizationDto result = resultsAsObject(mvcResult.getResponse().getContentAsString(), new TypeReference<OrganizationDto>() { });
+        assertEquals(result.getId(), organizationId);
+    }
+
+    
+    @Test
+    void getOrganizationByIdErrorTest() throws Exception {
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/organization/1")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(400, mvcResult.getResponse().getStatus());
+    }
+
+    
+    @Test
+    void getOrganizationByIdParameterTest() throws Exception {
+
+        Mockito.doReturn(Optional.of(getOrganizationList().iterator().next()))
+                .when(getOrganizationSvc()).get(organizationId);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/organization?id="+organizationId)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        List<OrganizationDto> result = resultsAsObject(mvcResult.getResponse().getContentAsString(), new TypeReference<List<OrganizationDto>>() { });
+        assertEquals(organizationId, result.get(0).getId());
+    }
+
+    @Test
+    void createOrganizationTest() throws Exception {
+        OrganizationDto organizationDto = new OrganizationDto();
+        organizationDto.setId(organizationId);
+        organizationDto.setName("Test Org");
+        Mockito.doReturn(getOrganizationList().iterator().next()).when(getOrganizationSvc())
+                .save(any());
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/api/organization")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(organizationDto))
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(201, mvcResult.getResponse().getStatus());
+        OrganizationDto result = resultsAsObject(mvcResult.getResponse().getContentAsString(), new TypeReference<OrganizationDto>() { });
+        assertEquals(result.getId(), organizationId);
+    }
+
+    @Test
+    void createOrganizationTestBadArg() throws Exception {
+        OrganizationDto organizationDto = new OrganizationDto();
+        organizationDto.setId(organizationId);
+        Mockito.doReturn(getOrganizationList().iterator().next()).when(getOrganizationSvc())
+                .save(any());
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/api/organization")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(organizationDto))
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(400, mvcResult.getResponse().getStatus());
+    }
+
+    @Test
+    void updateOrganizationTest() throws Exception {
+        OrganizationDto organizationDto = new OrganizationDto();
+        organizationDto.setId(organizationId);
+        organizationDto.setName("Test Org");
+        Mockito.doReturn(Optional.of(getOrganizationList().iterator().next()))
+                .when(getOrganizationSvc()).get(organizationId);
+        Mockito.doReturn(getOrganizationList().iterator().next()).when(getOrganizationSvc())
+                .save(any());
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put("/api/organization/"+organizationId).accept(MediaType.APPLICATION_JSON)
+                .content(asJsonString(organizationDto))
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        OrganizationDto result = resultsAsObject(mvcResult.getResponse().getContentAsString(), new TypeReference<OrganizationDto>() { });
+        assertEquals(result.getId(), organizationId);
+    }
+
+    @Test
+    void deleteOrganizationTest() throws Exception {
+        Mockito.doReturn(Optional.of(getOrganizationList().iterator().next()))
+                .when(getOrganizationSvc()).get(organizationId);
+        Mockito.doNothing().when(getOrganizationSvc()).delete(organizationId);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete("/api/organization/"+organizationId).accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(204, mvcResult.getResponse().getStatus());
+    }
+
+    /**
+     *
+     * @return Iterable<OrganizationDto>
+     */
+    private static Iterable<Organization> getOrganizationList() {
+        List<Organization> organizationList = new ArrayList<>();
+        Organization organization = new Organization();
+        organization.setId(organizationId);
+        organizationList.add(organization);
+
+        return organizationList;
+    }
+}
