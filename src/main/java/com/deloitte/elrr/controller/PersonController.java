@@ -272,21 +272,6 @@ public class PersonController {
                 .collect(Collectors.toList()));
     }
 
-    @GetMapping("/person/{personId}/identity/{identityId}")
-    public ResponseEntity<IdentityDto> getIdentity(
-            @PathVariable(value = "personId") final UUID personId,
-            @PathVariable(value = "identityId") final UUID identityId)
-            throws ResourceNotFoundException {
-        log.info("Getting identity for Person with id:......" + personId);
-
-        Identity identity = identitySvc.get(identityId).orElseThrow(() -> new ResourceNotFoundException(
-                "Identity not found for this id :: " + identityId));
-
-        if (!identity.getPerson().getId().equals(personId))
-            throw new ResourceNotFoundException("Person does not match identity.");
-        return ResponseEntity.ok(mapper.map(identity, IdentityDto.class));
-    }
-
     @PostMapping("/person/{personId}/identity")
     public ResponseEntity<List<IdentityDto>> addIdentityToPerson(
             @PathVariable(value = "personId") final UUID personId,
@@ -667,7 +652,7 @@ public class PersonController {
     }
 
     @PostMapping("/person/{personId}/learningrecord")
-    public ResponseEntity<List<LearningRecordDto>> associateCredential(
+    public ResponseEntity<List<LearningRecordDto>> addLearningRecord(
             @PathVariable(value = "personId") final UUID personId,
             @Valid @RequestBody final LearningRecordDto learningRecordDto)
             throws ResourceNotFoundException {

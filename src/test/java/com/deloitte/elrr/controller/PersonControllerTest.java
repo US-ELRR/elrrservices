@@ -33,6 +33,8 @@ import com.deloitte.elrr.dto.CompetencyDto;
 import com.deloitte.elrr.dto.CredentialDto;
 import com.deloitte.elrr.dto.EmailDto;
 import com.deloitte.elrr.dto.IdentityDto;
+import com.deloitte.elrr.dto.LearningRecordDto;
+import com.deloitte.elrr.dto.LearningResourceDto;
 import com.deloitte.elrr.dto.PersonDto;
 import com.deloitte.elrr.dto.PersonalQualificationDto;
 import com.deloitte.elrr.dto.PhoneDto;
@@ -40,10 +42,13 @@ import com.deloitte.elrr.entity.Competency;
 import com.deloitte.elrr.entity.Credential;
 import com.deloitte.elrr.entity.Email;
 import com.deloitte.elrr.entity.Identity;
+import com.deloitte.elrr.entity.LearningRecord;
+import com.deloitte.elrr.entity.LearningResource;
 import com.deloitte.elrr.entity.Person;
 import com.deloitte.elrr.entity.PersonalCompetency;
 import com.deloitte.elrr.entity.PersonalCredential;
 import com.deloitte.elrr.entity.Phone;
+import com.deloitte.elrr.entity.types.LearningStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -226,7 +231,7 @@ public class PersonControllerTest extends CommonControllerTest {
      */
 
     @Test
-    void getAllPersonIdentitiesTest() throws Exception {
+    void getIdentitiesTest() throws Exception {
         Mockito.doReturn(Optional.of(getPersonList().iterator().next()))
                 .when(getPersonSvc()).get(personId);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -244,7 +249,7 @@ public class PersonControllerTest extends CommonControllerTest {
     }
 
     @Test
-    void postPersonIdentityTest() throws Exception {
+    void addIdentityToPersonTest() throws Exception {
         IdentityDto identityDto = new IdentityDto();
         identityDto.setId(identityId);
         Person mockPerson = getPersonList().iterator().next();
@@ -264,6 +269,24 @@ public class PersonControllerTest extends CommonControllerTest {
         List<IdentityDto> result = resultsAsObject(mvcResult.getResponse().getContentAsString(),
                 new TypeReference<List<IdentityDto>>(){});
         assertEquals(identityId, result.get(0).getId());
+    }
+
+    @Test
+    void deleteIdentityTest() throws Exception {
+        Person mockPerson = getPersonList().iterator().next();
+        Identity mockIdentity = mockPerson.getIdentities().iterator().next();
+        Mockito.when(getIdentitySvc().get(identityId)).thenReturn(Optional.of(mockIdentity));
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete("/api/person/" + personId + "/identity/" + identityId)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(204, mvcResult.getResponse().getStatus());
     }
 
     /*
@@ -681,11 +704,65 @@ public class PersonControllerTest extends CommonControllerTest {
     }
 
     /*
-     * Identity delete!
+     * LEARNING RECORD
+     */
+    @Test
+    void getLearningRecordsTest() throws Exception {
+        Person mockPerson = getPersonList().iterator().next();
+        Mockito.when(getPersonSvc().get(personId)).thenReturn(Optional.of(mockPerson));
+        
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/person/"+personId+"/learningrecord")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        List<LearningRecordDto> result = resultsAsObject(mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<LearningRecordDto>>(){});
+        assertEquals(learningResourceId, result.get(0).getLearningResource().getId());
+        assertEquals(LearningStatus.ATTEMPTED, result.get(0).getRecordStatus());
+    }
+
+    @Test
+    void addLearningRecordTest() throws Exception {
+        Person mockPerson = getPersonList().iterator().next();
+        LearningResource mockLearningResource = mockPerson.getLearningRecords()
+                .iterator().next().getLearningResource();
+        
+        LearningResourceDto learningResourceDto = new LearningResourceDto();
+        learningResourceDto.setId(learningResourceId);
+        LearningRecordDto learningRecordDto = new LearningRecordDto();
+        learningRecordDto.setLearningResource(learningResourceDto);
+        learningRecordDto.setRecordStatus(LearningStatus.ATTEMPTED);
+
+        mockPerson.setLearningRecords(new HashSet<LearningRecord>());
+        Mockito.when(getPersonSvc().get(personId)).thenReturn(Optional.of(mockPerson));
+        Mockito.when(getLearningResourceSvc().get(learningResourceId))
+                .thenReturn(Optional.of(mockLearningResource));
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/api/person/"+personId+"/learningrecord")
+                .content(asJsonString(learningRecordDto))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        List<LearningRecordDto> result = resultsAsObject(mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<LearningRecordDto>>(){});
+        assertEquals(learningResourceId, result.get(0).getLearningResource().getId());
+    }
+
+
+
+    /*
      * 
-     * @GetMapping("/person/{personId}/learningrecord")
-     * 
-     * @PostMapping("/person/{personId}/learningrecord")
+     * @me: now just duplicate the learningrecord one to employment record and military record
      * 
      * @GetMapping("/person/{personId}/employmentrecord")
      * 
@@ -710,6 +787,7 @@ public class PersonControllerTest extends CommonControllerTest {
     private static final UUID emailId = UUID.randomUUID();
     private static final UUID competencyId = UUID.randomUUID();
     private static final UUID credentialId = UUID.randomUUID();
+    private static final UUID learningResourceId = UUID.randomUUID();
 
     /**
      *
@@ -722,6 +800,7 @@ public class PersonControllerTest extends CommonControllerTest {
 
         Identity identity = new Identity();
         identity.setId(identityId);
+        identity.setPerson(person);
         person.setIdentities(Collections.singleton(identity));
         
         Phone phone = new Phone();
@@ -746,6 +825,13 @@ public class PersonControllerTest extends CommonControllerTest {
         Set<PersonalCredential> creds = new HashSet<PersonalCredential>();
         creds.add(personalCredential);
         person.setCredentials(creds);
+
+        LearningResource learningResource = new LearningResource();
+        learningResource.setId(learningResourceId);
+        LearningRecord learningRecord = new LearningRecord();
+        learningRecord.setRecordStatus(LearningStatus.ATTEMPTED);
+        learningRecord.setLearningResource(learningResource);
+        person.setLearningRecords(Collections.singleton(learningRecord));
 
         personList.add(person);
 
