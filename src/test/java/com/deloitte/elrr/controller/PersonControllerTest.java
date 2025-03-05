@@ -32,18 +32,24 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.deloitte.elrr.dto.CompetencyDto;
 import com.deloitte.elrr.dto.CredentialDto;
 import com.deloitte.elrr.dto.EmailDto;
+import com.deloitte.elrr.dto.EmploymentRecordDto;
 import com.deloitte.elrr.dto.IdentityDto;
 import com.deloitte.elrr.dto.LearningRecordDto;
 import com.deloitte.elrr.dto.LearningResourceDto;
+import com.deloitte.elrr.dto.MilitaryRecordDto;
+import com.deloitte.elrr.dto.OrganizationDto;
 import com.deloitte.elrr.dto.PersonDto;
 import com.deloitte.elrr.dto.PersonalQualificationDto;
 import com.deloitte.elrr.dto.PhoneDto;
 import com.deloitte.elrr.entity.Competency;
 import com.deloitte.elrr.entity.Credential;
 import com.deloitte.elrr.entity.Email;
+import com.deloitte.elrr.entity.EmploymentRecord;
 import com.deloitte.elrr.entity.Identity;
 import com.deloitte.elrr.entity.LearningRecord;
 import com.deloitte.elrr.entity.LearningResource;
+import com.deloitte.elrr.entity.MilitaryRecord;
+import com.deloitte.elrr.entity.Organization;
 import com.deloitte.elrr.entity.Person;
 import com.deloitte.elrr.entity.PersonalCompetency;
 import com.deloitte.elrr.entity.PersonalCredential;
@@ -758,6 +764,112 @@ public class PersonControllerTest extends CommonControllerTest {
         assertEquals(learningResourceId, result.get(0).getLearningResource().getId());
     }
 
+    /*
+     * MILITARY RECORD
+     */
+    @Test
+    void getMilitaryRecordsTest() throws Exception {
+        Person mockPerson = getPersonList().iterator().next();
+        Mockito.when(getPersonSvc().get(personId)).thenReturn(Optional.of(mockPerson));
+        
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/person/"+personId+"/militaryrecord")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        List<MilitaryRecordDto> result = resultsAsObject(mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<MilitaryRecordDto>>(){});
+        assertEquals(militaryRecordId, result.get(0).getId());
+    }
+
+    @Test
+    void addMilitaryRecordTest() throws Exception {
+        Person mockPerson = getPersonList().iterator().next();
+        
+        MilitaryRecordDto militaryRecordDto = new MilitaryRecordDto();
+        militaryRecordDto.setId(militaryRecordId);
+        militaryRecordDto.setCountry("Test Country");
+        militaryRecordDto.setBranch("Test Branch");
+
+        mockPerson.setMilitaryRecords(new HashSet<MilitaryRecord>());
+        Mockito.when(getPersonSvc().get(personId)).thenReturn(Optional.of(mockPerson));
+        
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/api/person/"+personId+"/militaryrecord")
+                .content(asJsonString(militaryRecordDto))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        List<MilitaryRecordDto> result = resultsAsObject(mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<MilitaryRecordDto>>(){});
+        assertEquals(militaryRecordId, result.get(0).getId());
+    }
+
+    /*
+     * EMPLOYMENT RECORD
+     */
+    @Test
+    void getEmploymentRecordsTest() throws Exception {
+        Person mockPerson = getPersonList().iterator().next();
+        Mockito.when(getPersonSvc().get(personId)).thenReturn(Optional.of(mockPerson));
+        
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/person/"+personId+"/employmentrecord")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        List<EmploymentRecordDto> result = resultsAsObject(mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<EmploymentRecordDto>>(){});
+        EmploymentRecordDto employmentRecordDto = result.get(0);
+        assertEquals(employmentRecordId, employmentRecordDto.getId());
+        assertEquals(employerId, employmentRecordDto.getEmployerOrganization().getId());
+    }
+
+    @Test
+    void addEmploymentRecordTest() throws Exception {
+        Person mockPerson = getPersonList().iterator().next();
+        EmploymentRecord mockEmploymentRecord = mockPerson.getEmploymentRecords().iterator().next();
+        
+        OrganizationDto employerDto = new OrganizationDto();
+        employerDto.setId(employerId);
+        employerDto.setName("EmploymentCorp");
+        EmploymentRecordDto employmentRecordDto = new EmploymentRecordDto();
+        employmentRecordDto.setEmployerOrganization(employerDto);
+        employmentRecordDto.setId(employmentRecordId);
+
+        mockPerson.setEmploymentRecords(new HashSet<EmploymentRecord>());
+        Mockito.when(getPersonSvc().get(personId)).thenReturn(Optional.of(mockPerson));
+        Mockito.when(getOrganizationSvc().get(employerId))
+                .thenReturn(Optional.of(mockEmploymentRecord.getEmployerOrganization()));
+        
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/api/person/"+personId+"/employmentrecord")
+                .content(asJsonString(employmentRecordDto))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        List<EmploymentRecordDto> result = resultsAsObject(mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<EmploymentRecordDto>>(){});
+        assertEquals(employmentRecordId, result.get(0).getId());
+        assertEquals(employerId, result.get(0).getEmployerOrganization().getId());
+    }
+
 
 
     /*
@@ -768,9 +880,6 @@ public class PersonControllerTest extends CommonControllerTest {
      * 
      * @PostMapping("/person/{personId}/employmentrecord")
      * 
-     * @GetMapping("/person/{personId}/militaryrecord")
-     * 
-     * @PostMapping("/person/{personId}/militaryrecord")
      * 
      * @GetMapping("/person/{personId}/organization")
      * 
@@ -788,6 +897,9 @@ public class PersonControllerTest extends CommonControllerTest {
     private static final UUID competencyId = UUID.randomUUID();
     private static final UUID credentialId = UUID.randomUUID();
     private static final UUID learningResourceId = UUID.randomUUID();
+    private static final UUID militaryRecordId = UUID.randomUUID();
+    private static final UUID employerId = UUID.randomUUID();
+    private static final UUID employmentRecordId = UUID.randomUUID();
 
     /**
      *
@@ -832,6 +944,20 @@ public class PersonControllerTest extends CommonControllerTest {
         learningRecord.setRecordStatus(LearningStatus.ATTEMPTED);
         learningRecord.setLearningResource(learningResource);
         person.setLearningRecords(Collections.singleton(learningRecord));
+
+        MilitaryRecord militaryRecord = new MilitaryRecord();
+        militaryRecord.setId(militaryRecordId);
+        militaryRecord.setBranch("Test Branch");
+        militaryRecord.setCountry("Test Country");
+        person.setMilitaryRecords(Collections.singleton(militaryRecord));
+
+        Organization employer = new Organization();
+        employer.setId(employerId);
+        employer.setName("EmploymentCorp");
+        EmploymentRecord employmentRecord = new EmploymentRecord();
+        employmentRecord.setId(employmentRecordId);
+        employmentRecord.setEmployerOrganization(employer);
+        person.setEmploymentRecords(Collections.singleton(employmentRecord));
 
         personList.add(person);
 
