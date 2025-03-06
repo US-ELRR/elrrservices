@@ -56,7 +56,7 @@ public class CompetencyController {
      * @throws ResourceNotFoundException
      */
     @GetMapping("/competency")
-    public ResponseEntity<List<CompetencyDto>> getAllCompetencys(
+    public ResponseEntity<List<CompetencyDto>> getAllCompetencies(
             @RequestParam(value = "id", required = false) final UUID competencyId) throws ResourceNotFoundException {
         try {
             log.debug("Get Competency id:........." + competencyId);

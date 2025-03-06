@@ -70,7 +70,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
      * @throws Exception
      */
     @Test
-    void getAllCompetencysTest() throws Exception {
+    void getAllCompetenciesTest() throws Exception {
 
         Mockito.doReturn(getCompetencyList()).when(getCompetencySvc()).findAll();
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
