@@ -29,6 +29,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import com.deloitte.elrr.dto.AssociationDto;
 import com.deloitte.elrr.dto.CompetencyDto;
 import com.deloitte.elrr.dto.CredentialDto;
 import com.deloitte.elrr.dto.EmailDto;
@@ -41,6 +42,7 @@ import com.deloitte.elrr.dto.OrganizationDto;
 import com.deloitte.elrr.dto.PersonDto;
 import com.deloitte.elrr.dto.PersonalQualificationDto;
 import com.deloitte.elrr.dto.PhoneDto;
+import com.deloitte.elrr.entity.Association;
 import com.deloitte.elrr.entity.Competency;
 import com.deloitte.elrr.entity.Credential;
 import com.deloitte.elrr.entity.Email;
@@ -94,6 +96,16 @@ public class PersonControllerTest extends CommonControllerTest {
 
     private static final UUID personId = UUID.randomUUID();
     private static final UUID identityId = UUID.randomUUID();
+    private static final UUID phoneId = UUID.randomUUID();
+    private static final UUID emailId = UUID.randomUUID();
+    private static final UUID competencyId = UUID.randomUUID();
+    private static final UUID credentialId = UUID.randomUUID();
+    private static final UUID learningResourceId = UUID.randomUUID();
+    private static final UUID militaryRecordId = UUID.randomUUID();
+    private static final UUID employerId = UUID.randomUUID();
+    private static final UUID employmentRecordId = UUID.randomUUID();
+    private static final UUID organizationId = UUID.randomUUID();
+    private static final UUID associationId = UUID.randomUUID();
 
     /**
      *
@@ -121,7 +133,7 @@ public class PersonControllerTest extends CommonControllerTest {
     @Test
     void getPersonByIdTest() throws Exception {
 
-        Mockito.doReturn(Optional.of(getPersonList().iterator().next()))
+        Mockito.doReturn(Optional.of(getTestPerson()))
                 .when(getPersonSvc()).get(personId);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/person/" + personId)
@@ -155,7 +167,7 @@ public class PersonControllerTest extends CommonControllerTest {
     @Test
     void getPersonByIdParameterTest() throws Exception {
 
-        Mockito.doReturn(Optional.of(getPersonList().iterator().next()))
+        Mockito.doReturn(Optional.of(getTestPerson()))
                 .when(getPersonSvc()).get(personId);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/person?id=" + personId)
@@ -176,7 +188,7 @@ public class PersonControllerTest extends CommonControllerTest {
     void createPersonTest() throws Exception {
         PersonDto personDto = new PersonDto();
         personDto.setId(personId);
-        Mockito.doReturn(getPersonList().iterator().next()).when(getPersonSvc())
+        Mockito.doReturn(getTestPerson()).when(getPersonSvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/api/person")
@@ -198,9 +210,9 @@ public class PersonControllerTest extends CommonControllerTest {
     void updatePersonTest() throws Exception {
         PersonDto personDto = new PersonDto();
         personDto.setId(personId);
-        Mockito.doReturn(Optional.of(getPersonList().iterator().next()))
+        Mockito.doReturn(Optional.of(getTestPerson()))
                 .when(getPersonSvc()).get(personId);
-        Mockito.doReturn(getPersonList().iterator().next()).when(getPersonSvc())
+        Mockito.doReturn(getTestPerson()).when(getPersonSvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/api/person/" + personId).accept(MediaType.APPLICATION_JSON)
@@ -218,7 +230,7 @@ public class PersonControllerTest extends CommonControllerTest {
 
     @Test
     void deletePersonTest() throws Exception {
-        Mockito.doReturn(Optional.of(getPersonList().iterator().next()))
+        Mockito.doReturn(Optional.of(getTestPerson()))
                 .when(getPersonSvc()).get(personId);
         Mockito.doNothing().when(getPersonSvc()).delete(personId);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -238,7 +250,7 @@ public class PersonControllerTest extends CommonControllerTest {
 
     @Test
     void getIdentitiesTest() throws Exception {
-        Mockito.doReturn(Optional.of(getPersonList().iterator().next()))
+        Mockito.doReturn(Optional.of(getTestPerson()))
                 .when(getPersonSvc()).get(personId);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/person/"+personId+"/identity")
@@ -258,7 +270,7 @@ public class PersonControllerTest extends CommonControllerTest {
     void addIdentityToPersonTest() throws Exception {
         IdentityDto identityDto = new IdentityDto();
         identityDto.setId(identityId);
-        Person mockPerson = getPersonList().iterator().next();
+        Person mockPerson = getTestPerson();
         mockPerson.setIdentities(new HashSet<Identity>());
         Mockito.doReturn(Optional.of(mockPerson)).when(getPersonSvc())
                 .get(personId);
@@ -279,7 +291,7 @@ public class PersonControllerTest extends CommonControllerTest {
 
     @Test
     void deleteIdentityTest() throws Exception {
-        Person mockPerson = getPersonList().iterator().next();
+        Person mockPerson = getTestPerson();
         Identity mockIdentity = mockPerson.getIdentities().iterator().next();
         Mockito.when(getIdentitySvc().get(identityId)).thenReturn(Optional.of(mockIdentity));
 
@@ -300,7 +312,7 @@ public class PersonControllerTest extends CommonControllerTest {
      */
     @Test
     void getAllPhonesTest() throws Exception {
-        Mockito.doReturn(Optional.of(getPersonList().iterator().next()))
+        Mockito.doReturn(Optional.of(getTestPerson()))
                 .when(getPersonSvc()).get(personId);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/person/"+personId+"/phone")
@@ -320,7 +332,7 @@ public class PersonControllerTest extends CommonControllerTest {
     void postPersonPhoneTest() throws Exception {
         PhoneDto phoneDto = new PhoneDto();
         phoneDto.setId(phoneId);
-        Person mockPerson = getPersonList().iterator().next();
+        Person mockPerson = getTestPerson();
         mockPerson.setPhoneNumbers(new HashSet<Phone>());
         
         Mockito.doReturn(Optional.of(mockPerson)).when(getPersonSvc())
@@ -343,7 +355,7 @@ public class PersonControllerTest extends CommonControllerTest {
 
     @Test
     void associatePhoneWithPersonTest() throws Exception {
-        Person mockPerson = getPersonList().iterator().next();
+        Person mockPerson = getTestPerson();
         Phone mockPhone = mockPerson.getPhoneNumbers().iterator().next();
         mockPerson.setPhoneNumbers(new HashSet<Phone>());
         
@@ -368,7 +380,7 @@ public class PersonControllerTest extends CommonControllerTest {
 
     @Test
     void removePhoneFromPersonTest() throws Exception {
-        Person mockPerson = getPersonList().iterator().next();
+        Person mockPerson = getTestPerson();
         Mockito.when(getPersonSvc().get(personId)).thenReturn(Optional.of(mockPerson));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -388,7 +400,7 @@ public class PersonControllerTest extends CommonControllerTest {
      */
     @Test
     void getAllEmailsTest() throws Exception {
-        Mockito.doReturn(Optional.of(getPersonList().iterator().next()))
+        Mockito.doReturn(Optional.of(getTestPerson()))
                 .when(getPersonSvc()).get(personId);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/person/"+personId+"/email")
@@ -408,7 +420,7 @@ public class PersonControllerTest extends CommonControllerTest {
     void postPersonEmailTest() throws Exception {
         EmailDto emailDto = new EmailDto();
         emailDto.setId(emailId);
-        Person mockPerson = getPersonList().iterator().next();
+        Person mockPerson = getTestPerson();
         mockPerson.setEmailAddresses(new HashSet<Email>());
         
         Mockito.doReturn(Optional.of(mockPerson)).when(getPersonSvc())
@@ -431,7 +443,7 @@ public class PersonControllerTest extends CommonControllerTest {
 
     @Test
     void associateEmailWithPersonTest() throws Exception {
-        Person mockPerson = getPersonList().iterator().next();
+        Person mockPerson = getTestPerson();
         Email mockEmail = mockPerson.getEmailAddresses().iterator().next();
         mockPerson.setEmailAddresses(new HashSet<Email>());
         
@@ -456,7 +468,7 @@ public class PersonControllerTest extends CommonControllerTest {
 
     @Test
     void removeEmailFromPersonTest() throws Exception {
-        Person mockPerson = getPersonList().iterator().next();
+        Person mockPerson = getTestPerson();
         Mockito.when(getPersonSvc().get(personId)).thenReturn(Optional.of(mockPerson));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -476,7 +488,7 @@ public class PersonControllerTest extends CommonControllerTest {
      */
     @Test
     void getCompetenciesTest() throws Exception {
-        Mockito.doReturn(Optional.of(getPersonList().iterator().next()))
+        Mockito.doReturn(Optional.of(getTestPerson()))
                 .when(getPersonSvc()).get(personId);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/person/"+personId+"/competency")
@@ -494,7 +506,7 @@ public class PersonControllerTest extends CommonControllerTest {
 
     @Test
     void getCompetencyTest() throws Exception {
-        Mockito.doReturn(Optional.of(getPersonList().iterator().next()))
+        Mockito.doReturn(Optional.of(getTestPerson()))
                 .when(getPersonSvc()).get(personId);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/person/"+personId+"/competency/"+competencyId)
@@ -516,7 +528,7 @@ public class PersonControllerTest extends CommonControllerTest {
         competencyDto.setId(competencyId);
         PersonalQualificationDto<CompetencyDto> pqd = new PersonalQualificationDto<CompetencyDto>(competencyDto, true);
         
-        Person mockPerson = getPersonList().iterator().next();
+        Person mockPerson = getTestPerson();
         PersonalCompetency pc = mockPerson.getCompetencies().iterator().next();
         mockPerson.setCompetencies(new HashSet<PersonalCompetency>());
         
@@ -548,7 +560,7 @@ public class PersonControllerTest extends CommonControllerTest {
         competencyDto.setId(competencyId);
         PersonalQualificationDto<CompetencyDto> pqd = new PersonalQualificationDto<CompetencyDto>(competencyDto, false);
         
-        Person mockPerson = getPersonList().iterator().next();
+        Person mockPerson = getTestPerson();
         PersonalCompetency pc = mockPerson.getCompetencies().iterator().next();
         
         Mockito.when(getPersonSvc().get(personId)).thenReturn(Optional.of(mockPerson));
@@ -575,7 +587,7 @@ public class PersonControllerTest extends CommonControllerTest {
 
     @Test
     void deleteCompetencyAssociationTest() throws Exception {
-        Person mockPerson = getPersonList().iterator().next();
+        Person mockPerson = getTestPerson();
         Mockito.when(getPersonSvc().get(personId)).thenReturn(Optional.of(mockPerson));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -595,7 +607,7 @@ public class PersonControllerTest extends CommonControllerTest {
      */
     @Test
     void getCredentialsTest() throws Exception {
-        Mockito.doReturn(Optional.of(getPersonList().iterator().next()))
+        Mockito.doReturn(Optional.of(getTestPerson()))
                 .when(getPersonSvc()).get(personId);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/person/"+personId+"/credential")
@@ -613,7 +625,7 @@ public class PersonControllerTest extends CommonControllerTest {
 
     @Test
     void getCredentialTest() throws Exception {
-        Mockito.doReturn(Optional.of(getPersonList().iterator().next()))
+        Mockito.doReturn(Optional.of(getTestPerson()))
                 .when(getPersonSvc()).get(personId);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/api/person/"+personId+"/credential/"+credentialId)
@@ -635,7 +647,7 @@ public class PersonControllerTest extends CommonControllerTest {
         credentialDto.setId(credentialId);
         PersonalQualificationDto<CredentialDto> pqd = new PersonalQualificationDto<CredentialDto>(credentialDto, true);
         
-        Person mockPerson = getPersonList().iterator().next();
+        Person mockPerson = getTestPerson();
         PersonalCredential pc = mockPerson.getCredentials().iterator().next();
         mockPerson.setCredentials(new HashSet<PersonalCredential>());
         
@@ -667,7 +679,7 @@ public class PersonControllerTest extends CommonControllerTest {
         credentialDto.setId(credentialId);
         PersonalQualificationDto<CredentialDto> pqd = new PersonalQualificationDto<CredentialDto>(credentialDto, false);
         
-        Person mockPerson = getPersonList().iterator().next();
+        Person mockPerson = getTestPerson();
         PersonalCredential pc = mockPerson.getCredentials().iterator().next();
         
         Mockito.when(getPersonSvc().get(personId)).thenReturn(Optional.of(mockPerson));
@@ -694,7 +706,7 @@ public class PersonControllerTest extends CommonControllerTest {
 
     @Test
     void deleteCredentialAssociationTest() throws Exception {
-        Person mockPerson = getPersonList().iterator().next();
+        Person mockPerson = getTestPerson();
         Mockito.when(getPersonSvc().get(personId)).thenReturn(Optional.of(mockPerson));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -714,7 +726,7 @@ public class PersonControllerTest extends CommonControllerTest {
      */
     @Test
     void getLearningRecordsTest() throws Exception {
-        Person mockPerson = getPersonList().iterator().next();
+        Person mockPerson = getTestPerson();
         Mockito.when(getPersonSvc().get(personId)).thenReturn(Optional.of(mockPerson));
         
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -734,7 +746,7 @@ public class PersonControllerTest extends CommonControllerTest {
 
     @Test
     void addLearningRecordTest() throws Exception {
-        Person mockPerson = getPersonList().iterator().next();
+        Person mockPerson = getTestPerson();
         LearningResource mockLearningResource = mockPerson.getLearningRecords()
                 .iterator().next().getLearningResource();
         
@@ -769,7 +781,7 @@ public class PersonControllerTest extends CommonControllerTest {
      */
     @Test
     void getMilitaryRecordsTest() throws Exception {
-        Person mockPerson = getPersonList().iterator().next();
+        Person mockPerson = getTestPerson();
         Mockito.when(getPersonSvc().get(personId)).thenReturn(Optional.of(mockPerson));
         
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -788,7 +800,7 @@ public class PersonControllerTest extends CommonControllerTest {
 
     @Test
     void addMilitaryRecordTest() throws Exception {
-        Person mockPerson = getPersonList().iterator().next();
+        Person mockPerson = getTestPerson();
         
         MilitaryRecordDto militaryRecordDto = new MilitaryRecordDto();
         militaryRecordDto.setId(militaryRecordId);
@@ -818,7 +830,7 @@ public class PersonControllerTest extends CommonControllerTest {
      */
     @Test
     void getEmploymentRecordsTest() throws Exception {
-        Person mockPerson = getPersonList().iterator().next();
+        Person mockPerson = getTestPerson();
         Mockito.when(getPersonSvc().get(personId)).thenReturn(Optional.of(mockPerson));
         
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -839,7 +851,7 @@ public class PersonControllerTest extends CommonControllerTest {
 
     @Test
     void addEmploymentRecordTest() throws Exception {
-        Person mockPerson = getPersonList().iterator().next();
+        Person mockPerson = getTestPerson();
         EmploymentRecord mockEmploymentRecord = mockPerson.getEmploymentRecords().iterator().next();
         
         OrganizationDto employerDto = new OrganizationDto();
@@ -870,43 +882,143 @@ public class PersonControllerTest extends CommonControllerTest {
         assertEquals(employerId, result.get(0).getEmployerOrganization().getId());
     }
 
-
-
     /*
-     * 
-     * @me: now just duplicate the learningrecord one to employment record and military record
-     * 
-     * @GetMapping("/person/{personId}/employmentrecord")
-     * 
-     * @PostMapping("/person/{personId}/employmentrecord")
-     * 
-     * 
-     * @GetMapping("/person/{personId}/organization")
-     * 
-     * @GetMapping("/person/{personId}/organization/{organizationId}")
-     * 
-     * @PostMapping("/person/{personId}/organization/{organizationId}")
-     * 
-     * @PutMapping("/person/{personId}/organization/{organizationId}")
-     * 
-     * @DeleteMapping("/person/{personId}/organization/{organizationId}")
+     * ASSOCIATION
      */
+    @Test
+    void getOrganizationsByPersonTest() throws Exception {
+        Mockito.doReturn(Optional.of(getTestPerson()))
+                .when(getPersonSvc()).get(personId);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/person/"+personId+"/organization")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
-    private static final UUID phoneId = UUID.randomUUID();
-    private static final UUID emailId = UUID.randomUUID();
-    private static final UUID competencyId = UUID.randomUUID();
-    private static final UUID credentialId = UUID.randomUUID();
-    private static final UUID learningResourceId = UUID.randomUUID();
-    private static final UUID militaryRecordId = UUID.randomUUID();
-    private static final UUID employerId = UUID.randomUUID();
-    private static final UUID employmentRecordId = UUID.randomUUID();
+        assertNotNull(mvcResult);
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        List<AssociationDto> result = resultsAsObject(mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<AssociationDto>>(){});
+        assertEquals(associationId, result.get(0).getId());
+        assertEquals("MEMBER", result.get(0).getAssociationType());
+        assertEquals(organizationId, result.get(0).getOrganization().getId());
+        assertEquals("Assoc Org", result.get(0).getOrganization().getName());
+    }
+
+    @Test
+    void getAssociationByPersonAndOrgTest() throws Exception {
+        Mockito.doReturn(Optional.of(getTestPerson()))
+                .when(getPersonSvc()).get(personId);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/person/"+personId+"/organization/"+organizationId)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        AssociationDto result = resultsAsObject(mvcResult.getResponse().getContentAsString(),
+                new TypeReference<AssociationDto>(){});
+        assertEquals(associationId, result.getId());
+        assertEquals("MEMBER", result.getAssociationType());
+        assertEquals(organizationId, result.getOrganization().getId());
+        assertEquals("Assoc Org", result.getOrganization().getName());
+    }
+
+    @Test
+    void associateOrgTest() throws Exception {
+        
+        Person mockPerson = getTestPerson();
+        Association association = mockPerson.getAssociations().iterator().next();
+        Organization organization = association.getOrganization();
+        mockPerson.setAssociations(new HashSet<Association>());
+        
+        AssociationDto associationDto = new AssociationDto();
+        String assocType = "PROFESSIONAL ORG";
+        associationDto.setAssociationType(assocType);
+        
+        Mockito.doReturn(Optional.of(mockPerson)).when(getPersonSvc())
+                .get(personId);
+        
+        Mockito.when(getPersonSvc().get(personId)).thenReturn(Optional.of(mockPerson));
+        Mockito.when(getOrganizationSvc().get(organizationId)).thenReturn(Optional.of(organization));
+        
+        
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/api/person/"+personId+"/organization/"+organizationId)
+                .content(asJsonString(associationDto))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        List<AssociationDto> result = resultsAsObject(mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<AssociationDto>>(){});
+        assertEquals(assocType, result.get(0).getAssociationType());
+        assertEquals(organizationId, result.get(0).getOrganization().getId());
+        assertEquals("Assoc Org", result.get(0).getOrganization().getName());
+    }
+
+    @Test
+    void updateOrgAssociationTest() throws Exception {
+        AssociationDto associationDto = new AssociationDto();
+        String assocType = "NEWASSOC";
+        associationDto.setAssociationType(assocType);
+        
+        Person mockPerson = getTestPerson();
+        Organization mockOrganization = mockPerson.getAssociations().iterator()
+                .next().getOrganization();
+        
+        Mockito.when(getPersonSvc().get(personId)).thenReturn(Optional.of(mockPerson));
+        Mockito.when(getOrganizationSvc().get(organizationId)).thenReturn(Optional.of(mockOrganization));
+        
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put("/api/person/"+personId+"/organization/"+organizationId)
+                .content(asJsonString(associationDto))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        List<AssociationDto> result = resultsAsObject(mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<AssociationDto>>(){});
+        assertEquals(assocType, result.get(0).getAssociationType());
+        assertEquals(organizationId, result.get(0).getOrganization().getId());
+        assertEquals("Assoc Org", result.get(0).getOrganization().getName());
+    }
+
+
+
+    @Test
+    void deleteOrgAssociationTest() throws Exception {
+        Person mockPerson = getTestPerson();
+        Mockito.when(getPersonSvc().get(personId)).thenReturn(Optional.of(mockPerson));
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete("/api/person/" + personId + "/organization/" + organizationId)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(204, mvcResult.getResponse().getStatus());
+    }
+
 
     /**
-     *
-     * @return Iterable<PersonDto>
+     * 
+     * @return Person
      */
-    private static Iterable<Person> getPersonList() {
-        List<Person> personList = new ArrayList<>();
+    private static Person getTestPerson() {
+        
         Person person = new Person();
         person.setId(personId);
 
@@ -959,8 +1071,29 @@ public class PersonControllerTest extends CommonControllerTest {
         employmentRecord.setEmployerOrganization(employer);
         person.setEmploymentRecords(Collections.singleton(employmentRecord));
 
-        personList.add(person);
+        Organization organization = new Organization();
+        organization.setId(organizationId);
+        organization.setName("Assoc Org");
+        Association association = new Association();
+        association.setId(associationId);
+        association.setOrganization(organization);
+        association.setAssociationType("MEMBER");
+        Set<Association> associations = new HashSet<Association>();
+        associations.add(association);
+        person.setAssociations(associations);
 
+        return person;
+    }
+
+
+    /**
+     *
+     * @return Iterable<Person>
+     */
+    private static Iterable<Person> getPersonList() {
+        
+        List<Person> personList = new ArrayList<>();
+        personList.add(getTestPerson());
         return personList;
     }
 }

@@ -800,7 +800,7 @@ public class PersonController {
     }
 
     @GetMapping("/person/{personId}/organization/{organizationId}")
-    public ResponseEntity<AssociationDto> getOrganizationsByPerson(
+    public ResponseEntity<AssociationDto> getAssociationByPersonAndOrg(
             @PathVariable(value = "personId") final UUID personId,
             @PathVariable(value = "organizationId") final UUID organizationId)
             throws ResourceNotFoundException {
