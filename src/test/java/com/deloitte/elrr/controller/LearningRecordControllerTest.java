@@ -1,0 +1,191 @@
+package com.deloitte.elrr.controller;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import com.deloitte.elrr.dto.LearningRecordDto;
+import com.deloitte.elrr.entity.LearningRecord;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.extern.slf4j.Slf4j;
+
+@WebMvcTest(LearningRecordController.class)
+@ContextConfiguration
+@AutoConfigureMockMvc(addFilters = false)
+@Slf4j
+public class LearningRecordControllerTest extends CommonControllerTest {
+
+    
+    @Autowired
+    private MockMvc mockMvc;
+    
+    private HttpHeaders headers;
+    
+    @BeforeEach
+    void addHeaders() {
+        headers = new HttpHeaders();
+        headers.set("Content-Type", " */*");
+        headers.set("X-Forwarded-Proto", "https");
+    }
+
+    /**
+     *
+     * @param obj
+     * @return String
+     * @throws JsonProcessingException
+     */
+    public static String asJsonString(final Object obj)
+            throws JsonProcessingException {
+
+        return new ObjectMapper().writeValueAsString(obj);
+
+    }
+
+    private static final UUID learningRecordId = UUID.randomUUID();
+
+    /**
+     *
+     * @throws Exception
+     */
+    @Test
+    void getAllLearningRecordsTest() throws Exception {
+
+        Mockito.doReturn(getLearningRecordList()).when(getLearningRecordSvc()).findAll();
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/learningrecord")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        List<LearningRecordDto> result = resultsAsObject(mvcResult.getResponse().getContentAsString(), new TypeReference<List<LearningRecordDto>>() { });
+        assertEquals(learningRecordId, result.get(0).getId());
+    }
+
+    
+    @Test
+    void getLearningRecordByIdTest() throws Exception {
+
+        Mockito.doReturn(Optional.of(getLearningRecordList().iterator().next()))
+                .when(getLearningRecordSvc()).get(learningRecordId);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/learningrecord/"+learningRecordId)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        LearningRecordDto result = resultsAsObject(mvcResult.getResponse().getContentAsString(), new TypeReference<LearningRecordDto>() { });
+        assertEquals(result.getId(), learningRecordId);
+    }
+
+    
+    @Test
+    void getLearningRecordByIdErrorTest() throws Exception {
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/learningrecord/1")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(400, mvcResult.getResponse().getStatus());
+    }
+
+    
+    @Test
+    void getLearningRecordByIdParameterTest() throws Exception {
+
+        Mockito.doReturn(Optional.of(getLearningRecordList().iterator().next()))
+                .when(getLearningRecordSvc()).get(learningRecordId);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/learningrecord?id="+learningRecordId)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        List<LearningRecordDto> result = resultsAsObject(mvcResult.getResponse().getContentAsString(), new TypeReference<List<LearningRecordDto>>() { });
+        assertEquals(learningRecordId, result.get(0).getId());
+    }
+
+    @Test
+    void updateLearningRecordTest() throws Exception {
+        LearningRecordDto learningRecordDto = new LearningRecordDto();
+        learningRecordDto.setId(learningRecordId);
+        Mockito.doReturn(Optional.of(getLearningRecordList().iterator().next()))
+                .when(getLearningRecordSvc()).get(learningRecordId);
+        Mockito.doReturn(getLearningRecordList().iterator().next()).when(getLearningRecordSvc())
+                .save(any());
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put("/api/learningrecord/"+learningRecordId).accept(MediaType.APPLICATION_JSON)
+                .content(asJsonString(learningRecordDto))
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        LearningRecordDto result = resultsAsObject(mvcResult.getResponse().getContentAsString(), new TypeReference<LearningRecordDto>() { });
+        assertEquals(result.getId(), learningRecordId);
+    }
+
+    @Test
+    void deleteLearningRecordTest() throws Exception {
+        Mockito.doReturn(Optional.of(getLearningRecordList().iterator().next()))
+                .when(getLearningRecordSvc()).get(learningRecordId);
+        Mockito.doNothing().when(getLearningRecordSvc()).delete(learningRecordId);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete("/api/learningrecord/"+learningRecordId).accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(204, mvcResult.getResponse().getStatus());
+    }
+
+    /**
+     *
+     * @return Iterable<LearningRecordDto>
+     */
+    private static Iterable<LearningRecord> getLearningRecordList() {
+        List<LearningRecord> learningRecordList = new ArrayList<>();
+        LearningRecord learningRecord = new LearningRecord();
+        learningRecord.setId(learningRecordId);
+        learningRecordList.add(learningRecord);
+
+        return learningRecordList;
+    }
+}

@@ -5,6 +5,7 @@ package com.deloitte.elrr.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import jakarta.validation.Valid;
 
@@ -30,10 +31,6 @@ import com.deloitte.elrr.jpa.svc.CompetencySvc;
 
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * @author mnelakurti
- *
- */
 @CrossOrigin(origins = {
         "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:3001",
         "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:5000" })
@@ -54,33 +51,26 @@ public class CompetencyController {
 
     /**
      *
-     * @param competencyid
+     * @param competencyId
      * @return ResponseEntity<List<CompetencyDto>>
      * @throws ResourceNotFoundException
      */
     @GetMapping("/competency")
-    public ResponseEntity<List<CompetencyDto>> getAllCompetencys(
-        @RequestParam(value = "id", required = false) final Long competencyid)
-            throws ResourceNotFoundException {
+    public ResponseEntity<List<CompetencyDto>> getAllCompetencies(
+            @RequestParam(value = "id", required = false) final UUID competencyId) throws ResourceNotFoundException {
         try {
+            log.debug("Get Competency id:........." + competencyId);
             List<CompetencyDto> competencyList = new ArrayList<>();
-            if (competencyid == null) {
-                Iterable<Competency> competencys = competencySvc.findAll();
-
-                for (Competency competency : competencys) {
-                    CompetencyDto competencyDto = mapper.map(competency,
-                            CompetencyDto.class);
-                    competencyList.add(competencyDto);
-                }
+            if (competencyId == null) {
+                competencySvc.findAll().forEach(comp -> competencyList.add(
+                        mapper.map(comp, CompetencyDto.class)));
             } else {
-                Competency competency = competencySvc.get(competencyid)
+                Competency competency = competencySvc.get(competencyId)
                         .orElseThrow(() -> new ResourceNotFoundException(
                                 "Competency not found for this id :: "
-                                        + competencyid));
-                CompetencyDto competencyDto = mapper.map(competency,
-                        CompetencyDto.class);
+                                        + competencyId));
+                CompetencyDto competencyDto = mapper.map(competency, CompetencyDto.class);
                 competencyList.add(competencyDto);
-
             }
 
             if (competencyList.isEmpty()) {
@@ -92,23 +82,27 @@ public class CompetencyController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     /**
      *
-     * @param competencyid
-     * @return esponseEntity<CompetencyDto>
+     * @param competencyId
+     * @return ResponseEntity<CompetencyDto>
      * @throws ResourceNotFoundException
      */
     @GetMapping("/competency/{id}")
     public ResponseEntity<CompetencyDto> getCompetencyById(
-            @PathVariable(value = "id") final Long competencyid)
+            @PathVariable(value = "id") final UUID competencyId)
             throws ResourceNotFoundException {
-        Competency competency = competencySvc.get(competencyid)
+        log.debug("Get Competency id:........." + competencyId);
+        Competency competency = competencySvc.get(competencyId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Competency not found for this id :: " + competencyid));
+                        "Competency not found for this id :: "
+                                + competencyId));
         CompetencyDto competencyDto = mapper.map(competency,
                 CompetencyDto.class);
         return ResponseEntity.ok().body(competencyDto);
     }
+
     /**
      *
      * @param competencyDto
@@ -117,53 +111,56 @@ public class CompetencyController {
     @PostMapping("/competency")
     public ResponseEntity<CompetencyDto> createCompetency(
             @Valid @RequestBody final CompetencyDto competencyDto) {
-        Competency competency = mapper.map(competencyDto, Competency.class);
-        mapper.map(competencySvc.save(competency), CompetencyDto.class);
-        return new ResponseEntity<>(competencyDto, HttpStatus.CREATED);
+        Competency org = mapper.map(competencyDto, Competency.class);
+        CompetencyDto response = mapper.map(competencySvc.save(org), CompetencyDto.class);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
     /**
      *
-     * @param competencyid
+     * @param competencyId
      * @param competencyDto
      * @return ResponseEntity<CompetencyDto>
      * @throws ResourceNotFoundException
      */
     @PutMapping("/competency/{id}")
     public ResponseEntity<CompetencyDto> updateCompetency(
-            @PathVariable(value = "id") final long competencyid,
+            @PathVariable(value = "id") final UUID competencyId,
             @Valid @RequestBody final CompetencyDto competencyDto)
             throws ResourceNotFoundException {
-        Competency competency = competencySvc.get(competencyid)
+        log.info("Updating  Competency:.........");
+        log.info("Updating Competency id:........." + competencyId);
+        Competency competency = competencySvc.get(competencyId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Competency not found for this id to update :: "
-                                + competencyid));
+                                + competencyId));
         log.info("Update Competency:........." + competencyDto);
-        log.info("CompetencyDTO:........." + competencyDto);
-        log.info("Competency:........." + competencyid);
         // Assigning values from request
         mapper.map(competencyDto, competency);
         // Reset Id / Primary key from query parameter
-        competency.setCompetencyid(competencyid);
+        competency.setId(competencyId);
         log.info("Update Competency:........." + competency);
         return ResponseEntity.ok(mapper.map(competencySvc.save(competency),
                 CompetencyDto.class));
 
     }
+
     /**
      *
-     * @param competencyid
+     * @param competencyId
      * @return ResponseEntity<HttpStatus>
+     * @throws ResourceNotFoundException
      */
     @DeleteMapping("/competency/{id}")
     public ResponseEntity<HttpStatus> deleteCompetency(
-            @PathVariable(value = "id") final Long competencyid) {
-        try {
-            log.info("Deleting  Competency:........." + competencyid);
-            competencySvc.delete(competencyid);
-            return ResponseEntity.ok(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+            @PathVariable(value = "id") final UUID competencyId)
+            throws ResourceNotFoundException {
+        log.info("Deleting  Competency:.........");
+        log.info("Deleting Competency id:........." + competencyId);
+        competencySvc.get(competencyId).orElseThrow(() -> new ResourceNotFoundException(
+                "Competency not found for this id to delete :: " + competencyId));
+        competencySvc.delete(competencyId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

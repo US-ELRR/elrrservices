@@ -3,31 +3,37 @@
  */
 package com.deloitte.elrr.controller;
 
-import org.springframework.boot.test.mock.mockito.MockBean;
+import java.io.IOException;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import com.deloitte.elrr.jpa.svc.AccreditationSvc;
+import com.deloitte.elrr.jpa.svc.AssociationSvc;
 import com.deloitte.elrr.jpa.svc.CompetencySvc;
-import com.deloitte.elrr.jpa.svc.ContactInformationSvc;
-import com.deloitte.elrr.jpa.svc.CourseAccreditationSvc;
-import com.deloitte.elrr.jpa.svc.CourseSvc;
-import com.deloitte.elrr.jpa.svc.EmploymentSvc;
-import com.deloitte.elrr.jpa.svc.LearnerProfileSvc;
+import com.deloitte.elrr.jpa.svc.CredentialSvc;
+import com.deloitte.elrr.jpa.svc.EmailSvc;
+import com.deloitte.elrr.jpa.svc.EmploymentRecordSvc;
+import com.deloitte.elrr.jpa.svc.FacilitySvc;
+import com.deloitte.elrr.jpa.svc.IdentitySvc;
+import com.deloitte.elrr.jpa.svc.LearningRecordSvc;
+import com.deloitte.elrr.jpa.svc.LearningResourceSvc;
+import com.deloitte.elrr.jpa.svc.LocationSvc;
+import com.deloitte.elrr.jpa.svc.MilitaryRecordSvc;
 import com.deloitte.elrr.jpa.svc.OrganizationSvc;
 import com.deloitte.elrr.jpa.svc.PersonSvc;
-import com.deloitte.elrr.repository.AccreditationRepository;
-import com.deloitte.elrr.repository.CompetencyRepository;
-import com.deloitte.elrr.repository.CourseRepository;
-import com.deloitte.elrr.repository.EmploymentRepository;
-import com.deloitte.elrr.repository.LearnerProfileRepository;
+import com.deloitte.elrr.jpa.svc.PersonalCompetencySvc;
+import com.deloitte.elrr.jpa.svc.PersonalCredentialSvc;
+import com.deloitte.elrr.jpa.svc.PhoneSvc;
 import com.deloitte.elrr.repository.OrganizationRepository;
-import com.deloitte.elrr.repository.PersonalRepository;
-import com.deloitte.elrr.svc.LearnerCreatorSvc;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 /**
  * @author mnelakurti
  *
@@ -37,118 +43,71 @@ import lombok.Setter;
 @NoArgsConstructor
 class CommonControllerTest {
 
-   /**
-    *
-    */
-   @MockBean
-   private AccreditationSvc accreditationSvc;
+    @MockitoBean
+    private OrganizationSvc organizationSvc;
 
-   /**
-    *
-    */
-   @MockBean
-   private CompetencySvc competencySvc;
+    @MockitoBean
+    private PersonSvc personSvc;
 
-   /**
-    *
-    */
-   @MockBean
-   private ContactInformationSvc contactInformationSvc;
+    @MockitoBean
+    private PhoneSvc phoneSvc;
 
-   /**
-    *
-    */
-   @MockBean
-   private CourseAccreditationSvc courseAccreditationSvc;
+    @MockitoBean
+    private EmailSvc emailSvc;
 
-   /**
-    *
-    */
-   @MockBean
-   private CourseSvc courseSvc;
+    @MockitoBean
+    private IdentitySvc identitySvc;
 
-   /**
-    *
-    */
-   @MockBean
-   private EmploymentSvc employmentSvc;
+    @MockitoBean
+    private AssociationSvc associationSvc;
 
-   /**
-    *
-    */
-   @MockBean
-   private LearnerProfileSvc learnerProfileSvc;
+    @MockitoBean
+    private MilitaryRecordSvc militaryRecordSvc;
 
-   /**
-    *
-    */
-   @MockBean
-   private OrganizationSvc organizationSvc;
+    @MockitoBean
+    private LocationSvc locationSvc;
 
-   /**
-    *
-    */
-   @MockBean
-   private LearnerCreatorSvc learnerCreatorSvc;
-   /**
-    *
-    */
-   @MockBean
-   private PersonSvc personSvc;
+    @MockitoBean
+    private FacilitySvc facilitySvc;
 
-   /**
-   *
-   */
-   @MockBean
-   private AccreditationRepository accreditationRepository;
+    @MockitoBean
+    private EmploymentRecordSvc employmentRecordSvc;
 
-   /**
-   *
-   */
-   @MockBean
-   private CourseRepository courseRepository;
+    @MockitoBean
+    private CompetencySvc competencySvc;
 
-   /**
-   *
-   */
-   @MockBean
-   private CompetencyRepository competencyRepository;
+    @MockitoBean
+    private PersonalCompetencySvc personalCompetencySvc;
 
-   /**
-   *
-   */
-   @MockBean
-   private EmploymentRepository employmentRepository;
+    @MockitoBean
+    private CredentialSvc credentialSvc;
 
-   /**
-   *
-   */
-   @MockBean
-   private LearnerProfileRepository learnerProfileRepository;
+    @MockitoBean
+    private PersonalCredentialSvc personalCredentialSvc;
 
-   /**
-   *
-   */
-   @MockBean
-   private OrganizationRepository organizationRepository;
+    @MockitoBean
+    private LearningResourceSvc learningResourceSvc;
 
-   /**
-   *
-   */
-   @MockBean
-   private PersonalRepository personalRepository;
+    @MockitoBean
+    private LearningRecordSvc learningRecordSvc;
 
-   /**
-   *
-   * @param obj
-   * @return String
-   * @throws JsonProcessingException
-   */
-  public static String asJsonString(final Object obj)
-          throws JsonProcessingException {
+    @MockitoBean
+    private OrganizationRepository organizationRepository;
 
-      return new ObjectMapper().writeValueAsString(obj);
+    /**
+     *
+     * @param obj
+     * @return String
+     * @throws JsonProcessingException
+     */
+    public static String asJsonString(final Object obj)
+            throws JsonProcessingException {
 
-  }
+        return new ObjectMapper().writeValueAsString(obj);
+    }
+
+    public static <T> T resultsAsObject(String results, TypeReference<T> type) 
+            throws StreamReadException, DatabindException, IOException {
+        return (T) new ObjectMapper().readValue(results, type);
+    }
 }
-

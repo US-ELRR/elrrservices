@@ -1,0 +1,166 @@
+/**
+ *
+ */
+package com.deloitte.elrr.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import jakarta.validation.Valid;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.deloitte.elrr.dto.LearningResourceDto;
+import com.deloitte.elrr.entity.LearningResource;
+import com.deloitte.elrr.exception.ResourceNotFoundException;
+import com.deloitte.elrr.jpa.svc.LearningResourceSvc;
+
+import lombok.extern.slf4j.Slf4j;
+
+@CrossOrigin(origins = {
+        "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:3001",
+        "http://ec2-18-116-20-188.us-east-2.compute.amazonaws.com:5000" })
+@RestController
+@RequestMapping("api")
+@Slf4j
+public class LearningResourceController {
+    /**
+     *
+     */
+    @Autowired
+    private LearningResourceSvc learningResourceSvc;
+    /**
+     *
+     */
+    @Autowired
+    private ModelMapper mapper;
+
+    /**
+     *
+     * @param learningResourceId
+     * @return ResponseEntity<List<LearningResourceDto>>
+     * @throws ResourceNotFoundException
+     */
+    @GetMapping("/learningresource")
+    public ResponseEntity<List<LearningResourceDto>> getAllLearningResources(
+            @RequestParam(value = "id", required = false) final UUID learningResourceId) throws ResourceNotFoundException {
+        try {
+            log.debug("Get LearningResource id:........." + learningResourceId);
+            List<LearningResourceDto> learningResourceList = new ArrayList<>();
+            if (learningResourceId == null) {
+                learningResourceSvc.findAll().forEach(loc -> learningResourceList.add(
+                        mapper.map(loc, LearningResourceDto.class)));
+            } else {
+                LearningResource learningResource = learningResourceSvc.get(learningResourceId)
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "LearningResource not found for this id :: "
+                                        + learningResourceId));
+                LearningResourceDto learningResourceDto = mapper.map(learningResource, LearningResourceDto.class);
+                learningResourceList.add(learningResourceDto);
+            }
+
+            if (learningResourceList.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            } else {
+                return ResponseEntity.ok(learningResourceList);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     *
+     * @param learningResourceId
+     * @return ResponseEntity<LearningResourceDto>
+     * @throws ResourceNotFoundException
+     */
+    @GetMapping("/learningresource/{id}")
+    public ResponseEntity<LearningResourceDto> getLearningResourceById(
+            @PathVariable(value = "id") final UUID learningResourceId)
+            throws ResourceNotFoundException {
+        log.debug("Get LearningResource id:........." + learningResourceId);
+        LearningResource learningResource = learningResourceSvc.get(learningResourceId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "LearningResource not found for this id :: "
+                                + learningResourceId));
+        LearningResourceDto learningResourceDto = mapper.map(learningResource,
+                LearningResourceDto.class);
+        return ResponseEntity.ok().body(learningResourceDto);
+    }
+
+    /**
+     *
+     * @param learningResourceDto
+     * @return ResponseEntity<LearningResourceDto>
+     */
+    @PostMapping("/learningresource")
+    public ResponseEntity<LearningResourceDto> createLearningResource(
+            @Valid @RequestBody final LearningResourceDto learningResourceDto) {
+        LearningResource learningResource = mapper.map(learningResourceDto, LearningResource.class);
+        LearningResourceDto response = mapper.map(learningResourceSvc.save(learningResource), LearningResourceDto.class);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    /**
+     *
+     * @param learningResourceId
+     * @param learningResourceDto
+     * @return ResponseEntity<LearningResourceDto>
+     * @throws ResourceNotFoundException
+     */
+    @PutMapping("/learningresource/{id}")
+    public ResponseEntity<LearningResourceDto> updateLearningResource(
+            @PathVariable(value = "id") final UUID learningResourceId,
+            @Valid @RequestBody final LearningResourceDto learningResourceDto)
+            throws ResourceNotFoundException {
+        log.info("Updating  LearningResource:.........");
+        log.info("Updating LearningResource id:........." + learningResourceId);
+        LearningResource learningResource = learningResourceSvc.get(learningResourceId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "LearningResource not found for this id to update :: "
+                                + learningResourceId));
+        log.info("Update LearningResource:........." + learningResourceDto);
+        // Assigning values from request
+        mapper.map(learningResourceDto, learningResource);
+        // Reset Id / Primary key from query parameter
+        learningResource.setId(learningResourceId);
+        log.info("Update LearningResource:........." + learningResource);
+        return ResponseEntity.ok(mapper.map(learningResourceSvc.save(learningResource),
+                LearningResourceDto.class));
+
+    }
+
+    /**
+     *
+     * @param learningResourceId
+     * @return ResponseEntity<HttpStatus>
+     * @throws ResourceNotFoundException
+     */
+    @DeleteMapping("/learningresource/{id}")
+    public ResponseEntity<HttpStatus> deleteLearningResource(
+            @PathVariable(value = "id") final UUID learningResourceId)
+            throws ResourceNotFoundException {
+        log.info("Deleting  LearningResource:.........");
+        log.info("Deleting LearningResource id:........." + learningResourceId);
+        learningResourceSvc.get(learningResourceId).orElseThrow(() -> new ResourceNotFoundException(
+                "LearningResource not found for this id to delete :: " + learningResourceId));
+        learningResourceSvc.delete(learningResourceId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+}

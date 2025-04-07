@@ -31,10 +31,6 @@ public final class DateUtility {
     private static String dateFormatUx = "dd-MMM-yyyy";
 
     /**
-    *
-    */
-   private static final int MONTHS = 12;
-    /**
      *
      * @param courseDateStr
      * @param renewal

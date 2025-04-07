@@ -62,5 +62,4 @@ class CompetencyDtoTest {
     void testToString() {
         assertNotNull(new CompetencyDto().toString());
     }
-
 }

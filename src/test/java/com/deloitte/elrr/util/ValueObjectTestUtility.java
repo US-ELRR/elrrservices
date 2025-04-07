@@ -20,8 +20,10 @@ public final class ValueObjectTestUtility {
      *
      */
     private static final Validator ACCESSOR_VALIDATOR =
-                         ValidatorBuilder.create().with(new GetterTester())
-                                     .with(new SetterTester()).build();
+                         ValidatorBuilder.create()
+                                .with(new GetterTester())
+                                .with(new SetterTester())
+                                .build();
     /**
      *
      * @param clazz

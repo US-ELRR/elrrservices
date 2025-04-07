@@ -1,0 +1,16 @@
+package com.deloitte.elrr.dto;
+
+import java.io.Serializable;
+import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Data
+public abstract class AbstractDto implements Serializable {
+
+    protected UUID id;
+
+}

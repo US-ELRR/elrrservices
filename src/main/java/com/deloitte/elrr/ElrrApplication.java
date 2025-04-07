@@ -11,32 +11,34 @@ import org.springframework.web.client.RestTemplate;
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 
 @SpringBootApplication
-@Import({JacksonAutoConfiguration.class})
+@Import({ JacksonAutoConfiguration.class, RepoConfig.class })
 @EnableEncryptableProperties
 public class ElrrApplication {
 
-  /**
-   * @param args
-   */
-  public static void main(final String[] args) {
-    SpringApplication.run(ElrrApplication.class, args);
-  }
+    /**
+     *
+     * @param args
+     */
+    public static void main(final String[] args) {
+        SpringApplication.run(ElrrApplication.class, args);
+    }
+    /**
+     *
+     * @return RestTemplate
+     */
+    @Bean
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
+    /**
+     *
+     * @return ModelMapper
+     */
+    @Bean
+    public ModelMapper modelMapper() {
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setSkipNullEnabled(true);
+        return modelMapper;
+    }
 
-  /**
-   * @return RestTemplate
-   */
-  @Bean
-  public RestTemplate getRestTemplate() {
-    return new RestTemplate();
-  }
-
-  /**
-   * @return ModelMapper
-   */
-  @Bean
-  public ModelMapper modelMapper() {
-    ModelMapper modelMapper = new ModelMapper();
-    modelMapper.getConfiguration().setSkipNullEnabled(true);
-    return modelMapper;
-  }
 }

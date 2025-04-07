@@ -5,6 +5,7 @@ package com.deloitte.elrr.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import jakarta.validation.Valid;
 
@@ -51,6 +52,7 @@ public class OrganizationController {
      */
     @Autowired
     private ModelMapper mapper;
+
     /**
      *
      * @param organizationid
@@ -59,8 +61,7 @@ public class OrganizationController {
      */
     @GetMapping("/organization")
     public ResponseEntity<List<OrganizationDto>> getAllOrganizations(
-            @RequestParam(value = "id", required = false)
-            final Long organizationid)
+            @RequestParam(value = "id", required = false) final UUID organizationid)
             throws ResourceNotFoundException {
         try {
             log.info("GetMapping  Organization:.........");
@@ -95,6 +96,7 @@ public class OrganizationController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     /**
      *
      * @param organizationid
@@ -103,7 +105,7 @@ public class OrganizationController {
      */
     @GetMapping("/organization/{id}")
     public ResponseEntity<OrganizationDto> getOrganizationById(
-            @PathVariable(value = "id") final Long organizationid)
+            @PathVariable(value = "id") final UUID organizationid)
             throws ResourceNotFoundException {
         log.info("GetMapping  Organization:.........");
         log.info("GetMapping Organization id:........." + organizationid);
@@ -115,6 +117,7 @@ public class OrganizationController {
                 OrganizationDto.class);
         return ResponseEntity.ok().body(organizationDto);
     }
+
     /**
      *
      * @param organizationDto
@@ -123,11 +126,11 @@ public class OrganizationController {
     @PostMapping("/organization")
     public ResponseEntity<OrganizationDto> createOrganization(
             @Valid @RequestBody final OrganizationDto organizationDto) {
-        Organization organization = mapper.map(organizationDto,
-                Organization.class);
-        mapper.map(organizationSvc.save(organization), OrganizationDto.class);
-        return new ResponseEntity<>(organizationDto, HttpStatus.CREATED);
+        Organization org = mapper.map(organizationDto, Organization.class);
+        OrganizationDto response = mapper.map(organizationSvc.save(org), OrganizationDto.class);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
     /**
      *
      * @param organizationid
@@ -137,7 +140,7 @@ public class OrganizationController {
      */
     @PutMapping("/organization/{id}")
     public ResponseEntity<OrganizationDto> updateOrganization(
-            @PathVariable(value = "id") final long organizationid,
+            @PathVariable(value = "id") final UUID organizationid,
             @Valid @RequestBody final OrganizationDto organizationDto)
             throws ResourceNotFoundException {
         log.info("Updating  Organization:.........");
@@ -150,28 +153,29 @@ public class OrganizationController {
         // Assigning values from request
         mapper.map(organizationDto, organization);
         // Reset Id / Primary key from query parameter
-        organization.setOrganizationid(organizationid);
+        organization.setId(organizationid);
         log.info("Update Organization:........." + organization);
         return ResponseEntity.ok(mapper.map(organizationSvc.save(organization),
                 OrganizationDto.class));
 
     }
+
     /**
      *
-     * @param organizationid
+     * @param organizationId
      * @return ResponseEntity<HttpStatus>
+     * @throws ResourceNotFoundException
      */
     @DeleteMapping("/organization/{id}")
     public ResponseEntity<HttpStatus> deleteOrganization(
-            @PathVariable(value = "id") final Long organizationid) {
-        try {
-            log.info("Deleting  Organization:.........");
-            log.info("Deleting Organization id:........." + organizationid);
-            organizationSvc.delete(organizationid);
-            return ResponseEntity.ok(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+            @PathVariable(value = "id") final UUID organizationId)
+            throws ResourceNotFoundException {
+        log.info("Deleting  Organization:.........");
+        log.info("Deleting Organization id:........." + organizationId);
+        organizationSvc.get(organizationId).orElseThrow(() -> new ResourceNotFoundException(
+                "Organization not found for this id to delete :: " + organizationId));
+        organizationSvc.delete(organizationId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

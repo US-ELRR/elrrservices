@@ -1,0 +1,193 @@
+package com.deloitte.elrr.controller;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import com.deloitte.elrr.dto.MilitaryRecordDto;
+import com.deloitte.elrr.entity.MilitaryRecord;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.extern.slf4j.Slf4j;
+
+@WebMvcTest(MilitaryRecordController.class)
+@ContextConfiguration
+@AutoConfigureMockMvc(addFilters = false)
+@Slf4j
+public class MilitaryRecordControllerTest extends CommonControllerTest {
+
+    
+    @Autowired
+    private MockMvc mockMvc;
+    
+    private HttpHeaders headers;
+    
+    @BeforeEach
+    void addHeaders() {
+        headers = new HttpHeaders();
+        headers.set("Content-Type", " */*");
+        headers.set("X-Forwarded-Proto", "https");
+    }
+
+    /**
+     *
+     * @param obj
+     * @return String
+     * @throws JsonProcessingException
+     */
+    public static String asJsonString(final Object obj)
+            throws JsonProcessingException {
+
+        return new ObjectMapper().writeValueAsString(obj);
+
+    }
+
+    private static final UUID militaryRecordId = UUID.randomUUID();
+
+    /**
+     *
+     * @throws Exception
+     */
+    @Test
+    void getAllMilitaryRecordsTest() throws Exception {
+
+        Mockito.doReturn(getMilitaryRecordList()).when(getMilitaryRecordSvc()).findAll();
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/militaryrecord")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        List<MilitaryRecordDto> result = resultsAsObject(mvcResult.getResponse().getContentAsString(), new TypeReference<List<MilitaryRecordDto>>() { });
+        assertEquals(militaryRecordId, result.get(0).getId());
+    }
+
+    
+    @Test
+    void getMilitaryRecordByIdTest() throws Exception {
+
+        Mockito.doReturn(Optional.of(getMilitaryRecordList().iterator().next()))
+                .when(getMilitaryRecordSvc()).get(militaryRecordId);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/militaryrecord/"+militaryRecordId)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        MilitaryRecordDto result = resultsAsObject(mvcResult.getResponse().getContentAsString(), new TypeReference<MilitaryRecordDto>() { });
+        assertEquals(result.getId(), militaryRecordId);
+    }
+
+    
+    @Test
+    void getMilitaryRecordByIdErrorTest() throws Exception {
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/militaryrecord/1")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(400, mvcResult.getResponse().getStatus());
+    }
+
+    
+    @Test
+    void getMilitaryRecordByIdParameterTest() throws Exception {
+
+        Mockito.doReturn(Optional.of(getMilitaryRecordList().iterator().next()))
+                .when(getMilitaryRecordSvc()).get(militaryRecordId);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/api/militaryrecord?id="+militaryRecordId)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        List<MilitaryRecordDto> result = resultsAsObject(mvcResult.getResponse().getContentAsString(), new TypeReference<List<MilitaryRecordDto>>() { });
+        assertEquals(militaryRecordId, result.get(0).getId());
+    }
+
+    @Test
+    void updateMilitaryRecordTest() throws Exception {
+        MilitaryRecordDto militaryRecordDto = new MilitaryRecordDto();
+        militaryRecordDto.setId(militaryRecordId);
+        militaryRecordDto.setBranch("TestBranch");
+        militaryRecordDto.setCountry("TestCountry");
+        Mockito.doReturn(Optional.of(getMilitaryRecordList().iterator().next()))
+                .when(getMilitaryRecordSvc()).get(militaryRecordId);
+        Mockito.doReturn(getMilitaryRecordList().iterator().next()).when(getMilitaryRecordSvc())
+                .save(any());
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put("/api/militaryrecord/"+militaryRecordId).accept(MediaType.APPLICATION_JSON)
+                .content(asJsonString(militaryRecordDto))
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        MilitaryRecordDto result = resultsAsObject(mvcResult.getResponse().getContentAsString(), new TypeReference<MilitaryRecordDto>() { });
+        assertEquals(result.getId(), militaryRecordId);
+    }
+
+    @Test
+    void deleteMilitaryRecordTest() throws Exception {
+        Mockito.doReturn(Optional.of(getMilitaryRecordList().iterator().next()))
+                .when(getMilitaryRecordSvc()).get(militaryRecordId);
+        Mockito.doNothing().when(getMilitaryRecordSvc()).delete(militaryRecordId);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete("/api/militaryrecord/"+militaryRecordId).accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(headers);
+
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertNotNull(mvcResult);
+        assertEquals(204, mvcResult.getResponse().getStatus());
+    }
+
+    /**
+     *
+     * @return Iterable<MilitaryRecordDto>
+     */
+    private static Iterable<MilitaryRecord> getMilitaryRecordList() {
+        List<MilitaryRecord> militaryRecordList = new ArrayList<>();
+        MilitaryRecord militaryRecord = new MilitaryRecord();
+        militaryRecord.setId(militaryRecordId);
+        militaryRecordList.add(militaryRecord);
+
+        return militaryRecordList;
+    }
+}
