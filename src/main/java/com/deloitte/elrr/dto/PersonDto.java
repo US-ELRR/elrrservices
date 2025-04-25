@@ -16,16 +16,16 @@ import lombok.RequiredArgsConstructor;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PersonDto extends AbstractDto {
-  
+
     @Size(max = 255)
     private String name;
-    
+
     @Size(max = 255)
     private String firstName;
-    
+
     @Size(max = 255)
     private String middleName;
-    
+
     @Size(max = 255)
     private String lastName;
 
@@ -50,10 +50,10 @@ public class PersonDto extends AbstractDto {
     private String citizenship;
 
     private BigDecimal height;
-    
+
     @Size(max = 255)
     private String heightUnit;
-    
+
     private BigDecimal weight;
 
     @Size(max = 255)

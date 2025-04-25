@@ -22,8 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 public class SanitizingFilter implements Filter {
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response,
+            FilterChain chain) throws IOException, ServletException {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         WrappedHttp httpRequest;
 
@@ -40,8 +40,9 @@ public class SanitizingFilter implements Filter {
                         "Illegal line in request body: " + line);
             }
         }
-        if (httpResponse.isCommitted())
+        if (httpResponse.isCommitted()) {
             return;
+        }
 
         httpRequest = new WrappedHttp((HttpServletRequest) request,
                 body.toString());
@@ -66,8 +67,8 @@ public class SanitizingFilter implements Filter {
         });
 
         try {
-            if (httpRequest.getBody().length() > 0 &&
-                    hasHomoGlyphs(new JSONObject(httpRequest.getBody()))) {
+            if (httpRequest.getBody().length() > 0
+                    && hasHomoGlyphs(new JSONObject(httpRequest.getBody()))) {
                 httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST,
                         "Request body contains homoglyphs.");
                 log.warn("returning on homoglyph");
@@ -88,9 +89,8 @@ public class SanitizingFilter implements Filter {
         while (keys.hasNext()) {
             String key = keys.next();
             Object val = jo.get(key);
-            if (val instanceof JSONObject) {
-                if (hasHomoGlyphs((JSONObject) val))
-                    return true;
+            if (val instanceof JSONObject && hasHomoGlyphs((JSONObject) val)) {
+                return true;
             } else if (confusables.isDangerous(key)
                     || confusables.isDangerous(String.valueOf(val))) {
                 return true;

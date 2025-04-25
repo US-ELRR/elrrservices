@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 @Data
 public abstract class AbstractDto implements Serializable {
 
+    @SuppressWarnings("checkstyle:visibilitymodifier")
     protected UUID id;
 
 }
