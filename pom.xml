@@ -18,7 +18,7 @@
 		<java.version>17</java.version>
 		<docker.image.prefix>elrrservices</docker.image.prefix>
 		<jacoco.version>0.8.8</jacoco.version>
-		<start-class>com.deloitte.elrr.ElrrApplication</start-class>
+		<start-class>com.deloitte.elrr.ElrrServicesApplication</start-class>
 		<jacoco.reportPath>${project.basedir}/../target/jacoco.exec</jacoco.reportPath>
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 		<sonar.dynamicAnalysis>resuseReports</sonar.dynamicAnalysis>
