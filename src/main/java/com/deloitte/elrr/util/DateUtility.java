@@ -1,6 +1,3 @@
-/**
- *
- */
 package com.deloitte.elrr.util;
 
 import java.text.ParseException;
@@ -11,10 +8,6 @@ import java.util.GregorianCalendar;
 
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * @author mnelakurti
- *
- */
 @Slf4j
 public final class DateUtility {
 

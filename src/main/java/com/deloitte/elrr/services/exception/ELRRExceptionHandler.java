@@ -1,7 +1,4 @@
-/**
- *
- */
-package com.deloitte.elrr.exception;
+package com.deloitte.elrr.services.exception;
 
 import java.util.ArrayList;
 import java.util.Date;

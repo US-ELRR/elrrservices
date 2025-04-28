@@ -1,15 +1,8 @@
-/**
- *
- */
-package com.deloitte.elrr.exception;
+package com.deloitte.elrr.services.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-/**
- * @author mnelakurti
- *
- */
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class ResourceNotFoundException extends Exception {
     /**
