@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import com.deloitte.elrr.util.ValueObjectTestUtility;
 
-class CredentialDto {
+class CredentialDtoTest {
 
     @Test
     void test() {

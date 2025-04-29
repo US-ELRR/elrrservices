@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import com.deloitte.elrr.util.ValueObjectTestUtility;
 
-class CompetencyDto {
+class CompetencyDtoTest {
 
     @Test
     void test() {
