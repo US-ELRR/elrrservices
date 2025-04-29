@@ -42,6 +42,8 @@ public class EmploymentRecordControllerTest extends CommonControllerTest {
 
     private HttpHeaders headers;
 
+    private static final String EMPLOYMENT_RECORD_API = "/api/employmentrecord";
+
     @BeforeEach
     void addHeaders() {
         headers = new HttpHeaders();
@@ -74,7 +76,7 @@ public class EmploymentRecordControllerTest extends CommonControllerTest {
         Mockito.doReturn(getEmploymentRecordList())
                 .when(getEmploymentRecordSvc()).findAll();
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/employmentrecord")
+                .get(EMPLOYMENT_RECORD_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -96,7 +98,7 @@ public class EmploymentRecordControllerTest extends CommonControllerTest {
                 Optional.of(getEmploymentRecordList().iterator().next()))
                 .when(getEmploymentRecordSvc()).get(EMPLOYMENT_RECORD_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/employmentrecord/" + EMPLOYMENT_RECORD_ID)
+                .get(EMPLOYMENT_RECORD_API + "/" + EMPLOYMENT_RECORD_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -115,7 +117,7 @@ public class EmploymentRecordControllerTest extends CommonControllerTest {
     void getEmploymentRecordByIdErrorTest() throws Exception {
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/employmentrecord/1")
+                .get(EMPLOYMENT_RECORD_API + "/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -132,7 +134,7 @@ public class EmploymentRecordControllerTest extends CommonControllerTest {
                 Optional.of(getEmploymentRecordList().iterator().next()))
                 .when(getEmploymentRecordSvc()).get(EMPLOYMENT_RECORD_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/employmentrecord?id=" + EMPLOYMENT_RECORD_ID)
+                .get(EMPLOYMENT_RECORD_API + "?id=" + EMPLOYMENT_RECORD_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -158,7 +160,7 @@ public class EmploymentRecordControllerTest extends CommonControllerTest {
                 .when(getEmploymentRecordSvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/employmentrecord/" + EMPLOYMENT_RECORD_ID)
+                .put(EMPLOYMENT_RECORD_API + "/" + EMPLOYMENT_RECORD_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(employmentRecordDto))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -182,7 +184,7 @@ public class EmploymentRecordControllerTest extends CommonControllerTest {
         Mockito.doNothing().when(getEmploymentRecordSvc())
                 .delete(EMPLOYMENT_RECORD_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/employmentrecord/" + EMPLOYMENT_RECORD_ID)
+                .delete(EMPLOYMENT_RECORD_API + "/" + EMPLOYMENT_RECORD_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);

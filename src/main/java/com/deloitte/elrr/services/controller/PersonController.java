@@ -131,6 +131,16 @@ public class PersonController {
     @Autowired
     private LearningRecordSvc learningRecordSvc;
 
+    //Log Line Utils
+    private static final String PERSON_NOT_FOUND =
+        "Person not found for this id :: ";
+    private static final String REMOVING_FROM_PERSON =
+        "Removing %s (id: %s) from Person with id: %s";
+    private static final String ADDING_TO_PERSON =
+        "Adding %s to Person with id: %s";
+    private static final String GETTING_FOR_PERSON =
+        "Getting %s for Person with id: %s";
+
     /**
      *
      * @param personId
@@ -150,7 +160,7 @@ public class PersonController {
             if (personId != null) {
                 Person person = personSvc.get(personId)
                         .orElseThrow(() -> new ResourceNotFoundException(
-                                "Person not found for this id :: " + personId));
+                                PERSON_NOT_FOUND + personId));
                 PersonDto personDto = mapper.map(person, PersonDto.class);
                 persontoList.add(personDto);
             } else if (ifi != null) {
@@ -189,7 +199,7 @@ public class PersonController {
         log.info("getting Person id:........." + personId);
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         PersonDto personDto = mapper.map(person, PersonDto.class);
         return ResponseEntity.ok().body(personDto);
     }
@@ -224,8 +234,7 @@ public class PersonController {
         log.info("Updating personId id:........." + personId);
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id to update :: "
-                                + personId));
+                    PERSON_NOT_FOUND + personId));
         log.info("Update Person:........." + personDto);
         // Assigning values from request
         mapper.map(personDto, person);
@@ -250,7 +259,7 @@ public class PersonController {
         log.info("Deleting  Person:.........");
         log.info("Deleting Person id:........." + personId);
         personSvc.get(personId).orElseThrow(() -> new ResourceNotFoundException(
-                "Person not found for this id to delete :: " + personId));
+            PERSON_NOT_FOUND + personId));
         personSvc.delete(personId);
         return new ResponseEntity<HttpStatus>(HttpStatus.NO_CONTENT);
     }
@@ -270,10 +279,10 @@ public class PersonController {
     public ResponseEntity<List<IdentityDto>> getIdentities(
             @PathVariable(value = "personId") final UUID personId)
             throws ResourceNotFoundException {
-        log.info("Getting identities for Person with id:......" + personId);
+        log.info(String.format(GETTING_FOR_PERSON, "identities", personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         return ResponseEntity.ok(person.getIdentities().stream()
                 .map(p -> mapper.map(p, IdentityDto.class))
                 .collect(Collectors.toList()));
@@ -293,10 +302,10 @@ public class PersonController {
             @PathVariable(value = "personId") final UUID personId,
             @Valid @RequestBody final IdentityDto identityDto)
             throws ResourceNotFoundException {
-        log.info("Adding Identity to Person with id:......" + personId);
+        log.info(String.format(ADDING_TO_PERSON, "Identity", personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         Identity identity = mapper.map(identityDto, Identity.class);
         identity.setPerson(person);
         identitySvc.save(identity);
@@ -321,7 +330,8 @@ public class PersonController {
             @PathVariable(value = "personId") final UUID personId,
             @PathVariable(value = "identityId") final UUID identityId)
             throws ResourceNotFoundException {
-        log.info("Deleting identity for Person with id:......" + personId);
+        log.info(String.format(REMOVING_FROM_PERSON, "Identity", identityId,
+            personId));
         Identity identity = identitySvc.get(identityId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Identity not found for this id :: " + identityId));
@@ -347,10 +357,10 @@ public class PersonController {
     public ResponseEntity<List<PhoneDto>> getPhones(
             @PathVariable(value = "personId") final UUID personId)
             throws ResourceNotFoundException {
-        log.info("Getting phones for Person with id:......" + personId);
+        log.info(String.format(GETTING_FOR_PERSON, "phones", personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         return ResponseEntity.ok(person.getPhoneNumbers().stream()
                 .map(p -> mapper.map(p, PhoneDto.class))
                 .collect(Collectors.toList()));
@@ -370,10 +380,10 @@ public class PersonController {
             @PathVariable(value = "personId") final UUID personId,
             @Valid @RequestBody final PhoneDto phoneDto)
             throws ResourceNotFoundException {
-        log.info("Adding Phone to Person with id:......" + personId);
+        log.info(String.format(ADDING_TO_PERSON, "Phone", personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         Phone phone = phoneSvc.save(mapper.map(phoneDto, Phone.class));
         person.getPhoneNumbers().add(phone);
         personSvc.save(person);
@@ -395,11 +405,10 @@ public class PersonController {
             @PathVariable(value = "personId") final UUID personId,
             @PathVariable(value = "phoneId") final UUID phoneId)
             throws ResourceNotFoundException {
-        log.info("Removing Phone(id: " + phoneId + ") from Person with id: "
-                + personId);
+        log.info(String.format(ADDING_TO_PERSON, "Phone", personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         Phone phone = phoneSvc.get(phoneId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Phone not found for this id :: " + personId));
@@ -423,11 +432,11 @@ public class PersonController {
             @PathVariable(value = "personId") final UUID personId,
             @PathVariable(value = "phoneId") final UUID phoneId)
             throws ResourceNotFoundException {
-        log.info("Removing Phone(id: " + phoneId + ") from Person with id: "
-                + personId);
+        log.info(String.format(REMOVING_FROM_PERSON, "Phone", phoneId,
+            personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         person.setPhoneNumbers(person.getPhoneNumbers().stream()
                 .filter(p -> !p.getId().equals(phoneId))
                 .collect(Collectors.toSet()));
@@ -450,10 +459,10 @@ public class PersonController {
     public ResponseEntity<List<EmailDto>> getEmails(
             @PathVariable(value = "personId") final UUID personId)
             throws ResourceNotFoundException {
-        log.info("Getting emails for Person with id:......" + personId);
+        log.info(String.format(GETTING_FOR_PERSON, "emails", personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         return ResponseEntity.ok(person.getEmailAddresses().stream()
                 .map(p -> mapper.map(p, EmailDto.class))
                 .collect(Collectors.toList()));
@@ -472,10 +481,10 @@ public class PersonController {
             @PathVariable(value = "personId") final UUID personId,
             @Valid @RequestBody final EmailDto emailDto)
             throws ResourceNotFoundException {
-        log.info("Adding Email to Person with id:......" + personId);
+        log.info(String.format(ADDING_TO_PERSON, "Email", personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         Email email = emailSvc.save(mapper.map(emailDto, Email.class));
         person.getEmailAddresses().add(email);
         personSvc.save(person);
@@ -497,11 +506,11 @@ public class PersonController {
             @PathVariable(value = "personId") final UUID personId,
             @PathVariable(value = "emailId") final UUID emailId)
             throws ResourceNotFoundException {
-        log.info("Removing Email(id: " + emailId + ") from Person with id: "
-                + personId);
+        log.info(String.format(REMOVING_FROM_PERSON, "Email", emailId,
+            personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         Email email = emailSvc.get(emailId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Email not found for this id :: " + personId));
@@ -525,11 +534,11 @@ public class PersonController {
             @PathVariable(value = "personId") final UUID personId,
             @PathVariable(value = "emailId") final UUID emailId)
             throws ResourceNotFoundException {
-        log.info("Removing Email(id: " + emailId + ") from Person with id: "
-                + personId);
+        log.info(String.format(REMOVING_FROM_PERSON, "email", emailId,
+            personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         person.setEmailAddresses(person.getEmailAddresses().stream()
                 .filter(p -> !p.getId().equals(emailId))
                 .collect(Collectors.toSet()));
@@ -553,10 +562,10 @@ public class PersonController {
             getCompetencies(@PathVariable(value = "personId")
             final UUID personId)
             throws ResourceNotFoundException {
-        log.info("Getting competencies for Person with id:......" + personId);
+        log.info(String.format(GETTING_FOR_PERSON, "competencies", personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
 
         return ResponseEntity.ok(person.getCompetencies().stream()
                 .map(c -> new PersonalQualificationDto<CompetencyDto>(
@@ -579,10 +588,10 @@ public class PersonController {
                 @PathVariable(value = "personId") final UUID personId,
                 @PathVariable(value = "competencyId") final UUID competencyId)
             throws ResourceNotFoundException {
-        log.info("Getting competencies for Person with id:......" + personId);
+        log.info(String.format(GETTING_FOR_PERSON, "competencies", personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         PersonalCompetency pc = person.getCompetencies().stream()
                 .filter(c -> c.getCompetency().getId().equals(competencyId))
                 .findFirst()
@@ -610,10 +619,10 @@ public class PersonController {
                 @Valid @RequestBody
                 final PersonalQualificationDto<CompetencyDto> compDto)
             throws ResourceNotFoundException {
-        log.info("Adding Competency to Person with id:......" + personId);
+        log.info(String.format(ADDING_TO_PERSON, "Identity", personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         Competency comp = competencySvc.get(competencyId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Competency not found for this id :: " + competencyId));
@@ -645,10 +654,10 @@ public class PersonController {
                 @Valid @RequestBody
                 final PersonalQualificationDto<CompetencyDto> compDto)
                 throws ResourceNotFoundException {
-        log.info("Adding Competency to Person with id:......" + personId);
+        log.info(String.format(ADDING_TO_PERSON, "Competency", personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         PersonalCompetency pc = person.getCompetencies().stream()
                 .filter(c -> c.getCompetency().getId().equals(competencyId))
                 .findFirst()
@@ -676,10 +685,11 @@ public class PersonController {
             @PathVariable(value = "personId") final UUID personId,
             @PathVariable(value = "competencyId") final UUID competencyId)
             throws ResourceNotFoundException {
-        log.info("Adding Competency to Person with id:......" + personId);
+        log.info(String.format(REMOVING_FROM_PERSON, "Competency", competencyId,
+            personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         PersonalCompetency pc = person.getCompetencies().stream()
                 .filter(c -> c.getCompetency().getId().equals(competencyId))
                 .findFirst()
@@ -708,10 +718,10 @@ public class PersonController {
             getCredentials(
                 @PathVariable(value = "personId") final UUID personId)
             throws ResourceNotFoundException {
-        log.info("Getting competencies for Person with id:......" + personId);
+        log.info(String.format(GETTING_FOR_PERSON, "credentials", personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
 
         return ResponseEntity.ok(person.getCredentials().stream()
                 .map(c -> new PersonalQualificationDto<CredentialDto>(
@@ -734,10 +744,10 @@ public class PersonController {
                 @PathVariable(value = "personId") final UUID personId,
                 @PathVariable(value = "credentialId") final UUID credentialId)
             throws ResourceNotFoundException {
-        log.info("Getting competencies for Person with id:......" + personId);
+        log.info(String.format(GETTING_FOR_PERSON, "credentials", personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         PersonalCredential pc = person.getCredentials().stream()
                 .filter(c -> c.getCredential().getId().equals(credentialId))
                 .findFirst()
@@ -765,10 +775,10 @@ public class PersonController {
                 @Valid @RequestBody
                 final PersonalQualificationDto<CredentialDto> credDto)
             throws ResourceNotFoundException {
-        log.info("Adding Credential to Person with id:......" + personId);
+        log.info(String.format(ADDING_TO_PERSON, "Credential", personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         Credential comp = credentialSvc.get(credentialId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Credential not found for this id :: " + credentialId));
@@ -800,10 +810,10 @@ public class PersonController {
                 @Valid @RequestBody
                 final PersonalQualificationDto<CredentialDto> credDto)
             throws ResourceNotFoundException {
-        log.info("Adding Credential to Person with id:......" + personId);
+        log.info(String.format(ADDING_TO_PERSON, "Competency", personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         PersonalCredential pc = person.getCredentials().stream()
                 .filter(c -> c.getCredential().getId().equals(credentialId))
                 .findFirst()
@@ -831,10 +841,11 @@ public class PersonController {
             @PathVariable(value = "personId") final UUID personId,
             @PathVariable(value = "credentialId") final UUID credentialId)
             throws ResourceNotFoundException {
-        log.info("Adding Credential to Person with id:......" + personId);
+        log.info(String.format(REMOVING_FROM_PERSON, "Credential", credentialId,
+            personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         PersonalCredential pc = person.getCredentials().stream()
                 .filter(c -> c.getCredential().getId().equals(credentialId))
                 .findFirst()
@@ -862,14 +873,14 @@ public class PersonController {
     public ResponseEntity<List<LearningRecordDto>> getLearningRecords(
             @PathVariable(value = "personId") final UUID personId)
             throws ResourceNotFoundException {
-        log.info("Getting learning records for Person with id:......"
-                + personId);
+        log.info(String.format(GETTING_FOR_PERSON, "LearningRecords",
+            personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
 
         return ResponseEntity.ok(person.getLearningRecords().stream()
-                .map(record -> mapper.map(record, LearningRecordDto.class))
+                .map(rec -> mapper.map(rec, LearningRecordDto.class))
                 .collect(Collectors.toList()));
     }
 
@@ -886,23 +897,23 @@ public class PersonController {
             @PathVariable(value = "personId") final UUID personId,
             @Valid @RequestBody final LearningRecordDto learningRecordDto)
             throws ResourceNotFoundException {
-        log.info("Adding learning record to Person with id:......" + personId);
+        log.info(String.format(ADDING_TO_PERSON, "LearningRecords", personId));
 
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         UUID learningResourceId = learningRecordDto.getLearningResource()
                 .getId();
         LearningResource resource = learningResourceSvc.get(learningResourceId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Learning Resource not found for this id :: "
                                 + learningResourceId));
-        LearningRecord record = mapper.map(learningRecordDto,
+        LearningRecord learningRecord = mapper.map(learningRecordDto,
                 LearningRecord.class);
-        record.setPerson(person);
-        record.setLearningResource(resource);
-        learningRecordSvc.save(record);
-        person.getLearningRecords().add(record);
+        learningRecord.setPerson(person);
+        learningRecord.setLearningResource(resource);
+        learningRecordSvc.save(learningRecord);
+        person.getLearningRecords().add(learningRecord);
         personSvc.save(person);
         return ResponseEntity.ok(person.getLearningRecords().stream()
                 .map(rec -> mapper.map(rec, LearningRecordDto.class))
@@ -924,14 +935,14 @@ public class PersonController {
     public ResponseEntity<List<EmploymentRecordDto>> getEmploymentRecords(
             @PathVariable(value = "personId") final UUID personId)
             throws ResourceNotFoundException {
-        log.info("Getting employment records for Person with id:......"
-                + personId);
+        log.info(String.format(GETTING_FOR_PERSON, "EmploymentRecords",
+            personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
 
         return ResponseEntity.ok(person.getEmploymentRecords().stream()
-                .map(record -> mapper.map(record, EmploymentRecordDto.class))
+                .map(rec -> mapper.map(rec, EmploymentRecordDto.class))
                 .collect(Collectors.toList()));
     }
 
@@ -948,12 +959,10 @@ public class PersonController {
             @PathVariable(value = "personId") final UUID personId,
             @Valid @RequestBody final EmploymentRecordDto employmentRecordDto)
             throws ResourceNotFoundException {
-        log.info(
-                "Adding Employment Record to Person with id:......" + personId);
-
+        log.info(String.format(ADDING_TO_PERSON, "EmploymentRecord", personId));
         Person employee = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         UUID orgId = employmentRecordDto.getEmployerOrganization().getId();
         Organization organization = organizationSvc.get(orgId)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -1021,14 +1030,14 @@ public class PersonController {
     public ResponseEntity<List<MilitaryRecordDto>> getMilitaryRecords(
             @PathVariable(value = "personId") final UUID personId)
             throws ResourceNotFoundException {
-        log.info("Getting employment records for Person with id:......"
-                + personId);
+        log.info(String.format(GETTING_FOR_PERSON, "EmploymentRecortds",
+            personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
 
         return ResponseEntity.ok(person.getMilitaryRecords().stream()
-                .map(record -> mapper.map(record, MilitaryRecordDto.class))
+                .map(rec -> mapper.map(rec, MilitaryRecordDto.class))
                 .collect(Collectors.toList()));
     }
 
@@ -1045,12 +1054,10 @@ public class PersonController {
             @PathVariable(value = "personId") final UUID personId,
             @Valid @RequestBody final MilitaryRecordDto militaryRecordDto)
             throws ResourceNotFoundException {
-        log.info(
-                "Adding Employment Record to Person with id:......" + personId);
-
+        log.info(String.format(ADDING_TO_PERSON, "MilitaryRecord", personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
 
         log.info("Update MilitaryRecord:........." + militaryRecordDto);
         MilitaryRecord militaryRecord = mapper.map(militaryRecordDto,
@@ -1080,10 +1087,10 @@ public class PersonController {
     public ResponseEntity<List<AssociationDto>> getOrganizationsByPerson(
             @PathVariable(value = "personId") final UUID personId)
             throws ResourceNotFoundException {
-        log.info("Getting orgs for Person with id:......" + personId);
+        log.info(String.format(GETTING_FOR_PERSON, "orgs", personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
 
         return ResponseEntity.ok(person.getAssociations().stream()
                 .map(assoc -> mapper.map(assoc, AssociationDto.class))
@@ -1103,10 +1110,11 @@ public class PersonController {
             @PathVariable(value = "personId") final UUID personId,
             @PathVariable(value = "organizationId") final UUID organizationId)
             throws ResourceNotFoundException {
-        log.info("Getting orgs for Person with id:......" + personId);
+        log.info("Getting association for person with id: " + personId
+            + " and org with id: " + organizationId);
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         Association association = person.getAssociations().stream()
                 .filter(assoc -> assoc.getOrganization().getId()
                         .equals(organizationId))
@@ -1131,11 +1139,10 @@ public class PersonController {
             @PathVariable(value = "organizationId") final UUID organizationId,
             @Valid @RequestBody final AssociationDto associationDto)
             throws ResourceNotFoundException {
-        log.info("Adding Organization to Person with id:......" + personId);
-
+        log.info(String.format(ADDING_TO_PERSON, "Org", personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         Organization organization = organizationSvc.get(organizationId)
                 .orElseThrow(
                         () -> new ResourceNotFoundException(
@@ -1180,7 +1187,7 @@ public class PersonController {
 
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
         organizationSvc.get(organizationId).orElseThrow(
                 () -> new ResourceNotFoundException(
                         "Organization not found for this id :: "
@@ -1214,12 +1221,12 @@ public class PersonController {
             @PathVariable(value = "personId") final UUID personId,
             @PathVariable(value = "organizationId") final UUID organizationId)
             throws ResourceNotFoundException {
-        log.info("Updating Organization association to Person with id:......"
+        log.info("Deleting Organization association to Person with id:......"
                 + personId);
 
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Person not found for this id :: " + personId));
+                        PERSON_NOT_FOUND + personId));
 
         Association association = person.getAssociations().stream()
                 .filter(assoc -> assoc.getOrganization().getId()

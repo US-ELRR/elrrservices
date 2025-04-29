@@ -42,6 +42,8 @@ public class LocationControllerTest extends CommonControllerTest {
 
     private HttpHeaders headers;
 
+    private static final String LOCATION_API = "/api/location";
+
     @BeforeEach
     void addHeaders() {
         headers = new HttpHeaders();
@@ -73,7 +75,7 @@ public class LocationControllerTest extends CommonControllerTest {
 
         Mockito.doReturn(getLocationList()).when(getLocationSvc()).findAll();
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/location")
+                .get(LOCATION_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -94,7 +96,7 @@ public class LocationControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getLocationList().iterator().next()))
                 .when(getLocationSvc()).get(LOCATION_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/location/" + LOCATION_ID)
+                .get(LOCATION_API + "/" + LOCATION_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -113,7 +115,7 @@ public class LocationControllerTest extends CommonControllerTest {
     void getLocationByIdErrorTest() throws Exception {
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/location/1")
+                .get(LOCATION_API + "/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -129,7 +131,7 @@ public class LocationControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getLocationList().iterator().next()))
                 .when(getLocationSvc()).get(LOCATION_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/location?id=" + LOCATION_ID)
+                .get(LOCATION_API + "?id=" + LOCATION_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -152,7 +154,7 @@ public class LocationControllerTest extends CommonControllerTest {
                 .when(getLocationSvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/location")
+                .post(LOCATION_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(locationDto))
@@ -178,7 +180,7 @@ public class LocationControllerTest extends CommonControllerTest {
                 .when(getLocationSvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/location/" + LOCATION_ID)
+                .put(LOCATION_API + "/" + LOCATION_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(locationDto))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -200,7 +202,7 @@ public class LocationControllerTest extends CommonControllerTest {
                 .when(getLocationSvc()).get(LOCATION_ID);
         Mockito.doNothing().when(getLocationSvc()).delete(LOCATION_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/location/" + LOCATION_ID)
+                .delete(LOCATION_API + "/" + LOCATION_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);

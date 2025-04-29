@@ -42,6 +42,8 @@ public class EmailControllerTest extends CommonControllerTest {
 
     private HttpHeaders headers;
 
+    private static final String EMAIL_API = "/api/email";
+
     @BeforeEach
     void addHeaders() {
         headers = new HttpHeaders();
@@ -73,7 +75,7 @@ public class EmailControllerTest extends CommonControllerTest {
 
         Mockito.doReturn(getEmailList()).when(getEmailSvc()).findAll();
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/email")
+                .get(EMAIL_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -94,7 +96,7 @@ public class EmailControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getEmailList().iterator().next()))
                 .when(getEmailSvc()).get(EMAIL_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/email/" + EMAIL_ID)
+                .get(EMAIL_API + "/" + EMAIL_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -113,7 +115,7 @@ public class EmailControllerTest extends CommonControllerTest {
     void getEmailByIdErrorTest() throws Exception {
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/email/1")
+                .get(EMAIL_API + "/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -129,7 +131,7 @@ public class EmailControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getEmailList().iterator().next()))
                 .when(getEmailSvc()).get(EMAIL_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/email?id=" + EMAIL_ID)
+                .get(EMAIL_API + "?id=" + EMAIL_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -151,7 +153,7 @@ public class EmailControllerTest extends CommonControllerTest {
         Mockito.doReturn(getEmailList().iterator().next()).when(getEmailSvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/email")
+                .post(EMAIL_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(emailDto))
@@ -176,7 +178,7 @@ public class EmailControllerTest extends CommonControllerTest {
         Mockito.doReturn(getEmailList().iterator().next()).when(getEmailSvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/email/" + EMAIL_ID)
+                .put(EMAIL_API + "/" + EMAIL_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(emailDto))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -198,7 +200,7 @@ public class EmailControllerTest extends CommonControllerTest {
                 .when(getEmailSvc()).get(EMAIL_ID);
         Mockito.doNothing().when(getEmailSvc()).delete(EMAIL_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/email/" + EMAIL_ID)
+                .delete(EMAIL_API + "/" + EMAIL_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);

@@ -42,6 +42,8 @@ public class FacilityControllerTest extends CommonControllerTest {
 
     private HttpHeaders headers;
 
+    private static final String FACILITY_API = "/api/facility";
+
     @BeforeEach
     void addHeaders() {
         headers = new HttpHeaders();
@@ -73,7 +75,7 @@ public class FacilityControllerTest extends CommonControllerTest {
 
         Mockito.doReturn(getFacilityList()).when(getFacilitySvc()).findAll();
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/facility")
+                .get(FACILITY_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -94,7 +96,7 @@ public class FacilityControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getFacilityList().iterator().next()))
                 .when(getFacilitySvc()).get(FACILITY_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/facility/" + FACILITY_ID)
+                .get(FACILITY_API + "/" + FACILITY_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -113,7 +115,7 @@ public class FacilityControllerTest extends CommonControllerTest {
     void getFacilityByIdErrorTest() throws Exception {
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/facility/1")
+                .get(FACILITY_API + "/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -129,7 +131,7 @@ public class FacilityControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getFacilityList().iterator().next()))
                 .when(getFacilitySvc()).get(FACILITY_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/facility?id=" + FACILITY_ID)
+                .get(FACILITY_API + "?id=" + FACILITY_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -152,7 +154,7 @@ public class FacilityControllerTest extends CommonControllerTest {
                 .when(getFacilitySvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/facility")
+                .post(FACILITY_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(facilityDto))
@@ -178,7 +180,7 @@ public class FacilityControllerTest extends CommonControllerTest {
                 .when(getFacilitySvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/facility/" + FACILITY_ID)
+                .put(FACILITY_API + "/" + FACILITY_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(facilityDto))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -200,7 +202,7 @@ public class FacilityControllerTest extends CommonControllerTest {
                 .when(getFacilitySvc()).get(FACILITY_ID);
         Mockito.doNothing().when(getFacilitySvc()).delete(FACILITY_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/facility/" + FACILITY_ID)
+                .delete(FACILITY_API + "/" + FACILITY_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);

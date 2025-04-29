@@ -42,6 +42,8 @@ public class OrganizationControllerTest extends CommonControllerTest {
 
     private HttpHeaders headers;
 
+    private static final String ORGANIZATION_API = "/api/organization";
+
     @BeforeEach
     void addHeaders() {
         headers = new HttpHeaders();
@@ -74,7 +76,7 @@ public class OrganizationControllerTest extends CommonControllerTest {
         Mockito.doReturn(getOrganizationList()).when(getOrganizationSvc())
                 .findAll();
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/organization")
+                .get(ORGANIZATION_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -95,7 +97,7 @@ public class OrganizationControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getOrganizationList().iterator().next()))
                 .when(getOrganizationSvc()).get(ORGANIZATION_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/organization/" + ORGANIZATION_ID)
+                .get(ORGANIZATION_API + "/" + ORGANIZATION_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -114,7 +116,7 @@ public class OrganizationControllerTest extends CommonControllerTest {
     void getOrganizationByIdErrorTest() throws Exception {
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/organization/1")
+                .get(ORGANIZATION_API + "/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -130,7 +132,7 @@ public class OrganizationControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getOrganizationList().iterator().next()))
                 .when(getOrganizationSvc()).get(ORGANIZATION_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/organization?id=" + ORGANIZATION_ID)
+                .get(ORGANIZATION_API + "?id=" + ORGANIZATION_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -154,7 +156,7 @@ public class OrganizationControllerTest extends CommonControllerTest {
                 .when(getOrganizationSvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/organization")
+                .post(ORGANIZATION_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(organizationDto))
@@ -178,7 +180,7 @@ public class OrganizationControllerTest extends CommonControllerTest {
                 .when(getOrganizationSvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/organization")
+                .post(ORGANIZATION_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(organizationDto))
@@ -200,7 +202,7 @@ public class OrganizationControllerTest extends CommonControllerTest {
                 .when(getOrganizationSvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/organization/" + ORGANIZATION_ID)
+                .put(ORGANIZATION_API + "/" + ORGANIZATION_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(organizationDto))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -222,7 +224,7 @@ public class OrganizationControllerTest extends CommonControllerTest {
                 .when(getOrganizationSvc()).get(ORGANIZATION_ID);
         Mockito.doNothing().when(getOrganizationSvc()).delete(ORGANIZATION_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/organization/" + ORGANIZATION_ID)
+                .delete(ORGANIZATION_API + "/" + ORGANIZATION_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);

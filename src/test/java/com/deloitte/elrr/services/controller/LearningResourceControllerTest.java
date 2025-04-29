@@ -42,6 +42,8 @@ public class LearningResourceControllerTest extends CommonControllerTest {
 
     private HttpHeaders headers;
 
+    private static final String LEARNING_RESOURCE_API = "/api/learningresource";
+
     @BeforeEach
     void addHeaders() {
         headers = new HttpHeaders();
@@ -74,7 +76,7 @@ public class LearningResourceControllerTest extends CommonControllerTest {
         Mockito.doReturn(getLearningResourceList())
                 .when(getLearningResourceSvc()).findAll();
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/learningresource")
+                .get(LEARNING_RESOURCE_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -96,7 +98,7 @@ public class LearningResourceControllerTest extends CommonControllerTest {
                 Optional.of(getLearningResourceList().iterator().next()))
                 .when(getLearningResourceSvc()).get(LEARNING_RESOURCE_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/learningresource/" + LEARNING_RESOURCE_ID)
+                .get(LEARNING_RESOURCE_API + "/" + LEARNING_RESOURCE_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -115,7 +117,7 @@ public class LearningResourceControllerTest extends CommonControllerTest {
     void getLearningResourceByIdErrorTest() throws Exception {
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/learningresource/1")
+                .get(LEARNING_RESOURCE_API + "/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -132,7 +134,7 @@ public class LearningResourceControllerTest extends CommonControllerTest {
                 Optional.of(getLearningResourceList().iterator().next()))
                 .when(getLearningResourceSvc()).get(LEARNING_RESOURCE_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/learningresource?id=" + LEARNING_RESOURCE_ID)
+                .get(LEARNING_RESOURCE_API + "?id=" + LEARNING_RESOURCE_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -155,7 +157,7 @@ public class LearningResourceControllerTest extends CommonControllerTest {
                 .when(getLearningResourceSvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/learningresource")
+                .post(LEARNING_RESOURCE_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(learningResourceDto))
@@ -182,7 +184,7 @@ public class LearningResourceControllerTest extends CommonControllerTest {
                 .when(getLearningResourceSvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/learningresource/" + LEARNING_RESOURCE_ID)
+                .put(LEARNING_RESOURCE_API + "/" + LEARNING_RESOURCE_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(learningResourceDto))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -206,7 +208,7 @@ public class LearningResourceControllerTest extends CommonControllerTest {
         Mockito.doNothing().when(getLearningResourceSvc())
                 .delete(LEARNING_RESOURCE_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/learningresource/" + LEARNING_RESOURCE_ID)
+                .delete(LEARNING_RESOURCE_API + "/" + LEARNING_RESOURCE_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);

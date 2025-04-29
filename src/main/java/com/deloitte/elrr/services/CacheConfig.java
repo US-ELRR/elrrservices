@@ -16,9 +16,6 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class CacheConfig {
 
-  private String samlid; // = "elrrsamltest";
-  private String samlurl; // = "https://idp.ssocircle.com";
-
   /**
    * access IDP using lrs.samlurl and lrs.samlid application properties.
    *
@@ -26,8 +23,7 @@ public class CacheConfig {
    * @throws Exception
    */
   @Bean
-  public RelyingPartyRegistrationRepository relyingPartyRegistrations()
-        throws Exception {
+  public RelyingPartyRegistrationRepository relyingPartyRegistrations() {
     return null;
   }
 
@@ -40,15 +36,17 @@ public class CacheConfig {
    */
   @Bean
   public SecurityFilterChain filterChain(final HttpSecurity http)
-        throws Exception {
-
-    // if (samlid.isEmpty() || samlurl.isEmpty()) {
-    http.authorizeHttpRequests((authorize)
+        throws IllegalArgumentException {
+    try {
+        return http.authorizeHttpRequests((authorize)
             -> authorize.anyRequest().anonymous())
-        .csrf(AbstractHttpConfigurer::disable)
-        .cors((cors) -> cors.configurationSource(apiConfigurationSource()));
-
-    return http.build();
+            .csrf(AbstractHttpConfigurer::disable)
+            .cors((cors) -> cors.configurationSource(
+                apiConfigurationSource()))
+            .build();
+    } catch (Exception e) {
+        throw new IllegalArgumentException(e);
+    }
   }
 
   private CorsConfigurationSource apiConfigurationSource() {
