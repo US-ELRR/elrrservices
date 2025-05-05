@@ -268,6 +268,8 @@ public class PersonController {
      * IDENTITY
      */
 
+    private static final String LOG_ID = "Identity";
+
     /**
      * Get Identities for person.
      *
@@ -302,7 +304,7 @@ public class PersonController {
             @PathVariable(value = "personId") final UUID personId,
             @Valid @RequestBody final IdentityDto identityDto)
             throws ResourceNotFoundException {
-        log.info(String.format(ADDING_TO_PERSON, "Identity", personId));
+        log.info(String.format(ADDING_TO_PERSON, LOG_ID, personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         PERSON_NOT_FOUND + personId));
@@ -330,7 +332,7 @@ public class PersonController {
             @PathVariable(value = "personId") final UUID personId,
             @PathVariable(value = "identityId") final UUID identityId)
             throws ResourceNotFoundException {
-        log.info(String.format(REMOVING_FROM_PERSON, "Identity", identityId,
+        log.info(String.format(REMOVING_FROM_PERSON, LOG_ID, identityId,
             personId));
         Identity identity = identitySvc.get(identityId)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -345,6 +347,8 @@ public class PersonController {
     /*
      * Phones
      */
+
+    private static final String LOG_PHONE = "Phone";
 
     /**
      * Get Phones for a Person.
@@ -380,7 +384,7 @@ public class PersonController {
             @PathVariable(value = "personId") final UUID personId,
             @Valid @RequestBody final PhoneDto phoneDto)
             throws ResourceNotFoundException {
-        log.info(String.format(ADDING_TO_PERSON, "Phone", personId));
+        log.info(String.format(ADDING_TO_PERSON, LOG_PHONE, personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         PERSON_NOT_FOUND + personId));
@@ -405,7 +409,7 @@ public class PersonController {
             @PathVariable(value = "personId") final UUID personId,
             @PathVariable(value = "phoneId") final UUID phoneId)
             throws ResourceNotFoundException {
-        log.info(String.format(ADDING_TO_PERSON, "Phone", personId));
+        log.info(String.format(ADDING_TO_PERSON, LOG_PHONE, personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         PERSON_NOT_FOUND + personId));
@@ -432,7 +436,7 @@ public class PersonController {
             @PathVariable(value = "personId") final UUID personId,
             @PathVariable(value = "phoneId") final UUID phoneId)
             throws ResourceNotFoundException {
-        log.info(String.format(REMOVING_FROM_PERSON, "Phone", phoneId,
+        log.info(String.format(REMOVING_FROM_PERSON, LOG_PHONE, phoneId,
             personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -550,6 +554,8 @@ public class PersonController {
      * COMPETENCY
      */
 
+    private static final String LOG_COMP = "Competency";
+
     /**
      * Get Competencies of person.
      *
@@ -619,7 +625,7 @@ public class PersonController {
                 @Valid @RequestBody
                 final PersonalQualificationDto<CompetencyDto> compDto)
             throws ResourceNotFoundException {
-        log.info(String.format(ADDING_TO_PERSON, "Identity", personId));
+        log.info(String.format(ADDING_TO_PERSON, LOG_ID, personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         PERSON_NOT_FOUND + personId));
@@ -654,7 +660,7 @@ public class PersonController {
                 @Valid @RequestBody
                 final PersonalQualificationDto<CompetencyDto> compDto)
                 throws ResourceNotFoundException {
-        log.info(String.format(ADDING_TO_PERSON, "Competency", personId));
+        log.info(String.format(ADDING_TO_PERSON, LOG_COMP, personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         PERSON_NOT_FOUND + personId));
@@ -685,7 +691,7 @@ public class PersonController {
             @PathVariable(value = "personId") final UUID personId,
             @PathVariable(value = "competencyId") final UUID competencyId)
             throws ResourceNotFoundException {
-        log.info(String.format(REMOVING_FROM_PERSON, "Competency", competencyId,
+        log.info(String.format(REMOVING_FROM_PERSON, LOG_COMP, competencyId,
             personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -810,7 +816,7 @@ public class PersonController {
                 @Valid @RequestBody
                 final PersonalQualificationDto<CredentialDto> credDto)
             throws ResourceNotFoundException {
-        log.info(String.format(ADDING_TO_PERSON, "Competency", personId));
+        log.info(String.format(ADDING_TO_PERSON, LOG_COMP, personId));
         Person person = personSvc.get(personId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         PERSON_NOT_FOUND + personId));
