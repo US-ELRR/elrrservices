@@ -42,6 +42,8 @@ public class CompetencyControllerTest extends CommonControllerTest {
 
     private HttpHeaders headers;
 
+    private static final String COMP_API = "/api/competency";
+
     @BeforeEach
     void addHeaders() {
         headers = new HttpHeaders();
@@ -74,7 +76,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
         Mockito.doReturn(getCompetencyList()).when(getCompetencySvc())
                 .findAll();
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/competency")
+                .get(COMP_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -95,7 +97,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getCompetencyList().iterator().next()))
                 .when(getCompetencySvc()).get(COMPETENCY_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/competency/" + COMPETENCY_ID)
+                .get(COMP_API + "/" + COMPETENCY_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -114,7 +116,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
     void getCompetencyByIdErrorTest() throws Exception {
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/competency/1")
+                .get(COMP_API + "/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -130,7 +132,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getCompetencyList().iterator().next()))
                 .when(getCompetencySvc()).get(COMPETENCY_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/competency?id=" + COMPETENCY_ID)
+                .get(COMP_API + "?id=" + COMPETENCY_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -153,7 +155,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
                 .when(getCompetencySvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/competency")
+                .post(COMP_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(competencyDto))
@@ -179,7 +181,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
                 .when(getCompetencySvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/competency/" + COMPETENCY_ID)
+                .put(COMP_API + "/" + COMPETENCY_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(competencyDto))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -201,7 +203,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
                 .when(getCompetencySvc()).get(COMPETENCY_ID);
         Mockito.doNothing().when(getCompetencySvc()).delete(COMPETENCY_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/competency/" + COMPETENCY_ID)
+                .delete(COMP_API + "/" + COMPETENCY_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);

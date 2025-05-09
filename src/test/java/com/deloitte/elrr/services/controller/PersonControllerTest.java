@@ -73,6 +73,8 @@ public class PersonControllerTest extends CommonControllerTest {
 
     private HttpHeaders headers;
 
+    private static final String PERSON_API = "/api/person";
+
     @BeforeEach
     void addHeaders() {
         headers = new HttpHeaders();
@@ -115,7 +117,7 @@ public class PersonControllerTest extends CommonControllerTest {
 
         Mockito.doReturn(getPersonList()).when(getPersonSvc()).findAll();
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/person")
+                .get(PERSON_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -136,7 +138,7 @@ public class PersonControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getTestPerson()))
                 .when(getPersonSvc()).get(PERSON_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/person/" + PERSON_ID)
+                .get(PERSON_API + "/" + PERSON_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -155,7 +157,7 @@ public class PersonControllerTest extends CommonControllerTest {
     void getPersonByIdErrorTest() throws Exception {
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/person/1")
+                .get(PERSON_API + "/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -171,7 +173,7 @@ public class PersonControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getTestPerson()))
                 .when(getPersonSvc()).get(PERSON_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/person?id=" + PERSON_ID)
+                .get(PERSON_API + "?id=" + PERSON_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -193,7 +195,7 @@ public class PersonControllerTest extends CommonControllerTest {
         Mockito.doReturn(getTestPerson()).when(getPersonSvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/person")
+                .post(PERSON_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(personDto))
@@ -218,7 +220,7 @@ public class PersonControllerTest extends CommonControllerTest {
         Mockito.doReturn(getTestPerson()).when(getPersonSvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/person/" + PERSON_ID)
+                .put(PERSON_API + "/" + PERSON_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(personDto))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -240,7 +242,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .when(getPersonSvc()).get(PERSON_ID);
         Mockito.doNothing().when(getPersonSvc()).delete(PERSON_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/person/" + PERSON_ID)
+                .delete(PERSON_API + "/" + PERSON_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -260,7 +262,7 @@ public class PersonControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getTestPerson()))
                 .when(getPersonSvc()).get(PERSON_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/person/" + PERSON_ID + "/identity")
+                .get(PERSON_API + "/" + PERSON_ID + "/identity")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -284,7 +286,7 @@ public class PersonControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(mockPerson)).when(getPersonSvc())
                 .get(PERSON_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/person/" + PERSON_ID + "/identity")
+                .post(PERSON_API + "/" + PERSON_ID + "/identity")
                 .content(asJsonString(identityDto))
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -308,7 +310,8 @@ public class PersonControllerTest extends CommonControllerTest {
                 .thenReturn(Optional.of(mockIdentity));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/person/" + PERSON_ID + "/identity/" + IDENTITY_ID)
+                .delete(PERSON_API + "/" + PERSON_ID + "/identity/"
+                    + IDENTITY_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -327,7 +330,7 @@ public class PersonControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getTestPerson()))
                 .when(getPersonSvc()).get(PERSON_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/person/" + PERSON_ID + "/phone")
+                .get(PERSON_API + "/" + PERSON_ID + "/phone")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -354,7 +357,7 @@ public class PersonControllerTest extends CommonControllerTest {
         Mockito.when(getPhoneSvc().save(any()))
                 .thenAnswer(i -> i.getArgument(0));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/person/" + PERSON_ID + "/phone")
+                .post(PERSON_API + "/" + PERSON_ID + "/phone")
                 .content(asJsonString(phoneDto))
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -384,7 +387,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .thenAnswer(i -> i.getArgument(0));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/person/" + PERSON_ID + "/phone/" + PHONE_ID)
+                .post(PERSON_API + "/" + PERSON_ID + "/phone/" + PHONE_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -406,7 +409,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .thenReturn(Optional.of(mockPerson));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/person/" + PERSON_ID + "/phone/" + PHONE_ID)
+                .delete(PERSON_API + "/" + PERSON_ID + "/phone/" + PHONE_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -425,7 +428,7 @@ public class PersonControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getTestPerson()))
                 .when(getPersonSvc()).get(PERSON_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/person/" + PERSON_ID + "/email")
+                .get(PERSON_API + "/" + PERSON_ID + "/email")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -452,7 +455,7 @@ public class PersonControllerTest extends CommonControllerTest {
         Mockito.when(getEmailSvc().save(any()))
                 .thenAnswer(i -> i.getArgument(0));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/person/" + PERSON_ID + "/email")
+                .post(PERSON_API + "/" + PERSON_ID + "/email")
                 .content(asJsonString(emailDto))
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -482,7 +485,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .thenAnswer(i -> i.getArgument(0));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/person/" + PERSON_ID + "/email/" + EMAIL_ID)
+                .post(PERSON_API + "/" + PERSON_ID + "/email/" + EMAIL_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -504,7 +507,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .thenReturn(Optional.of(mockPerson));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/person/" + PERSON_ID + "/email/" + EMAIL_ID)
+                .delete(PERSON_API + "/" + PERSON_ID + "/email/" + EMAIL_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -523,7 +526,7 @@ public class PersonControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getTestPerson()))
                 .when(getPersonSvc()).get(PERSON_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/person/" + PERSON_ID + "/competency")
+                .get(PERSON_API + "/" + PERSON_ID + "/competency")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -543,7 +546,7 @@ public class PersonControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getTestPerson()))
                 .when(getPersonSvc()).get(PERSON_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/person/" + PERSON_ID + "/competency/"
+                .get(PERSON_API + "/" + PERSON_ID + "/competency/"
                         + COMPETENCY_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -579,7 +582,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .thenAnswer(i -> i.getArgument(0));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/person/" + PERSON_ID + "/competency/"
+                .post(PERSON_API + "/" + PERSON_ID + "/competency/"
                         + COMPETENCY_ID)
                 .content(asJsonString(pqd))
                 .accept(MediaType.APPLICATION_JSON)
@@ -615,7 +618,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .thenAnswer(i -> i.getArgument(0));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/person/" + PERSON_ID + "/competency/"
+                .put(PERSON_API + "/" + PERSON_ID + "/competency/"
                         + COMPETENCY_ID)
                 .content(asJsonString(pqd))
                 .accept(MediaType.APPLICATION_JSON)
@@ -640,7 +643,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .thenReturn(Optional.of(mockPerson));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/person/" + PERSON_ID + "/competency/"
+                .delete(PERSON_API + "/" + PERSON_ID + "/competency/"
                         + COMPETENCY_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -660,7 +663,7 @@ public class PersonControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getTestPerson()))
                 .when(getPersonSvc()).get(PERSON_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/person/" + PERSON_ID + "/credential")
+                .get(PERSON_API + "/" + PERSON_ID + "/credential")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -680,7 +683,7 @@ public class PersonControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getTestPerson()))
                 .when(getPersonSvc()).get(PERSON_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/person/" + PERSON_ID + "/credential/"
+                .get(PERSON_API + "/" + PERSON_ID + "/credential/"
                         + CREDENTIAL_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -717,7 +720,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .thenAnswer(i -> i.getArgument(0));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/person/" + PERSON_ID + "/credential/"
+                .post(PERSON_API + "/" + PERSON_ID + "/credential/"
                         + CREDENTIAL_ID)
                 .content(asJsonString(pqd))
                 .accept(MediaType.APPLICATION_JSON)
@@ -754,7 +757,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .thenAnswer(i -> i.getArgument(0));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/person/" + PERSON_ID + "/credential/"
+                .put(PERSON_API + "/" + PERSON_ID + "/credential/"
                         + CREDENTIAL_ID)
                 .content(asJsonString(pqd))
                 .accept(MediaType.APPLICATION_JSON)
@@ -779,7 +782,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .thenReturn(Optional.of(mockPerson));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/person/" + PERSON_ID + "/credential/"
+                .delete(PERSON_API + "/" + PERSON_ID + "/credential/"
                         + CREDENTIAL_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -801,7 +804,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .thenReturn(Optional.of(mockPerson));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/person/" + PERSON_ID + "/learningrecord")
+                .get(PERSON_API + "/" + PERSON_ID + "/learningrecord")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -837,7 +840,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .thenReturn(Optional.of(mockLearningResource));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/person/" + PERSON_ID + "/learningrecord")
+                .post(PERSON_API + "/" + PERSON_ID + "/learningrecord")
                 .content(asJsonString(learningRecordDto))
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -864,7 +867,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .thenReturn(Optional.of(mockPerson));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/person/" + PERSON_ID + "/militaryrecord")
+                .get(PERSON_API + "/" + PERSON_ID + "/militaryrecord")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -893,7 +896,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .thenReturn(Optional.of(mockPerson));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/person/" + PERSON_ID + "/militaryrecord")
+                .post(PERSON_API + "/" + PERSON_ID + "/militaryrecord")
                 .content(asJsonString(militaryRecordDto))
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -919,7 +922,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .thenReturn(Optional.of(mockPerson));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/person/" + PERSON_ID + "/employmentrecord")
+                .get(PERSON_API + "/" + PERSON_ID + "/employmentrecord")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -958,7 +961,7 @@ public class PersonControllerTest extends CommonControllerTest {
                         .of(mockEmploymentRecord.getEmployerOrganization()));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/person/" + PERSON_ID + "/employmentrecord")
+                .post(PERSON_API + "/" + PERSON_ID + "/employmentrecord")
                 .content(asJsonString(employmentRecordDto))
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -984,7 +987,7 @@ public class PersonControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getTestPerson()))
                 .when(getPersonSvc()).get(PERSON_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/person/" + PERSON_ID + "/organization")
+                .get(PERSON_API + "/" + PERSON_ID + "/organization")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -1007,7 +1010,7 @@ public class PersonControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getTestPerson()))
                 .when(getPersonSvc()).get(PERSON_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/person/" + PERSON_ID + "/organization/"
+                .get(PERSON_API + "/" + PERSON_ID + "/organization/"
                         + ORGANIZATION_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -1048,7 +1051,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .thenReturn(Optional.of(organization));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/person/" + PERSON_ID + "/organization/"
+                .post(PERSON_API + "/" + PERSON_ID + "/organization/"
                         + ORGANIZATION_ID)
                 .content(asJsonString(associationDto))
                 .accept(MediaType.APPLICATION_JSON)
@@ -1083,7 +1086,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .thenReturn(Optional.of(mockOrganization));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/person/" + PERSON_ID + "/organization/"
+                .put(PERSON_API + "/" + PERSON_ID + "/organization/"
                         + ORGANIZATION_ID)
                 .content(asJsonString(associationDto))
                 .accept(MediaType.APPLICATION_JSON)
@@ -1109,7 +1112,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .thenReturn(Optional.of(mockPerson));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/person/" + PERSON_ID + "/organization/"
+                .delete(PERSON_API + "/" + PERSON_ID + "/organization/"
                         + ORGANIZATION_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)

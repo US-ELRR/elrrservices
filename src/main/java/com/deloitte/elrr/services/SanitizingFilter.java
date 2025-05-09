@@ -89,10 +89,10 @@ public class SanitizingFilter implements Filter {
         while (keys.hasNext()) {
             String key = keys.next();
             Object val = jo.get(key);
-            if (val instanceof JSONObject && hasHomoGlyphs((JSONObject) val)) {
-                return true;
-            } else if (confusables.isDangerous(key)
-                    || confusables.isDangerous(String.valueOf(val))) {
+            if (confusables.isDangerous(key)
+                    || confusables.isDangerous(String.valueOf(val))
+                    || (val instanceof JSONObject
+                        && hasHomoGlyphs((JSONObject) val))) {
                 return true;
             }
         }

@@ -42,6 +42,8 @@ public class LearningRecordControllerTest extends CommonControllerTest {
 
     private HttpHeaders headers;
 
+    private static final String LEARNING_RECORD_API = "/api/learningrecord";
+
     @BeforeEach
     void addHeaders() {
         headers = new HttpHeaders();
@@ -74,7 +76,7 @@ public class LearningRecordControllerTest extends CommonControllerTest {
         Mockito.doReturn(getLearningRecordList()).when(getLearningRecordSvc())
                 .findAll();
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/learningrecord")
+                .get(LEARNING_RECORD_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -95,7 +97,7 @@ public class LearningRecordControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getLearningRecordList().iterator().next()))
                 .when(getLearningRecordSvc()).get(LEARNING_RECORD_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/learningrecord/" + LEARNING_RECORD_ID)
+                .get(LEARNING_RECORD_API + "/" + LEARNING_RECORD_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -114,7 +116,7 @@ public class LearningRecordControllerTest extends CommonControllerTest {
     void getLearningRecordByIdErrorTest() throws Exception {
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/learningrecord/1")
+                .get(LEARNING_RECORD_API + "/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -130,7 +132,7 @@ public class LearningRecordControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getLearningRecordList().iterator().next()))
                 .when(getLearningRecordSvc()).get(LEARNING_RECORD_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/learningrecord?id=" + LEARNING_RECORD_ID)
+                .get(LEARNING_RECORD_API + "?id=" + LEARNING_RECORD_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -155,7 +157,7 @@ public class LearningRecordControllerTest extends CommonControllerTest {
                 .when(getLearningRecordSvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/learningrecord/" + LEARNING_RECORD_ID)
+                .put(LEARNING_RECORD_API + "/" + LEARNING_RECORD_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(learningRecordDto))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -178,7 +180,7 @@ public class LearningRecordControllerTest extends CommonControllerTest {
         Mockito.doNothing().when(getLearningRecordSvc())
                 .delete(LEARNING_RECORD_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/learningrecord/" + LEARNING_RECORD_ID)
+                .delete(LEARNING_RECORD_API + "/" + LEARNING_RECORD_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);

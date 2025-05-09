@@ -42,6 +42,8 @@ public class PhoneControllerTest extends CommonControllerTest {
 
     private HttpHeaders headers;
 
+    private static final String PHONE_API = "/api/phone";
+
     @BeforeEach
     void addHeaders() {
         headers = new HttpHeaders();
@@ -73,7 +75,7 @@ public class PhoneControllerTest extends CommonControllerTest {
 
         Mockito.doReturn(getPhoneList()).when(getPhoneSvc()).findAll();
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/phone")
+                .get(PHONE_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -94,7 +96,7 @@ public class PhoneControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getPhoneList().iterator().next()))
                 .when(getPhoneSvc()).get(PHONE_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/phone/" + PHONE_ID)
+                .get(PHONE_API + "/" + PHONE_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -113,7 +115,7 @@ public class PhoneControllerTest extends CommonControllerTest {
     void getPhoneByIdErrorTest() throws Exception {
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/phone/1")
+                .get(PHONE_API + "/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -129,7 +131,7 @@ public class PhoneControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getPhoneList().iterator().next()))
                 .when(getPhoneSvc()).get(PHONE_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/phone?id=" + PHONE_ID)
+                .get(PHONE_API + "?id=" + PHONE_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -151,7 +153,7 @@ public class PhoneControllerTest extends CommonControllerTest {
         Mockito.doReturn(getPhoneList().iterator().next()).when(getPhoneSvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/phone")
+                .post(PHONE_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(phoneDto))
@@ -176,7 +178,7 @@ public class PhoneControllerTest extends CommonControllerTest {
         Mockito.doReturn(getPhoneList().iterator().next()).when(getPhoneSvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/phone/" + PHONE_ID)
+                .put(PHONE_API + "/" + PHONE_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(phoneDto))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -198,7 +200,7 @@ public class PhoneControllerTest extends CommonControllerTest {
                 .when(getPhoneSvc()).get(PHONE_ID);
         Mockito.doNothing().when(getPhoneSvc()).delete(PHONE_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/phone/" + PHONE_ID)
+                .delete(PHONE_API + "/" + PHONE_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);

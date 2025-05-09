@@ -42,6 +42,8 @@ public class CredentialControllerTest extends CommonControllerTest {
 
     private HttpHeaders headers;
 
+    private static final String CRED_API = "/api/credential";
+
     @BeforeEach
     void addHeaders() {
         headers = new HttpHeaders();
@@ -74,7 +76,7 @@ public class CredentialControllerTest extends CommonControllerTest {
         Mockito.doReturn(getCredentialList()).when(getCredentialSvc())
                 .findAll();
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/credential")
+                .get(CRED_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -95,7 +97,7 @@ public class CredentialControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getCredentialList().iterator().next()))
                 .when(getCredentialSvc()).get(CREDENTIAL_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/credential/" + CREDENTIAL_ID)
+                .get(CRED_API + "/" + CREDENTIAL_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -114,7 +116,7 @@ public class CredentialControllerTest extends CommonControllerTest {
     void getCredentialByIdErrorTest() throws Exception {
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/credential/1")
+                .get(CRED_API + "/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -130,7 +132,7 @@ public class CredentialControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getCredentialList().iterator().next()))
                 .when(getCredentialSvc()).get(CREDENTIAL_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/credential?id=" + CREDENTIAL_ID)
+                .get(CRED_API + "?id=" + CREDENTIAL_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -153,7 +155,7 @@ public class CredentialControllerTest extends CommonControllerTest {
                 .when(getCredentialSvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/credential")
+                .post(CRED_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(credentialDto))
@@ -179,7 +181,7 @@ public class CredentialControllerTest extends CommonControllerTest {
                 .when(getCredentialSvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/credential/" + CREDENTIAL_ID)
+                .put(CRED_API + "/" + CREDENTIAL_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(credentialDto))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -201,7 +203,7 @@ public class CredentialControllerTest extends CommonControllerTest {
                 .when(getCredentialSvc()).get(CREDENTIAL_ID);
         Mockito.doNothing().when(getCredentialSvc()).delete(CREDENTIAL_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/credential/" + CREDENTIAL_ID)
+                .delete(CRED_API + "/" + CREDENTIAL_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);

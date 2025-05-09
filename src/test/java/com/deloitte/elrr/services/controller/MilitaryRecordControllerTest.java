@@ -42,6 +42,8 @@ public class MilitaryRecordControllerTest extends CommonControllerTest {
 
     private HttpHeaders headers;
 
+    private static final String MILITARY_RECORD_API = "/api/militaryrecord";
+
     @BeforeEach
     void addHeaders() {
         headers = new HttpHeaders();
@@ -74,7 +76,7 @@ public class MilitaryRecordControllerTest extends CommonControllerTest {
         Mockito.doReturn(getMilitaryRecordList()).when(getMilitaryRecordSvc())
                 .findAll();
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/militaryrecord")
+                .get(MILITARY_RECORD_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -95,7 +97,7 @@ public class MilitaryRecordControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getMilitaryRecordList().iterator().next()))
                 .when(getMilitaryRecordSvc()).get(MILITARY_RECORD_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/militaryrecord/" + MILITARY_RECORD_ID)
+                .get(MILITARY_RECORD_API + "/" + MILITARY_RECORD_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -114,7 +116,7 @@ public class MilitaryRecordControllerTest extends CommonControllerTest {
     void getMilitaryRecordByIdErrorTest() throws Exception {
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/militaryrecord/1")
+                .get(MILITARY_RECORD_API + "/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -130,7 +132,7 @@ public class MilitaryRecordControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.of(getMilitaryRecordList().iterator().next()))
                 .when(getMilitaryRecordSvc()).get(MILITARY_RECORD_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/api/militaryrecord?id=" + MILITARY_RECORD_ID)
+                .get(MILITARY_RECORD_API + "?id=" + MILITARY_RECORD_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
@@ -157,7 +159,7 @@ public class MilitaryRecordControllerTest extends CommonControllerTest {
                 .when(getMilitaryRecordSvc())
                 .save(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/api/militaryrecord/" + MILITARY_RECORD_ID)
+                .put(MILITARY_RECORD_API + "/" + MILITARY_RECORD_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(militaryRecordDto))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -180,7 +182,7 @@ public class MilitaryRecordControllerTest extends CommonControllerTest {
         Mockito.doNothing().when(getMilitaryRecordSvc())
                 .delete(MILITARY_RECORD_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/api/militaryrecord/" + MILITARY_RECORD_ID)
+                .delete(MILITARY_RECORD_API + "/" + MILITARY_RECORD_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(headers);
