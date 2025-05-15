@@ -1,4 +1,4 @@
-.phony: launch-dev, clean, debug
+.phony: dev, clean, debug, test, test-debug, dependency-scan, lint, build
 
 clean:
 	mvn clean
@@ -15,6 +15,11 @@ test:
 test-debug:
 	mvn -Dmaven.surefire.debug="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=localhost:8000" test
 
+dependency-scan:
+	mvn dependency-check:check
+
+lint:
+	mvn checkstyle:check
 
 build:
-	mvn install
+	mvn clean package
