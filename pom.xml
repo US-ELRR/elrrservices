@@ -26,7 +26,7 @@
         <sonar.dynamicAnalysis>resuseReports</sonar.dynamicAnalysis>
         <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
         <sona.lauguage>java</sona.lauguage>
-        <spring-security.version>6.2.3</spring-security.version>
+        <spring-security.version>6.4.5</spring-security.version>
         <lombok.version>1.18.36</lombok.version>
     </properties>
     <dependencies>
@@ -93,6 +93,10 @@
                 <exclusion>
                     <groupId>org.bouncycastle</groupId>
                     <artifactId>bcprov-jdk15on</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcpkix-jdk18on</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -240,12 +244,17 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-json</artifactId>
-            <version>5.8.22</version>
+            <version>5.8.38</version>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk18on</artifactId>
-            <version>1.78</version>
+            <version>1.80</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk18on</artifactId>
+            <version>1.80</version>
         </dependency>
         <dependency>
             <groupId>org.apache.santuario</groupId>
