@@ -434,10 +434,10 @@
                 <version>12.1.0</version>
                 <executions>
                     <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
+                        <!-- disable autorun because download size -->
+                        <id>default</id>
+                        <phase>none</phase>
+                    </execution> 
                 </executions>
             </plugin>
         </plugins>

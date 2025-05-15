@@ -1,34 +1,40 @@
 
-# elrrservices
-Elrr services which provide a mechanism to synchronize the data in the ELRR with the data in the local learning systems
+# ELRR Services
+An API to allow the reading and writing of the P2997 data stored in ELRR Learner Profile. 
 
-There are database and kafka dependencies, but there's a [repo with a docker-compose](https://github.com/US-ELRR/elrrdockercompose/) that resolves them locally.
+There are database dependencies, but there's a [repo with a docker-compose](https://github.com/US-ELRR/elrrdockercompose/) that resolves the db locally.
 
-[Setup elrrdatasync first](https://github.com/US-ELRR/elrrdatasync/)
+## API
+The API Endpoints are documented interactively by swagger/openapi. Launch the application (locally or otherwise) and go to:
 
-# Dependencies
-- [Java JDK 1.8](https://www.oracle.com/java/technologies/downloads/)
-- [git](https://git-scm.com/downloads)
+`http[s]://[host]:[port]/swagger-ui/index.html`
+
+## Dependencies
+- Java 17
 - [Maven](https://maven.apache.org/)
 - [Docker](https://www.docker.com/products/docker-desktop/)
-- [PostgreSQL](https://www.postgresql.org/download/)
+- [PostgreSQL](https://www.postgresql.org/download/) (using docker is easiest here for local dev)
+- Make (optional for easy targets, otherwise just look at `Makefile` to get relevant target commands)
 
-# Tools
-- SQL client or Terminal
-- [Postman](https://www.postman.com/downloads/)
-- [Eclipse](https://www.eclipse.org/downloads/packages/) or other IDE
+## Tools
+- SQL client or Terminal (to interrogate db)
+- REST Client to test endpoints
 
-# Build the application
-- mvn clean install
+## Build the application
+`make build`
 
-# Running the application locally
-There are several ways to run a Spring Boot application on your local machine. One way is to execute the main method in the com.deloitte.elrr.DemoApplication class from your IDE
+## Run a dependency scan
+The OWASP dependency scan was disabled because of extremely long build times, but if you want to save yourself some trouble in security scanning later you can run:
 
-# Alternatively you can use the Spring Boot Maven plugin: 
-- mvn clean
-- mvn spring-boot:run -D"spring-boot.run.profiles"=local -e (Windows)
-- mvn spring-boot:run -D spring-boot.run.profiles=local -e (Linux)
-- Ctrl+C to end --> Terminate batch job = Y
+`make dependency-scan`
 
-# Optional step 
-- docker push <docker_hub>/test:elrrservices-dck-img
+## Linting
+Linting is live and will notify you during build. To run it on its own try:
+
+`make lint`
+
+## Running the application locally
+There are make targets for a number of run modes:
+
+- `make dev` - local run mode using application-local.properties config
+- `make debug` - same but with an open debug port to attach to
