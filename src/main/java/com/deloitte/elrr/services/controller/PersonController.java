@@ -166,7 +166,7 @@ public class PersonController {
             } else if (ifi != null) {
                 Identity ifiIdentity = identitySvc.getByIfi(ifi);
                 if (ifiIdentity != null) {
-                    Person person = identitySvc.getByIfi(ifi).getPerson();
+                    Person person = ifiIdentity.getPerson();
                     persontoList.add(mapper.map(person, PersonDto.class));
                 }
             } else {
