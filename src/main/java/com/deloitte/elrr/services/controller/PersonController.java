@@ -164,8 +164,11 @@ public class PersonController {
                 PersonDto personDto = mapper.map(person, PersonDto.class);
                 persontoList.add(personDto);
             } else if (ifi != null) {
-                Person person = identitySvc.getByIfi(ifi).getPerson();
-                persontoList.add(mapper.map(person, PersonDto.class));
+                Identity ifiIdentity = identitySvc.getByIfi(ifi);
+                if (ifiIdentity != null) {
+                    Person person = identitySvc.getByIfi(ifi).getPerson();
+                    persontoList.add(mapper.map(person, PersonDto.class));
+                }
             } else {
                 Iterable<Person> persons = personSvc.findAll();
 
