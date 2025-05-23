@@ -2,6 +2,7 @@ package com.deloitte.elrr.services.dto;
 
 import java.time.LocalDate;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,9 +16,11 @@ import lombok.RequiredArgsConstructor;
 public class LearningResourceDto extends AbstractDto {
 
     @Size(max = 255)
+    @NotBlank
     private String iri;
 
     @Size(max = 255)
+    @NotBlank
     private String title;
 
     @Size(max = 255)
