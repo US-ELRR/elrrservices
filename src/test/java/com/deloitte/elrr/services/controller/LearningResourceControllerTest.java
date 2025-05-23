@@ -153,6 +153,8 @@ public class LearningResourceControllerTest extends CommonControllerTest {
     void createLearningResourceTest() throws Exception {
         LearningResourceDto learningResourceDto = new LearningResourceDto();
         learningResourceDto.setId(LEARNING_RESOURCE_ID);
+        learningResourceDto.setIri("http://test.edlm/resources/class1");
+        learningResourceDto.setTitle("Class 1");
         Mockito.doReturn(getLearningResourceList().iterator().next())
                 .when(getLearningResourceSvc())
                 .save(any());
@@ -177,6 +179,8 @@ public class LearningResourceControllerTest extends CommonControllerTest {
     void updateLearningResourceTest() throws Exception {
         LearningResourceDto learningResourceDto = new LearningResourceDto();
         learningResourceDto.setId(LEARNING_RESOURCE_ID);
+        learningResourceDto.setIri("http://test.edlm/resources/class1");
+        learningResourceDto.setTitle("Class 1");
         Mockito.doReturn(
                 Optional.of(getLearningResourceList().iterator().next()))
                 .when(getLearningResourceSvc()).get(LEARNING_RESOURCE_ID);
