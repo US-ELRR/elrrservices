@@ -829,6 +829,8 @@ public class PersonControllerTest extends CommonControllerTest {
 
         LearningResourceDto learningResourceDto = new LearningResourceDto();
         learningResourceDto.setId(LEARNING_RESOURCE_ID);
+        learningResourceDto.setIri("http://test.edlm/resources/class1");
+        learningResourceDto.setTitle("Class 1");
         LearningRecordDto learningRecordDto = new LearningRecordDto();
         learningRecordDto.setLearningResource(learningResourceDto);
         learningRecordDto.setRecordStatus(LearningStatus.ATTEMPTED);
@@ -1164,6 +1166,8 @@ public class PersonControllerTest extends CommonControllerTest {
 
         LearningResource learningResource = new LearningResource();
         learningResource.setId(LEARNING_RESOURCE_ID);
+        learningResource.setIri("http://test.edlm/resources/class1");
+        learningResource.setTitle("Class 1");
         LearningRecord learningRecord = new LearningRecord();
         learningRecord.setRecordStatus(LearningStatus.ATTEMPTED);
         learningRecord.setLearningResource(learningResource);
