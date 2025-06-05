@@ -1,40 +1,43 @@
-package com.deloitte.elrr.services;
+package com.deloitte.elrr.services.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.cors.CorsConfigurationSource;
-import java.util.Arrays;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
-public class CacheConfig {
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
+public class SecurityConfig {
 
-  /**
-   * access IDP using lrs.samlurl and lrs.samlid application properties.
-   *
-   * @return InMemoryRelyingPartyRegistrationRepository instance
-   * @throws Exception
-   */
-  @Bean
-  public RelyingPartyRegistrationRepository relyingPartyRegistrations() {
-    return null;
-  }
+    @Autowired
+    private JwtRequestFilter jwtRequestFilter;
 
-  /**
-   * add authentication and authorization.
-   *
-   * @param http
-   * @return http build
-   * @throws Exception
-   */
-  @Bean
+    /**
+     * @param http httpsecurity config
+     * @return http security config
+     * @throws Exception
+     */
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
+        http.authorizeHttpRequests((requests) -> requests
+                .requestMatchers("/ping").permitAll()
+                .anyRequest().authenticated())
+            .logout((logout) -> logout.permitAll());
+
+        http.addFilterBefore(jwtRequestFilter,
+            UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    /*
+    @Bean
   public SecurityFilterChain filterChain(final HttpSecurity http)
         throws IllegalArgumentException {
     try {
@@ -59,5 +62,6 @@ public class CacheConfig {
         new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
     return source;
-  }
+  }*/
+
 }
