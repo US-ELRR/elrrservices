@@ -9,6 +9,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.auth0.jwt.exceptions.AlgorithmMismatchException;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.deloitte.elrr.services.security.SystemAuthority.SystemRole;
 
@@ -36,15 +38,22 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         if (SecurityContextHolder.getContext().getAuthentication() == null
                 && jwtStr != null) {
 
-            //TODO Identify Client JWT and validate client JWT but leave
-            //proxy/p1 user claims unvalidated
-            DecodedJWT jwt = jwtUtil.getToken(jwtStr);
+            DecodedJWT jwt;
+            List<SystemAuthority> authList = new ArrayList<SystemAuthority>();
+
+            try {
+                //Proper client JWT
+                jwt = jwtUtil.verify(jwtStr);
+                authList.add(new SystemAuthority(SystemRole.ROLE_API));
+            } catch (AlgorithmMismatchException
+                    | SignatureVerificationException e) {
+                //Potentially admin user JWT
+                jwt = jwtUtil.decodeToken(jwtStr);
+                //TODO check for p1 user properties, issuer, role, etc
+                authList.add(new SystemAuthority(SystemRole.ROLE_ADMIN));
+            }
 
             if (jwt != null) {
-                List<SystemAuthority> authList =
-                    new ArrayList<SystemAuthority>();
-                //TODO set appropriate role type for key type
-                authList.add(new SystemAuthority(SystemRole.ADMIN));
                 JwtAuthenticationToken authToken = new JwtAuthenticationToken(
                     authList, jwt);
                 SecurityContextHolder.getContext().setAuthentication(authToken);

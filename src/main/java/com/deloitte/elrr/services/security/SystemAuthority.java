@@ -20,7 +20,7 @@ public class SystemAuthority implements GrantedAuthority {
     }
 
     public enum SystemRole {
-        ADMIN, API_USER
+        ROLE_ADMIN, ROLE_API
     }
 
 }

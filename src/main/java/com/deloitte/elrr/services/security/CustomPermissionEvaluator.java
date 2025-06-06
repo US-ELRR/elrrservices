@@ -20,9 +20,20 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
     @Override
     public boolean hasPermission(Authentication authentication,
             Serializable targetId, String targetType, Object permission) {
-        //TODO this might be a better method to use for perm specificity
-        throw new UnsupportedOperationException(
-            "hasPermission with targetId is not supported");
+        JwtAuthenticationToken token = (JwtAuthenticationToken) authentication;
+        //implment permission logic based on JWT claims here
+        return true;
     }
+
+    /*
+    might use later...
+
+    private boolean verifyRole(JwtAuthenticationToken token, SystemRole role) {
+        GrantedAuthority apiAuth = token.getAuthorities().stream()
+            .filter(auth -> auth.getAuthority().equals(role.name()))
+            .findAny()
+            .orElse(null);
+        return apiAuth != null;
+    }*/
 
 }
