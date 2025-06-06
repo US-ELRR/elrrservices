@@ -23,7 +23,7 @@ public class JwtUtil {
      * @return If it is valid or not based on local secret
      */
     public boolean isLocallyValid(String jwt) {
-        //
+        //TODO local secret and validation methods
         return false;
     }
 

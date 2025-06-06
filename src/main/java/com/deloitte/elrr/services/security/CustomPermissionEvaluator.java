@@ -12,16 +12,15 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
     @Override
     public boolean hasPermission(Authentication authentication,
             Object targetDomainObject, Object permission) {
-
-        // Add your custom column-level security logic here
-        // For example, you can map roles to columns and check if the user
-        // has access to the requested column
-        return false;
+        JwtAuthenticationToken token = (JwtAuthenticationToken) authentication;
+        //implment permission logic based on JWT claims here
+        return true;
     }
 
     @Override
     public boolean hasPermission(Authentication authentication,
             Serializable targetId, String targetType, Object permission) {
+        //TODO this might be a better method to use for perm specificity
         throw new UnsupportedOperationException(
             "hasPermission with targetId is not supported");
     }

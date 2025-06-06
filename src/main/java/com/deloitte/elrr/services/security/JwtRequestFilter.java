@@ -28,24 +28,25 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-        final String authorizationHeader = request.getHeader("Authorization");
+        final String authHeader = request.getHeader("Authorization");
 
-        String jwt = null;
+        String jwtStr = (authHeader != null && authHeader.startsWith("Bearer "))
+            ? authHeader.substring(7) : null;
 
-        if (authorizationHeader != null
-                && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
-        }
+        if (SecurityContextHolder.getContext().getAuthentication() == null
+                && jwtStr != null) {
 
-        if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            DecodedJWT token = jwtUtil.getToken(jwt);
+            //TODO Identify Client JWT and validate client JWT but leave
+            //proxy/p1 user claims unvalidated
+            DecodedJWT jwt = jwtUtil.getToken(jwtStr);
 
-            if (token != null) {
+            if (jwt != null) {
                 List<SystemAuthority> authList =
                     new ArrayList<SystemAuthority>();
+                //TODO set appropriate role type for key type
                 authList.add(new SystemAuthority(SystemRole.ADMIN));
-                AuthenticationToken authToken = new AuthenticationToken(
-                    authList);
+                JwtAuthenticationToken authToken = new JwtAuthenticationToken(
+                    authList, jwt);
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
