@@ -20,6 +20,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -43,6 +44,7 @@ import com.deloitte.elrr.entity.PersonalCompetency;
 import com.deloitte.elrr.entity.PersonalCredential;
 import com.deloitte.elrr.entity.Phone;
 import com.deloitte.elrr.entity.types.LearningStatus;
+import com.deloitte.elrr.services.TestAppConfig;
 import com.deloitte.elrr.services.dto.AssociationDto;
 import com.deloitte.elrr.services.dto.CompetencyDto;
 import com.deloitte.elrr.services.dto.CredentialDto;
@@ -63,6 +65,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
 @WebMvcTest(PersonController.class)
+@Import(TestAppConfig.class)
 @ContextConfiguration
 @AutoConfigureMockMvc(addFilters = false)
 @Slf4j

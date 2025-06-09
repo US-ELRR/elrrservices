@@ -15,6 +15,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -25,6 +26,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.deloitte.elrr.entity.Competency;
 import com.deloitte.elrr.services.dto.CompetencyDto;
+import com.deloitte.elrr.services.TestAppConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 @WebMvcTest(CompetencyController.class)
 @ContextConfiguration
 @AutoConfigureMockMvc(addFilters = false)
+@Import(TestAppConfig.class)
 @Slf4j
 public class CompetencyControllerTest extends CommonControllerTest {
 

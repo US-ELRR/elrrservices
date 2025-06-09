@@ -25,6 +25,20 @@ public class JwtUtil {
     private static final String CREATOR_KEY = "token-creator";
 
     /**
+     * No-arg constructor for JwtUtil.
+     */
+    public JwtUtil() {
+    }
+
+    /**
+     * Manual Constructor for unit tests compatibility.
+     * @param secret injected secret param
+     */
+    public JwtUtil(String secret) {
+        this.secret = secret;
+    }
+
+    /**
      *
      * @param jwt
      * @return If it is a jwt token or not
