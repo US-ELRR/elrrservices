@@ -27,6 +27,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.deloitte.elrr.entity.EmploymentRecord;
 import com.deloitte.elrr.services.TestAppConfig;
 import com.deloitte.elrr.services.dto.EmploymentRecordDto;
+import com.deloitte.elrr.services.security.MethodSecurityConfig;
+import com.deloitte.elrr.services.security.SecurityConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,9 +36,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
 @WebMvcTest(EmploymentRecordController.class)
-@Import(TestAppConfig.class)
 @ContextConfiguration
-@AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureMockMvc(addFilters = true)
+@Import({TestAppConfig.class, SecurityConfig.class, MethodSecurityConfig.class})
 @Slf4j
 public class EmploymentRecordControllerTest extends CommonControllerTest {
 
@@ -52,6 +54,7 @@ public class EmploymentRecordControllerTest extends CommonControllerTest {
         headers = new HttpHeaders();
         headers.set("Content-Type", " */*");
         headers.set("X-Forwarded-Proto", "https");
+        headers.set("Authorization", this.getTestJwtHeader());
     }
 
     /**
