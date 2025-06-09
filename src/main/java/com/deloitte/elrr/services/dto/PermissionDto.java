@@ -6,8 +6,11 @@ import lombok.EqualsAndHashCode;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -32,5 +35,13 @@ public class PermissionDto extends AbstractDto {
         DELETE,
         ASSOCIATE,
         DISASSOCIATE
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("resource", this.resource);
+        map.put("resourceId", this.resourceId != null ? this.resourceId.toString() : null);
+        map.put("actions", this.actions.stream().map(Enum::name).collect(Collectors.toList()));
+        return map;
     }
 }
