@@ -1,6 +1,8 @@
 package com.deloitte.elrr.services.controller;
 
 import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import com.deloitte.elrr.jpa.svc.AssociationSvc;
@@ -20,7 +22,7 @@ import com.deloitte.elrr.jpa.svc.PersonalCompetencySvc;
 import com.deloitte.elrr.jpa.svc.PersonalCredentialSvc;
 import com.deloitte.elrr.jpa.svc.PhoneSvc;
 import com.deloitte.elrr.repository.OrganizationRepository;
-
+import com.deloitte.elrr.services.security.JwtUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -91,6 +93,11 @@ class CommonControllerTest {
     @MockitoBean
     private OrganizationRepository organizationRepository;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    private String testJwt;
+
     /**
      *
      * @param obj
@@ -101,6 +108,13 @@ class CommonControllerTest {
             throws JsonProcessingException {
 
         return new ObjectMapper().writeValueAsString(obj);
+    }
+
+    public String getTestJwtHeader() {
+        if (testJwt == null) {
+            testJwt = String.format("Bearer %s", jwtUtil.createToken());
+        }
+        return testJwt;
     }
 
     public static <T> T resultsAsObject(String results, TypeReference<T> type)

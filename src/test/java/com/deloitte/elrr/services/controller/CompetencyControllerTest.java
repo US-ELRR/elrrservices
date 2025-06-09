@@ -26,6 +26,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.deloitte.elrr.entity.Competency;
 import com.deloitte.elrr.services.dto.CompetencyDto;
+import com.deloitte.elrr.services.security.MethodSecurityConfig;
+import com.deloitte.elrr.services.security.SecurityConfig;
 import com.deloitte.elrr.services.TestAppConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -35,8 +37,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @WebMvcTest(CompetencyController.class)
 @ContextConfiguration
-@AutoConfigureMockMvc(addFilters = false)
-@Import(TestAppConfig.class)
+@AutoConfigureMockMvc(addFilters = true)
+@Import({TestAppConfig.class, SecurityConfig.class, MethodSecurityConfig.class})
 @Slf4j
 public class CompetencyControllerTest extends CommonControllerTest {
 
@@ -52,6 +54,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
         headers = new HttpHeaders();
         headers.set("Content-Type", " */*");
         headers.set("X-Forwarded-Proto", "https");
+        headers.set("Authorization", this.getTestJwtHeader());
     }
 
     /**
