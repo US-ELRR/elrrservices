@@ -58,6 +58,8 @@ import com.deloitte.elrr.services.dto.OrganizationDto;
 import com.deloitte.elrr.services.dto.PersonDto;
 import com.deloitte.elrr.services.dto.PersonalQualificationDto;
 import com.deloitte.elrr.services.dto.PhoneDto;
+import com.deloitte.elrr.services.security.MethodSecurityConfig;
+import com.deloitte.elrr.services.security.SecurityConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -65,9 +67,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
 @WebMvcTest(PersonController.class)
-@Import(TestAppConfig.class)
 @ContextConfiguration
-@AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureMockMvc(addFilters = true)
+@Import({TestAppConfig.class, SecurityConfig.class, MethodSecurityConfig.class})
 @Slf4j
 public class PersonControllerTest extends CommonControllerTest {
 
@@ -83,6 +85,7 @@ public class PersonControllerTest extends CommonControllerTest {
         headers = new HttpHeaders();
         headers.set("Content-Type", " */*");
         headers.set("X-Forwarded-Proto", "https");
+        headers.set("Authorization", this.getTestJwtHeader());
     }
 
     /**

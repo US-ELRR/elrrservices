@@ -65,14 +65,17 @@ public class JwtUtil {
      * @return JWT Token String
      */
     public String createToken() {
-        String username = SecurityContextHolder.getContext()
-            .getAuthentication()
-            .getPrincipal()
-            .toString();
+        String creatorUname = "";
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            creatorUname = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal()
+                .toString();
+        }
         return JWT.create()
             .withIssuer(ISSUER)
             .withIssuedAt(new Date())
-            .withClaim(CREATOR_KEY, username)
+            .withClaim(CREATOR_KEY, creatorUname)
             .sign(getAlgorithm());
     }
 
