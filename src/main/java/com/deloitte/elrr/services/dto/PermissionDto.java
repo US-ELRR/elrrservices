@@ -29,12 +29,7 @@ public class PermissionDto extends AbstractDto {
     private List<Action> actions;
 
     public enum Action {
-        CREATE,
-        READ,
-        UPDATE,
-        DELETE,
-        ASSOCIATE,
-        DISASSOCIATE
+        CREATE, READ, UPDATE, DELETE, ASSOCIATE, DISASSOCIATE
     }
 
     /**
@@ -45,8 +40,10 @@ public class PermissionDto extends AbstractDto {
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("resource", this.resource);
-        map.put("resourceId", this.resourceId != null ? this.resourceId.toString() : null);
-        map.put("actions", this.actions.stream().map(Enum::name).collect(Collectors.toList()));
+        map.put("resourceId",
+                this.resourceId != null ? this.resourceId.toString() : null);
+        map.put("actions", this.actions.stream().map(Enum::name)
+                .collect(Collectors.toList()));
         return map;
     }
 }
