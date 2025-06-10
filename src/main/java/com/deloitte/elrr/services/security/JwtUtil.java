@@ -85,7 +85,8 @@ public class JwtUtil {
 
     /**
      * Create a new Client Token with permissions.
-     * @param permissions List of permissions to be added as a claim in the token
+     * @param permissions List of permissions to be added as a claim in the
+     *   token
      * @return JWT Token String
      */
     public String createToken(List<PermissionDto> permissions) {
