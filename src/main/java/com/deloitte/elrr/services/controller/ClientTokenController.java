@@ -9,15 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.deloitte.elrr.services.dto.ClientTokenDto;
-import com.deloitte.elrr.services.dto.PermissionDto;
+import com.deloitte.elrr.services.dto.PermissionsWrapperDto;
 import com.deloitte.elrr.services.exception.ResourceNotFoundException;
 import com.deloitte.elrr.services.security.JwtUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
 import jakarta.validation.Valid;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("api")
@@ -31,18 +29,18 @@ public class ClientTokenController {
 
     /**
      *
-     * @param permissions List of permissions to be included in the token
+     * @param wrapper Contains list of permissions to be included in the token
      * @return ResponseEntity<ClientTokenDto> containing the generated token
-     * @throws ResourceNotFoundException
+     * @throws ResourceNotFoundException if token creation fails
      */
     @PostMapping("/token")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ClientTokenDto> createToken(
-            @Valid @RequestBody List<PermissionDto> permissions)
+            @Valid @RequestBody PermissionsWrapperDto wrapper)
             throws ResourceNotFoundException {
 
         ClientTokenDto clientToken = new ClientTokenDto();
-        clientToken.setToken(jwtUtil.createToken(permissions));
+        clientToken.setToken(jwtUtil.createToken(wrapper.getPermissions()));
 
         return ResponseEntity.ok(clientToken);
     }

@@ -12,6 +12,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Getter
@@ -25,6 +27,9 @@ public class PermissionDto {
     private String resource;
 
     private UUID resourceId;
+
+    @NotNull
+    @NotEmpty
     private List<Action> actions;
 
     public enum Action {

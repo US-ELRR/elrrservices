@@ -1,5 +1,6 @@
 package com.deloitte.elrr.services.security;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +81,18 @@ public class JwtUtil {
             .withIssuer(ISSUER)
             .withIssuedAt(new Date())
             .withClaim(CREATOR_KEY, creatorUname)
+            .sign(getAlgorithm());
+    }
+
+    /**
+     * Create a new admin token for testing.
+     * @return JWT Token String with ROLE_ADMIN claim
+     */
+    public String createAdminToken() {
+        return JWT.create()
+            .withIssuer(ISSUER)
+            .withIssuedAt(new Date())
+            .withClaim("roles", Collections.singletonList("ROLE_ADMIN"))
             .sign(getAlgorithm());
     }
 
