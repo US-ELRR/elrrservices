@@ -37,7 +37,8 @@ public class ClientTokenController {
     @PostMapping("/token")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ClientTokenDto> createToken(
-            @Valid @RequestBody List<PermissionDto> permissions) throws ResourceNotFoundException {
+            @Valid @RequestBody List<PermissionDto> permissions)
+            throws ResourceNotFoundException {
 
         ClientTokenDto clientToken = new ClientTokenDto();
         clientToken.setToken(jwtUtil.createToken(permissions));
