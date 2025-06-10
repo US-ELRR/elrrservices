@@ -32,7 +32,7 @@ public class ClientTokenController {
     /**
      *
      * @param permissions List of permissions to be included in the token
-     * @return ResponseEntity<List<PhoneDto>>
+     * @return ResponseEntity<ClientTokenDto> containing the generated token
      * @throws ResourceNotFoundException
      */
     @PostMapping("/token")
