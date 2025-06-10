@@ -31,6 +31,7 @@ public class ClientTokenController {
 
     /**
      *
+     * @param permissions List of permissions to be included in the token
      * @return ResponseEntity<List<PhoneDto>>
      * @throws ResourceNotFoundException
      */

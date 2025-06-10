@@ -5,7 +5,6 @@ import lombok.Setter;
 import lombok.EqualsAndHashCode;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,10 +16,10 @@ import jakarta.validation.constraints.Size;
 
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
-public class PermissionDto extends AbstractDto {
+public class PermissionDto {
     @Size(max = 255)
     @NotBlank
     private String resource;
