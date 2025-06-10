@@ -29,7 +29,7 @@ import com.deloitte.elrr.services.security.SecurityConfig;
 
 import lombok.extern.slf4j.Slf4j;
 
-@WebMvcTest(CredentialController.class)
+@WebMvcTest(ClientTokenController.class)
 @ContextConfiguration
 @AutoConfigureMockMvc(addFilters = true)
 @Import({TestAppConfig.class, SecurityConfig.class, MethodSecurityConfig.class})
