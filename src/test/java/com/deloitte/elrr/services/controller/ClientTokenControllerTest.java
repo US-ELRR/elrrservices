@@ -54,7 +54,8 @@ public class ClientTokenControllerTest extends CommonControllerTest {
         headers.set("Content-Type", "application/json");
         headers.set("X-Forwarded-Proto", "https");
         // Create an admin token with ROLE_ADMIN
-        headers.set("Authorization", "Bearer " + jwtUtil.createAdminToken());
+        headers.set("Authorization",
+        "Bearer " + jwtUtil.createAdminToken("external-secret"));
     }
 
     @Test
@@ -72,7 +73,8 @@ public class ClientTokenControllerTest extends CommonControllerTest {
                 .post(TOKEN_API)
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(String.format("{\"permissions\": %s}", asJsonString(permissions)));
+                .content(String.format("{\"permissions\": %s}",
+                asJsonString(permissions)));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         // Assert
