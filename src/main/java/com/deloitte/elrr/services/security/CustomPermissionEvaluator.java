@@ -1,20 +1,40 @@
 package com.deloitte.elrr.services.security;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
+
+import com.deloitte.elrr.services.dto.PermissionDto;
+
+@Slf4j
 @Component
 public class CustomPermissionEvaluator implements PermissionEvaluator {
 
     @Override
     public boolean hasPermission(Authentication authentication,
-            Object targetDomainObject, Object permission) {
+            Object resource, Object action) {
         JwtAuthenticationToken token = (JwtAuthenticationToken) authentication;
-        //implment permission logic based on JWT claims here
-        return true;
+        // get permissions from token
+        List<PermissionDto> permissions = token.getPermissions();
+        // if at least one permission matches the resource and its actions
+        // include the action, return true, otherwise return false
+        if (permissions != null && !permissions.isEmpty()) {
+            return permissions.stream()
+                .anyMatch(permission ->
+                    permission
+                        .getResource()
+                        .equals((String) resource)
+                    &&
+                    permission
+                        .getActions()
+                        .contains((PermissionDto.Action) action));
+        }
+        return false;
     }
 
     @Override
