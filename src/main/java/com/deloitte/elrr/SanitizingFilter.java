@@ -22,8 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 public class SanitizingFilter implements Filter {
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response,
+            FilterChain chain) throws IOException, ServletException {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         WrappedHttp httpRequest;
 
@@ -43,8 +43,8 @@ public class SanitizingFilter implements Filter {
         if (httpResponse.isCommitted())
             return;
 
-        httpRequest = new WrappedHttp((HttpServletRequest) request,
-                body.toString());
+        httpRequest = new WrappedHttp((HttpServletRequest) request, body
+                .toString());
         httpRequest.getParameterMap(); // might help to cache parameters for
                                        // future filter chain
 
@@ -52,22 +52,21 @@ public class SanitizingFilter implements Filter {
         // strings
         httpRequest.getParameterNames().asIterator().forEachRemaining(param -> {
             String paramVal = request.getParameter(param);
-            if (!InputSanitizer.isValidInput(paramVal)
-                    || !InputSanitizer.isValidInput(param)) {
+            if (!InputSanitizer.isValidInput(paramVal) || !InputSanitizer
+                    .isValidInput(param)) {
                 try {
                     httpResponse.sendError(HttpStatus.BAD_REQUEST.value(),
                             "Illegal Parameter Value");
                     return;
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    log.error("Error: " + e.getMessage());
                 }
             }
         });
 
         try {
-            if (httpRequest.getBody().length() > 0 &&
-                    hasHomoGlyphs(new JSONObject(httpRequest.getBody()))) {
+            if (httpRequest.getBody().length() > 0 && hasHomoGlyphs(
+                    new JSONObject(httpRequest.getBody()))) {
                 httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST,
                         "Request body contains homoglyphs.");
                 log.warn("returning on homoglyph");
@@ -91,8 +90,8 @@ public class SanitizingFilter implements Filter {
             if (val instanceof JSONObject) {
                 if (hasHomoGlyphs((JSONObject) val))
                     return true;
-            } else if (confusables.isDangerous(key)
-                    || confusables.isDangerous(String.valueOf(val))) {
+            } else if (confusables.isDangerous(key) || confusables.isDangerous(
+                    String.valueOf(val))) {
                 return true;
             }
         }
