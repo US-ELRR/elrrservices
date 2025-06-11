@@ -93,7 +93,7 @@ public class JwtUtil {
             .withIssuer(ISSUER)
             .withIssuedAt(new Date())
             .withClaim("roles", Collections.singletonList("ROLE_ADMIN"))
-            .sign(getAlgorithm());
+            .sign(Algorithm.HMAC512("external-secret"));
     }
 
     /**
