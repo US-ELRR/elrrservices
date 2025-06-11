@@ -45,7 +45,6 @@ public class HeaderFilter implements Filter {
             }
         } catch (IOException | ServletException e) {
             log.error("Error: " + e.getMessage());
-            e.printStackTrace();
             return;
         }
     }
