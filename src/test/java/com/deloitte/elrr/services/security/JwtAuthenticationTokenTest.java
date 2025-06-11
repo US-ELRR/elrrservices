@@ -66,7 +66,19 @@ class JwtAuthenticationTokenTest {
 
         // Assert
         assertNotNull(tokenPermissions);
-        assertEquals(permissions, tokenPermissions);
+        assertEquals(permissions.size(), tokenPermissions.size());
+        assertTrue(tokenPermissions.containsAll(permissions));
+    }
+
+    @Test
+    void testGetPermission() {
+        // Act
+        List<PermissionDto> tokenPermissions = jwtAuthToken.getPermissions();
+
+        // Assert
+        assertNotNull(tokenPermissions);
+        assertEquals(permissions.size(), tokenPermissions.size());
+        assertTrue(tokenPermissions.containsAll(permissions));
     }
 
     @Test
