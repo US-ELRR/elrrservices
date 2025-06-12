@@ -2,6 +2,7 @@ package com.deloitte.elrr.services.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -120,29 +121,37 @@ class CommonControllerTest {
     }
 
     /**
-     * Get a test JWT header with specific resource and action.
-     * @param resource the resource to be accessed
-     * @param action the action to be performed on the resource
+     * Get a test JWT header with a comma-separated list of resource|action
+     * pairs.
+     *
+     * @param resourceActions a comma-separated list of resource|action pairs
      * @return String formatted JWT header
      */
-    public String getTestJwtHeader(String resource, String action) {
-        List<PermissionDto> permissions = List.of(new PermissionDto(resource,
-                null, List.of(Action.valueOf(action))));
-        return String.format("Bearer %s",
-                    jwtUtil.createToken(permissions));
+    public String getTestJwtHeader(String resourceActions) {
+        List<PermissionDto> permissions = new ArrayList<>();
+        for (String resourceAction : resourceActions.split(",")) {
+            String[] parts = resourceAction.split("\\|");
+            if (parts.length == 2) {
+                String resource = parts[0];
+                String action = parts[1];
+                permissions.add(new PermissionDto(resource, null,
+                        List.of(Action.valueOf(action))));
+            }
+        }
+        return String.format("Bearer %s", jwtUtil.createToken(permissions));
     }
 
     /**
      * Get all headers for a request.
-     * @param resource the resource to be accessed
-     * @param action the action to be performed on the resource
+     *
+     * @param resourceActions a comma-separated list of resource|action pairs
      * @return HttpHeaders
      */
-    public HttpHeaders getHeaders(String resource, String action) {
+    public HttpHeaders getHeaders(String resourceActions) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", " */*");
         headers.set("X-Forwarded-Proto", "https");
-        headers.set("Authorization", this.getTestJwtHeader(resource, action));
+        headers.set("Authorization", this.getTestJwtHeader(resourceActions));
         return headers;
     }
 
