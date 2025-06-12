@@ -481,6 +481,7 @@ public class PersonController {
      * @return ResponseEntity<List<EmailDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasRole('API') and hasPermission('person', 'READ')")
     @GetMapping("/person/{personId}/email")
     public ResponseEntity<List<EmailDto>> getEmails(
             @PathVariable(value = "personId") final UUID personId)
@@ -502,6 +503,9 @@ public class PersonController {
      * @return ResponseEntity<List<EmailDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize(
+        "hasRole('API') and hasPermission('person/email', 'ASSOCIATE') and "
+        + "hasPermission('email', 'CREATE')")
     @PostMapping("/person/{personId}/email")
     public ResponseEntity<List<EmailDto>> addEmailToPerson(
             @PathVariable(value = "personId") final UUID personId,
@@ -527,6 +531,8 @@ public class PersonController {
      * @return ResponseEntity<List<EmailDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize(
+        "hasRole('API') and hasPermission('person/email', 'ASSOCIATE')")
     @PostMapping("/person/{personId}/email/{emailId}")
     public ResponseEntity<List<EmailDto>> associateEmailWithPerson(
             @PathVariable(value = "personId") final UUID personId,
@@ -555,6 +561,8 @@ public class PersonController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize(
+        "hasRole('API') and hasPermission('person/email', 'DISASSOCIATE')")
     @DeleteMapping("/person/{personId}/email/{emailId}")
     public ResponseEntity<HttpStatus> removeEmailFromPerson(
             @PathVariable(value = "personId") final UUID personId,

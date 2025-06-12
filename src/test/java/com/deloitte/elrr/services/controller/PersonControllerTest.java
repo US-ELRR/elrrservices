@@ -440,7 +440,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .get(PERSON_API + "/" + PERSON_ID + "/email")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("person|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -468,7 +468,8 @@ public class PersonControllerTest extends CommonControllerTest {
                 .content(asJsonString(emailDto))
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders(
+                        "person/email|ASSOCIATE,email|CREATE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -497,7 +498,8 @@ public class PersonControllerTest extends CommonControllerTest {
                 .post(PERSON_API + "/" + PERSON_ID + "/email/" + EMAIL_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders(
+                        "person/email|ASSOCIATE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -519,7 +521,8 @@ public class PersonControllerTest extends CommonControllerTest {
                 .delete(PERSON_API + "/" + PERSON_ID + "/email/" + EMAIL_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders(
+                        "person/email|DISASSOCIATE"));
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
