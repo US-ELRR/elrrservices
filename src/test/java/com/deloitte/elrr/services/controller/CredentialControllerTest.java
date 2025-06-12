@@ -49,14 +49,6 @@ public class CredentialControllerTest extends CommonControllerTest {
 
     private static final String CRED_API = "/api/credential";
 
-    @BeforeEach
-    void addHeaders() {
-        headers = new HttpHeaders();
-        headers.set("Content-Type", " */*");
-        headers.set("X-Forwarded-Proto", "https");
-        headers.set("Authorization", this.getTestJwtHeader());
-    }
-
     /**
      *
      * @param obj
@@ -85,7 +77,7 @@ public class CredentialControllerTest extends CommonControllerTest {
                 .get(CRED_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("credential|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -106,7 +98,7 @@ public class CredentialControllerTest extends CommonControllerTest {
                 .get(CRED_API + "/" + CREDENTIAL_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("credential|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -125,7 +117,7 @@ public class CredentialControllerTest extends CommonControllerTest {
                 .get(CRED_API + "/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("credential|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -141,7 +133,7 @@ public class CredentialControllerTest extends CommonControllerTest {
                 .get(CRED_API + "?id=" + CREDENTIAL_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("credential|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -165,7 +157,7 @@ public class CredentialControllerTest extends CommonControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(credentialDto))
-                .headers(headers);
+                .headers(this.getHeaders("credential|CREATE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -191,7 +183,7 @@ public class CredentialControllerTest extends CommonControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(credentialDto))
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("credential|UPDATE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -212,7 +204,7 @@ public class CredentialControllerTest extends CommonControllerTest {
                 .delete(CRED_API + "/" + CREDENTIAL_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("credential|DELETE"));
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
