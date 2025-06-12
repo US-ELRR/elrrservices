@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.deloitte.elrr.entity.Phone;
 import com.deloitte.elrr.jpa.svc.PhoneSvc;
@@ -52,6 +53,7 @@ public class PhoneController {
      * @return ResponseEntity<List<PhoneDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasRole('API') and hasPermission('phone', 'READ')")
     @GetMapping("/phone")
     public ResponseEntity<List<PhoneDto>> getAllPhones(
             @RequestParam(value = "id", required = false) final UUID phoneId)
@@ -87,6 +89,7 @@ public class PhoneController {
      * @return ResponseEntity<PhoneDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasRole('API') and hasPermission('phone', 'READ')")
     @GetMapping("/phone/{id}")
     public ResponseEntity<PhoneDto> getPhoneById(
             @PathVariable(value = "id") final UUID phoneId)
@@ -106,6 +109,7 @@ public class PhoneController {
      * @param phoneDto
      * @return ResponseEntity<PhoneDto>
      */
+    @PreAuthorize("hasRole('API') and hasPermission('phone', 'CREATE')")
     @PostMapping("/phone")
     public ResponseEntity<PhoneDto> createPhone(
             @Valid @RequestBody final PhoneDto phoneDto) {
@@ -121,6 +125,7 @@ public class PhoneController {
      * @return ResponseEntity<PhoneDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasRole('API') and hasPermission('phone', 'UPDATE')")
     @PutMapping("/phone/{id}")
     public ResponseEntity<PhoneDto> updatePhone(
             @PathVariable(value = "id") final UUID phoneId,
@@ -149,6 +154,7 @@ public class PhoneController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasRole('API') and hasPermission('phone', 'DELETE')")
     @DeleteMapping("/phone/{id}")
     public ResponseEntity<HttpStatus> deletePhone(
             @PathVariable(value = "id") final UUID phoneId)
