@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.deloitte.elrr.entity.Competency;
 import com.deloitte.elrr.jpa.svc.CompetencySvc;
@@ -52,6 +53,7 @@ public class CompetencyController {
      * @return ResponseEntity<List<CompetencyDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasRole('API') and hasPermission('competency', 'READ')")
     @GetMapping("/competency")
     public ResponseEntity<List<CompetencyDto>> getAllCompetencies(
             @RequestParam(value = "id", required = false)
@@ -88,6 +90,7 @@ public class CompetencyController {
      * @return ResponseEntity<CompetencyDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasRole('API') and hasPermission('competency', 'READ')")
     @GetMapping("/competency/{id}")
     public ResponseEntity<CompetencyDto> getCompetencyById(
             @PathVariable(value = "id") final UUID competencyId)
@@ -107,6 +110,7 @@ public class CompetencyController {
      * @param competencyDto
      * @return ResponseEntity<CompetencyDto>
      */
+    @PreAuthorize("hasRole('API') and hasPermission('competency', 'CREATE')")
     @PostMapping("/competency")
     public ResponseEntity<CompetencyDto> createCompetency(
             @Valid @RequestBody final CompetencyDto competencyDto) {
@@ -123,6 +127,7 @@ public class CompetencyController {
      * @return ResponseEntity<CompetencyDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasRole('API') and hasPermission('competency', 'UPDATE')")
     @PutMapping("/competency/{id}")
     public ResponseEntity<CompetencyDto> updateCompetency(
             @PathVariable(value = "id") final UUID competencyId,
@@ -151,6 +156,7 @@ public class CompetencyController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasRole('API') and hasPermission('competency', 'DELETE')")
     @DeleteMapping("/competency/{id}")
     public ResponseEntity<HttpStatus> deleteCompetency(
             @PathVariable(value = "id") final UUID competencyId)
