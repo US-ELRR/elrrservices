@@ -759,6 +759,8 @@ public class PersonController {
      * @return ResponseEntity<List<PersonalQualificationDto<CredentialDto>>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize(
+        "hasRole('API') and hasPermission('person', 'READ')")
     @GetMapping("/person/{personId}/credential")
     public ResponseEntity<List<PersonalQualificationDto<CredentialDto>>>
             getCredentials(
@@ -784,6 +786,8 @@ public class PersonController {
      * @return ResponseEntity<PersonalQualificationDto<CredentialDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize(
+        "hasRole('API') and hasPermission('person', 'READ')")
     @GetMapping("/person/{personId}/credential/{credentialId}")
     public ResponseEntity<PersonalQualificationDto<CredentialDto>>
             getCredential(
@@ -813,6 +817,8 @@ public class PersonController {
      * @return ResponseEntity<List<PersonalQualificationDto<CredentialDto>>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize(
+        "hasRole('API') and hasPermission('person/credential', 'ASSOCIATE')")
     @PostMapping("/person/{personId}/credential/{credentialId}")
     public ResponseEntity<List<PersonalQualificationDto<CredentialDto>>>
             associateCredential(
@@ -848,6 +854,8 @@ public class PersonController {
      * @return ResponseEntity<List<PersonalQualificationDto<CredentialDto>>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize(
+        "hasRole('API') and hasPermission('person/credential', 'ASSOCIATE')")
     @PutMapping("/person/{personId}/credential/{credentialId}")
     public ResponseEntity<List<PersonalQualificationDto<CredentialDto>>>
             updateCredentialAssociation(
@@ -882,6 +890,8 @@ public class PersonController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize(
+        "hasRole('API') and hasPermission('person/credential', 'DISASSOCIATE')")
     @DeleteMapping("/person/{personId}/credential/{credentialId}")
     public ResponseEntity<HttpStatus> deleteCredentialAssociation(
             @PathVariable(value = "personId") final UUID personId,

@@ -683,7 +683,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .get(PERSON_API + "/" + PERSON_ID + "/credential")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("person|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -704,7 +704,7 @@ public class PersonControllerTest extends CommonControllerTest {
                         + CREDENTIAL_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("person|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -742,7 +742,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .content(asJsonString(pqd))
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("person/credential|ASSOCIATE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -779,7 +779,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .content(asJsonString(pqd))
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("person/credential|ASSOCIATE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -803,7 +803,7 @@ public class PersonControllerTest extends CommonControllerTest {
                         + CREDENTIAL_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("person/credential|DISASSOCIATE"));
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
