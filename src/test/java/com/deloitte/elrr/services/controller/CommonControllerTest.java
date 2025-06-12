@@ -1,9 +1,11 @@
 package com.deloitte.elrr.services.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.http.HttpHeaders;
 
 import com.deloitte.elrr.jpa.svc.AssociationSvc;
 import com.deloitte.elrr.jpa.svc.CompetencySvc;
@@ -23,6 +25,7 @@ import com.deloitte.elrr.jpa.svc.PersonalCredentialSvc;
 import com.deloitte.elrr.jpa.svc.PhoneSvc;
 import com.deloitte.elrr.repository.OrganizationRepository;
 import com.deloitte.elrr.services.security.JwtUtil;
+import com.deloitte.elrr.services.dto.PermissionDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -37,9 +40,7 @@ import lombok.Setter;
  * @author mnelakurti
  *
  */
-@Getter
-@Setter
-@NoArgsConstructor
+@Getter @Setter @NoArgsConstructor
 class CommonControllerTest {
 
     @MockitoBean
@@ -115,6 +116,33 @@ class CommonControllerTest {
             testJwt = String.format("Bearer %s", jwtUtil.createToken());
         }
         return testJwt;
+    }
+
+    /**
+     * Get a test JWT header with specific resource and action.
+     * @param resource the resource to be accessed
+     * @param action the action to be performed on the resource
+     * @return String formatted JWT header
+     */
+    public String getTestJwtHeader(String resource, String action) {
+        List<PermissionDto> permissions = List.of(new PermissionDto(resource,
+                null, List.of(PermissionDto.Action.valueOf(action))));
+        return String.format("Bearer %s",
+                    jwtUtil.createToken(permissions));
+    }
+
+    /**
+     * Get all headers for a request.
+     * @param resource the resource to be accessed
+     * @param action the action to be performed on the resource
+     * @return HttpHeaders
+     */
+    public HttpHeaders getHeaders(String resource, String action) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", " */*");
+        headers.set("X-Forwarded-Proto", "https");
+        headers.set("Authorization", this.getTestJwtHeader(resource, action));
+        return headers;
     }
 
     public static <T> T resultsAsObject(String results, TypeReference<T> type)

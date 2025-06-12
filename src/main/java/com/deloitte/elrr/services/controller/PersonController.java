@@ -149,7 +149,7 @@ public class PersonController {
      * @return ResponseEntity<List<PersonDto>>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('foo', 'bar', 'baz')")
+    @PreAuthorize("hasRole('API') and hasPermission('person', 'READ')")
     @GetMapping("/person")
     public ResponseEntity<List<PersonDto>> getAllPersons(
             @RequestParam(value = "id", required = false) final UUID personId,

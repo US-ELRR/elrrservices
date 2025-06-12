@@ -36,7 +36,7 @@ class CustomPermissionEvaluatorTest {
 
         // Act
         boolean result = permissionEvaluator.hasPermission(
-            mockToken, "users", Action.READ);
+            mockToken, "users", "READ");
 
         // Assert
         assertTrue(result);
@@ -50,7 +50,7 @@ class CustomPermissionEvaluatorTest {
 
         // Act
         boolean result = permissionEvaluator.hasPermission(
-            mockToken, "courses", Action.READ);
+            mockToken, "courses", "READ");
 
         // Assert
         assertFalse(result);
@@ -63,7 +63,7 @@ class CustomPermissionEvaluatorTest {
 
         // Act
         boolean result = permissionEvaluator.hasPermission(
-            mockToken, "users", Action.READ);
+            mockToken, "users", "READ");
 
         // Assert
         assertFalse(result);
@@ -76,7 +76,7 @@ class CustomPermissionEvaluatorTest {
 
         // Act
         boolean result = permissionEvaluator.hasPermission(
-            mockToken, "users", Action.READ);
+            mockToken, "users", "READ");
 
         // Assert
         assertFalse(result);
