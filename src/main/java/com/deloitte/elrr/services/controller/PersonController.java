@@ -371,8 +371,7 @@ public class PersonController {
      * @return ResponseEntity<List<PhoneDto>>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('person', 'READ') and "
-            + "hasPermission('phone', 'READ')")
+    @PreAuthorize("hasRole('API') and hasPermission('person', 'READ')")
     @GetMapping("/person/{personId}/phone")
     public ResponseEntity<List<PhoneDto>> getPhones(
             @PathVariable(value = "personId") final UUID personId)
@@ -424,8 +423,7 @@ public class PersonController {
      * @throws ResourceNotFoundException
      */
     @PreAuthorize(
-        "hasRole('API') and hasPermission('person/phone', 'ASSOCIATE') and "
-        + "hasPermission('phone', 'READ')")
+        "hasRole('API') and hasPermission('person/phone', 'ASSOCIATE')")
     @PostMapping("/person/{personId}/phone/{phoneId}")
     public ResponseEntity<List<PhoneDto>> associatePhoneWithPerson(
             @PathVariable(value = "personId") final UUID personId,
