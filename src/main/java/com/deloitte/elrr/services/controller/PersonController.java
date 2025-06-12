@@ -593,6 +593,8 @@ public class PersonController {
      * @return ResponseEntity<List<PersonalQualificationDto<CompetencyDto>>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize(
+        "hasRole('API') and hasPermission('person', 'READ')")
     @GetMapping("/person/{personId}/competency")
     public ResponseEntity<List<PersonalQualificationDto<CompetencyDto>>>
             getCompetencies(@PathVariable(value = "personId")
@@ -618,6 +620,8 @@ public class PersonController {
      * @return ResponseEntity<PersonalQualificationDto<CompetencyDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize(
+        "hasRole('API') and hasPermission('person', 'READ')")
     @GetMapping("/person/{personId}/competency/{competencyId}")
     public ResponseEntity<PersonalQualificationDto<CompetencyDto>>
             getCompetency(
@@ -647,6 +651,8 @@ public class PersonController {
      * @return ResponseEntity<List<PersonalQualificationDto<CompetencyDto>>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize(
+        "hasRole('API') and hasPermission('person/competency', 'ASSOCIATE')")
     @PostMapping("/person/{personId}/competency/{competencyId}")
     public ResponseEntity<List<PersonalQualificationDto<CompetencyDto>>>
             associateCompetency(
@@ -682,6 +688,8 @@ public class PersonController {
      * @return ResponseEntity<List<PersonalQualificationDto<CompetencyDto>>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize(
+        "hasRole('API') and hasPermission('person/competency', 'ASSOCIATE')")
     @PutMapping("/person/{personId}/competency/{competencyId}")
     public ResponseEntity<List<PersonalQualificationDto<CompetencyDto>>>
             updateCompetencyAssociation(
@@ -716,6 +724,8 @@ public class PersonController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize(
+        "hasRole('API') and hasPermission('person/competency', 'DISASSOCIATE')")
     @DeleteMapping("/person/{personId}/competency/{competencyId}")
     public ResponseEntity<HttpStatus> deleteCompetencyAssociation(
             @PathVariable(value = "personId") final UUID personId,
