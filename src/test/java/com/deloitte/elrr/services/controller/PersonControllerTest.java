@@ -80,14 +80,6 @@ public class PersonControllerTest extends CommonControllerTest {
 
     private static final String PERSON_API = "/api/person";
 
-    @BeforeEach
-    void addHeaders() {
-        headers = new HttpHeaders();
-        headers.set("Content-Type", " */*");
-        headers.set("X-Forwarded-Proto", "https");
-        headers.set("Authorization", this.getTestJwtHeader());
-    }
-
     /**
      *
      * @param obj
@@ -824,7 +816,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .get(PERSON_API + "/" + PERSON_ID + "/learningrecord")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("person|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -863,7 +855,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .content(asJsonString(learningRecordDto))
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("learningrecord|CREATE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -889,7 +881,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .get(PERSON_API + "/" + PERSON_ID + "/militaryrecord")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("person|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -919,7 +911,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .content(asJsonString(militaryRecordDto))
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("militaryrecord|CREATE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -944,7 +936,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .get(PERSON_API + "/" + PERSON_ID + "/employmentrecord")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("person|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -984,7 +976,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .content(asJsonString(employmentRecordDto))
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("employmentrecord|CREATE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -1009,7 +1001,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .get(PERSON_API + "/" + PERSON_ID + "/organization")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("person|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -1033,7 +1025,7 @@ public class PersonControllerTest extends CommonControllerTest {
                         + ORGANIZATION_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("person|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -1075,7 +1067,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .content(asJsonString(associationDto))
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("person/organization|ASSOCIATE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -1110,7 +1102,7 @@ public class PersonControllerTest extends CommonControllerTest {
                 .content(asJsonString(associationDto))
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("person/organization|ASSOCIATE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -1135,7 +1127,8 @@ public class PersonControllerTest extends CommonControllerTest {
                         + ORGANIZATION_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders(
+                        "person/organization|DISASSOCIATE"));
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
