@@ -14,6 +14,7 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import com.deloitte.elrr.services.dto.PermissionDto;
+import com.deloitte.elrr.services.model.Action;
 
 class JwtAuthenticationTokenTest {
     
@@ -22,8 +23,8 @@ class JwtAuthenticationTokenTest {
     private String testToken;
     private DecodedJWT jwt;
     private List<PermissionDto> permissions = List.of(
-            new PermissionDto("resource1", null, List.of(PermissionDto.Action.READ, PermissionDto.Action.UPDATE)),
-            new PermissionDto("resource2", null, List.of(PermissionDto.Action.CREATE, PermissionDto.Action.DELETE))
+            new PermissionDto("resource1", null, List.of(Action.READ, Action.UPDATE)),
+            new PermissionDto("resource2", null, List.of(Action.CREATE, Action.DELETE))
         );
 
     @BeforeEach

@@ -26,6 +26,7 @@ import com.deloitte.elrr.jpa.svc.PhoneSvc;
 import com.deloitte.elrr.repository.OrganizationRepository;
 import com.deloitte.elrr.services.security.JwtUtil;
 import com.deloitte.elrr.services.dto.PermissionDto;
+import com.deloitte.elrr.services.model.Action;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -126,7 +127,7 @@ class CommonControllerTest {
      */
     public String getTestJwtHeader(String resource, String action) {
         List<PermissionDto> permissions = List.of(new PermissionDto(resource,
-                null, List.of(PermissionDto.Action.valueOf(action))));
+                null, List.of(Action.valueOf(action))));
         return String.format("Bearer %s",
                     jwtUtil.createToken(permissions));
     }

@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.deloitte.elrr.services.dto.PermissionDto;
-import com.deloitte.elrr.services.dto.PermissionDto.Action;
+import com.deloitte.elrr.services.model.Action;
 
 class JwtUtilTest {
 
@@ -25,22 +25,32 @@ class JwtUtilTest {
     @Test
     void testPermissionsSerializationAndDeserialization() {
         // Arrange
-        PermissionDto permission1 = new PermissionDto("resource1", null, Arrays.asList(Action.CREATE, Action.READ));
-        PermissionDto permission2 = new PermissionDto("resource2", null, Arrays.asList(Action.UPDATE, Action.DELETE));
-        List<PermissionDto> permissions = Arrays.asList(permission1, permission2);
+        PermissionDto permission1 = new PermissionDto("resource1", null,
+                Arrays.asList(Action.CREATE, Action.READ));
+        PermissionDto permission2 = new PermissionDto("resource2", null,
+                Arrays.asList(Action.UPDATE, Action.DELETE));
+        List<PermissionDto> permissions = Arrays.asList(permission1,
+                permission2);
 
         // Act
         String token = jwtUtil.createToken(permissions);
         DecodedJWT decodedJWT = jwtUtil.decodeToken(token);
-        List<?> permissionsClaim = decodedJWT.getClaim("elrr_permissions").asList(Object.class);
+        List<?> permissionsClaim = decodedJWT.getClaim("elrr_permissions")
+                .asList(Object.class);
 
         // Assert
         assertNotNull(token);
         assertNotNull(decodedJWT);
         assertNotNull(permissionsClaim);
-        assertTrue(permissionsClaim.stream().anyMatch(map -> "resource1".equals(((Map<?, ?>) map).get("resource"))));
-        assertTrue(permissionsClaim.stream().anyMatch(map -> ((List<?>) ((Map<?, ?>) map).get("actions")).contains("CREATE")));
-        assertTrue(permissionsClaim.stream().anyMatch(map -> "resource2".equals(((Map<?, ?>) map).get("resource"))));
-        assertTrue(permissionsClaim.stream().anyMatch(map -> ((List<?>) ((Map<?, ?>) map).get("actions")).contains("DELETE")));
+        assertTrue(permissionsClaim.stream().anyMatch(
+                map -> "resource1".equals(((Map<?, ?>) map).get("resource"))));
+        assertTrue(permissionsClaim.stream()
+                .anyMatch(map -> ((List<?>) ((Map<?, ?>) map).get("actions"))
+                        .contains("CREATE")));
+        assertTrue(permissionsClaim.stream().anyMatch(
+                map -> "resource2".equals(((Map<?, ?>) map).get("resource"))));
+        assertTrue(permissionsClaim.stream()
+                .anyMatch(map -> ((List<?>) ((Map<?, ?>) map).get("actions"))
+                        .contains("DELETE")));
     }
 }

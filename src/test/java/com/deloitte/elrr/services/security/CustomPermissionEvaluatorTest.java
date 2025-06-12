@@ -13,7 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.deloitte.elrr.services.dto.PermissionDto;
-import com.deloitte.elrr.services.dto.PermissionDto.Action;
+import com.deloitte.elrr.services.model.Action;
 
 @ExtendWith(MockitoExtension.class)
 class CustomPermissionEvaluatorTest {

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
 
 import com.deloitte.elrr.services.dto.PermissionDto;
+import com.deloitte.elrr.services.model.Action;
 
 @Slf4j
 @Component
@@ -28,7 +29,7 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
             return permissions.stream().anyMatch(permission -> permission
                     .getResource().equals((String) resource)
                     && permission.getActions().contains(
-                            PermissionDto.Action.valueOf((String) action)));
+                            Action.valueOf((String) action)));
         }
         return false;
     }

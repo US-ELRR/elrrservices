@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.deloitte.elrr.services.TestAppConfig;
 import com.deloitte.elrr.services.dto.PermissionDto;
-import com.deloitte.elrr.services.dto.PermissionDto.Action;
+import com.deloitte.elrr.services.model.Action;
 import com.deloitte.elrr.services.security.JwtUtil;
 import com.deloitte.elrr.services.security.MethodSecurityConfig;
 import com.deloitte.elrr.services.security.SecurityConfig;
