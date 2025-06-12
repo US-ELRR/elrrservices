@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.deloitte.elrr.entity.MilitaryRecord;
 import com.deloitte.elrr.entity.Person;
@@ -48,6 +49,7 @@ public class MilitaryRecordController {
      * @return ResponseEntity<List<MilitaryRecordDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasRole('API') and hasPermission('militaryrecord', 'READ')")
     @GetMapping("/militaryrecord")
     public ResponseEntity<List<MilitaryRecordDto>> getAllMilitaryRecords(
             @RequestParam(value = "id", required = false)
@@ -86,6 +88,7 @@ public class MilitaryRecordController {
      * @return ResponseEntity<MilitaryRecordDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasRole('API') and hasPermission('militaryrecord', 'READ')")
     @GetMapping("/militaryrecord/{id}")
     public ResponseEntity<MilitaryRecordDto> getMilitaryRecordById(
             @PathVariable(value = "id") final UUID militaryRecordId)
@@ -107,6 +110,8 @@ public class MilitaryRecordController {
      * @return ResponseEntity<MilitaryRecordDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize(
+        "hasRole('API') and hasPermission('militaryrecord', 'UPDATE')")
     @PutMapping("/militaryrecord/{id}")
     public ResponseEntity<MilitaryRecordDto> updateMilitaryRecord(
             @PathVariable(value = "id") final UUID militaryRecordId,
@@ -138,6 +143,8 @@ public class MilitaryRecordController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize(
+        "hasRole('API') and hasPermission('militaryrecord', 'DELETE')")
     @DeleteMapping("/militaryrecord/{id}")
     public ResponseEntity<HttpStatus> deleteMilitaryRecord(
             @PathVariable(value = "id") final UUID militaryRecordId)

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,14 +48,6 @@ public class MilitaryRecordControllerTest extends CommonControllerTest {
 
     private static final String MILITARY_RECORD_API = "/api/militaryrecord";
 
-    @BeforeEach
-    void addHeaders() {
-        headers = new HttpHeaders();
-        headers.set("Content-Type", " */*");
-        headers.set("X-Forwarded-Proto", "https");
-        headers.set("Authorization", this.getTestJwtHeader());
-    }
-
     /**
      *
      * @param obj
@@ -85,7 +76,7 @@ public class MilitaryRecordControllerTest extends CommonControllerTest {
                 .get(MILITARY_RECORD_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("militaryrecord|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -106,7 +97,7 @@ public class MilitaryRecordControllerTest extends CommonControllerTest {
                 .get(MILITARY_RECORD_API + "/" + MILITARY_RECORD_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("militaryrecord|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -125,7 +116,7 @@ public class MilitaryRecordControllerTest extends CommonControllerTest {
                 .get(MILITARY_RECORD_API + "/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("militaryrecord|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -141,7 +132,7 @@ public class MilitaryRecordControllerTest extends CommonControllerTest {
                 .get(MILITARY_RECORD_API + "?id=" + MILITARY_RECORD_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("militaryrecord|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -169,7 +160,7 @@ public class MilitaryRecordControllerTest extends CommonControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(militaryRecordDto))
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("militaryrecord|UPDATE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -191,7 +182,7 @@ public class MilitaryRecordControllerTest extends CommonControllerTest {
                 .delete(MILITARY_RECORD_API + "/" + MILITARY_RECORD_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("militaryrecord|DELETE"));
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
