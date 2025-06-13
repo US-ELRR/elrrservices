@@ -12,8 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import com.deloitte.elrr.services.dto.PermissionDto;
 import com.deloitte.elrr.services.model.Action;
 
-@Slf4j
-@Component
+@Slf4j @Component
 public class CustomPermissionEvaluator implements PermissionEvaluator {
 
     @Override
@@ -26,10 +25,12 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
         // if at least one permission matches the resource and its actions
         // include the action, return true, otherwise return false
         if (permissions != null && !permissions.isEmpty()) {
-            return permissions.stream().anyMatch(permission -> permission
-                    .getResource().equals((String) resource)
-                    && permission.getActions().contains(
-                            Action.valueOf((String) action)));
+            return permissions.stream()
+                    .anyMatch(permission -> (permission.getResource()
+                            .equals((String) resource)
+                            || permission.getResource().equals("*"))
+                            && permission.getActions()
+                                .contains(Action.valueOf((String) action)));
         }
         return false;
     }

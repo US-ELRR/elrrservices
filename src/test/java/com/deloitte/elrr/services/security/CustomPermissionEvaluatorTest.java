@@ -81,4 +81,18 @@ class CustomPermissionEvaluatorTest {
         // Assert
         assertFalse(result);
     }
+
+    @Test
+    void hasPermission_WithWildcardResource_ReturnsTrue() {
+        // Arrange
+        PermissionDto permission = new PermissionDto("*", null, Arrays.asList(Action.READ));
+        when(mockToken.getPermissions()).thenReturn(Arrays.asList(permission));
+
+        // Act
+        boolean result = permissionEvaluator.hasPermission(
+            mockToken, "anyResource", "READ");
+
+        // Assert
+        assertTrue(result);
+    }
 }
