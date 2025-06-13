@@ -12,7 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import com.deloitte.elrr.services.dto.PermissionDto;
 import com.deloitte.elrr.services.model.Action;
 
-@Slf4j @Component
+@Slf4j
+@Component
 public class CustomPermissionEvaluator implements PermissionEvaluator {
 
     @Override
