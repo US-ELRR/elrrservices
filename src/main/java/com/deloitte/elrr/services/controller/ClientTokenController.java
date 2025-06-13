@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("api")
+@RequestMapping("admin")
 @Slf4j
 public class ClientTokenController {
     /**
