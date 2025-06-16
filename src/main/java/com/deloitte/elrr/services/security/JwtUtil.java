@@ -34,7 +34,7 @@ public class JwtUtil {
     private String adminIssuerWhitelist;
 
     @Value("${admin.jwt.user-id-key}")
-    private String userIdKey;
+    private String adminUserIdKey;
 
     private Algorithm algorithm;
 
@@ -128,6 +128,7 @@ public class JwtUtil {
         return JWT.create()
             .withIssuer("http://example.com")
             .withIssuedAt(new Date())
+            .withClaim(adminUserIdKey, "admin-user")
             .withClaim("group-simple", Collections.singletonList("elrr-admin"))
             .sign(Algorithm.HMAC512(seekrit));
     }

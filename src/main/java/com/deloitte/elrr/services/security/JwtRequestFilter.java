@@ -54,24 +54,22 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     if (roles.contains(jwtUtil.getAdminRole())) {
                         authList.add(
                                 new SystemAuthority(SystemRole.ROLE_ADMIN));
+                        SecurityContextHolder.getContext().setAuthentication(
+                                new AdminJwtAuthenticationToken(authList, jwt));
                     }
                 } else {
                     // Not on whitelist - verify the token
                     jwt = jwtUtil.verify(jwtStr);
                     // TODO internal issuer verification
                     authList.add(new SystemAuthority(SystemRole.ROLE_API));
+                    SecurityContextHolder.getContext().setAuthentication(
+                            new JwtAuthenticationToken(authList, jwt));
                 }
             } catch (AlgorithmMismatchException
                     | SignatureVerificationException e) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                         "Invalid Token");
                 return;
-            }
-
-            if (jwt != null) {
-                JwtAuthenticationToken authToken = new JwtAuthenticationToken(
-                        authList, jwt);
-                SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
         chain.doFilter(request, response);
