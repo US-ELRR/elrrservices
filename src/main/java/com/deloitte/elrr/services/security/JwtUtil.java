@@ -30,9 +30,6 @@ public class JwtUtil {
     @Value("${admin.jwt.role-key}")
     private String adminRoleKey;
 
-    @Value("${admin.jwt.issuer}")
-    private String adminIssuer;
-
     @Value("${admin.jwt.issuer-whitelist}")
     private String adminIssuerWhitelist;
 
@@ -72,13 +69,6 @@ public class JwtUtil {
      */
     public String getAdminRoleKey() {
         return adminRoleKey;
-    }
-    /**
-     * Get the issuer configured for admin users.
-     * @return the issuer configured for admin users
-     */
-    public String getAdminIssuer() {
-        return adminIssuer;
     }
     /**
      * Get the issuer whitelist configured for admin users.
