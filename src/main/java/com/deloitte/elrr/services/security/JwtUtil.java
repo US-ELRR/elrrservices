@@ -24,8 +24,24 @@ public class JwtUtil {
     @Value("${client.jwt.secret}")
     private String secret;
 
+    @Value("${admin.jwt.role}")
+    private String adminRole;
+
+    @Value("${admin.jwt.role-key}")
+    private String adminRoleKey;
+
+    @Value("${admin.jwt.issuer}")
+    private String adminIssuer;
+
+    @Value("${admin.jwt.issuer-whitelist}")
+    private String adminIssuerWhitelist;
+
+    @Value("${admin.jwt.user-id-key}")
+    private String userIdKey;
+
     private Algorithm algorithm;
 
+    // TODO internal issuer should be configurable and also a URI
     private static final String ISSUER = "ELRR Client Token Authentication";
     private static final String CREATOR_KEY = "token-creator";
 
@@ -41,6 +57,35 @@ public class JwtUtil {
      */
     public JwtUtil(String secret) {
         this.secret = secret;
+    }
+
+    /**
+     * Get the role configured for admin users.
+     * @return the role configured for admin users
+     */
+    public String getAdminRole() {
+        return adminRole;
+    }
+    /**
+     * Get the role key configured for admin users.
+     * @return the role key configured for admin users
+     */
+    public String getAdminRoleKey() {
+        return adminRoleKey;
+    }
+    /**
+     * Get the issuer configured for admin users.
+     * @return the issuer configured for admin users
+     */
+    public String getAdminIssuer() {
+        return adminIssuer;
+    }
+    /**
+     * Get the issuer whitelist configured for admin users.
+     * @return the issuer whitelist configured for admin users
+     */
+    public List<String> getAdminIssuerWhitelist() {
+        return List.of(adminIssuerWhitelist.split(","));
     }
 
     /**
@@ -91,9 +136,9 @@ public class JwtUtil {
      */
     public String createAdminToken(String seekrit) {
         return JWT.create()
-            .withIssuer(ISSUER)
+            .withIssuer("http://example.com")
             .withIssuedAt(new Date())
-            .withClaim("roles", Collections.singletonList("ADMIN"))
+            .withClaim("group-simple", Collections.singletonList("elrr-admin"))
             .sign(Algorithm.HMAC512(seekrit));
     }
 

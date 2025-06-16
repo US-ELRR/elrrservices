@@ -40,17 +40,30 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             DecodedJWT jwt;
             List<SystemAuthority> authList = new ArrayList<SystemAuthority>();
-
             try {
                 //Proper client JWT
                 jwt = jwtUtil.verify(jwtStr);
+                // TODO internal issuer verification
                 authList.add(new SystemAuthority(SystemRole.ROLE_API));
             } catch (AlgorithmMismatchException
                     | SignatureVerificationException e) {
                 //Potentially admin user JWT
                 jwt = jwtUtil.decodeToken(jwtStr);
-                //TODO check for p1 user properties, issuer, role, etc
-                authList.add(new SystemAuthority(SystemRole.ROLE_ADMIN));
+
+                // Check if the issuer is on the no-validation whitelist
+                if (!jwtUtil.getAdminIssuerWhitelist()
+                        .contains(jwt.getIssuer())) {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                        "Invalid Issuer");
+                    return;
+                }
+
+                // Check role and add if it is there.
+                List<String> roles = jwt.getClaim(
+                    jwtUtil.getAdminRoleKey()).asList(String.class);
+                if (roles.contains(jwtUtil.getAdminRole())) {
+                    authList.add(new SystemAuthority(SystemRole.ROLE_ADMIN));
+                }
             }
 
             if (jwt != null) {
