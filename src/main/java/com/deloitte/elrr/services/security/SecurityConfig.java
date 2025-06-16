@@ -47,7 +47,6 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**")
                             .hasRole("ADMIN")
                         .anyRequest().denyAll())
-                .addFilterAfter(jwtRequestFilter, null)
                 .addFilterBefore(jwtRequestFilter,
                         UsernamePasswordAuthenticationFilter.class)
                 .build();

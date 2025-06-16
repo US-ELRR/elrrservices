@@ -46,7 +46,7 @@ public class ClientTokenControllerTest extends CommonControllerTest {
 
     private HttpHeaders headers;
 
-    private static final String TOKEN_API = "/api/token";
+    private static final String TOKEN_API = "/admin/token";
 
     @BeforeEach
     void addHeaders() {
