@@ -93,7 +93,7 @@ public class JwtUtil {
         return JWT.create()
             .withIssuer(ISSUER)
             .withIssuedAt(new Date())
-            .withClaim("roles", Collections.singletonList("ROLE_ADMIN"))
+            .withClaim("roles", Collections.singletonList("ADMIN"))
             .sign(Algorithm.HMAC512(seekrit));
     }
 
