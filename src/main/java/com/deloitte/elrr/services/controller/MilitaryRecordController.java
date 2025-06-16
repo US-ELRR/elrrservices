@@ -110,8 +110,7 @@ public class MilitaryRecordController {
      * @return ResponseEntity<MilitaryRecordDto>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize(
-        "hasPermission('militaryrecord', 'UPDATE')")
+    @PreAuthorize("hasPermission('militaryrecord', 'UPDATE')")
     @PutMapping("/militaryrecord/{id}")
     public ResponseEntity<MilitaryRecordDto> updateMilitaryRecord(
             @PathVariable(value = "id") final UUID militaryRecordId,
@@ -143,8 +142,7 @@ public class MilitaryRecordController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize(
-        "hasPermission('militaryrecord', 'DELETE')")
+    @PreAuthorize("hasPermission('militaryrecord', 'DELETE')")
     @DeleteMapping("/militaryrecord/{id}")
     public ResponseEntity<HttpStatus> deleteMilitaryRecord(
             @PathVariable(value = "id") final UUID militaryRecordId)

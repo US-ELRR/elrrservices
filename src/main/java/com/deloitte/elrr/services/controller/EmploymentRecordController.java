@@ -76,8 +76,7 @@ public class EmploymentRecordController {
      * @return ResponseEntity<List<EmploymentRecordDto>>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize(
-        "hasPermission('employmentrecord', 'READ')")
+    @PreAuthorize("hasPermission('employmentrecord', 'READ')")
     @GetMapping("/employmentrecord")
     public ResponseEntity<List<EmploymentRecordDto>> getAllEmploymentRecords(
             @RequestParam(value = "id", required = false)
@@ -116,8 +115,7 @@ public class EmploymentRecordController {
      * @return ResponseEntity<EmploymentRecordDto>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize(
-        "hasPermission('employmentrecord', 'READ')")
+    @PreAuthorize("hasPermission('employmentrecord', 'READ')")
     @GetMapping("/employmentrecord/{id}")
     public ResponseEntity<EmploymentRecordDto> getEmploymentRecordById(
             @PathVariable(value = "id") final UUID employmentRecordId)
@@ -140,8 +138,7 @@ public class EmploymentRecordController {
      * @return ResponseEntity<EmploymentRecordDto>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize(
-        "hasPermission('employmentrecord', 'UPDATE')")
+    @PreAuthorize("hasPermission('employmentrecord', 'UPDATE')")
     @PutMapping("/employmentrecord/{id}")
     public ResponseEntity<EmploymentRecordDto> updateEmploymentRecord(
             @PathVariable(value = "id") final UUID employmentRecordId,
@@ -219,8 +216,7 @@ public class EmploymentRecordController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize(
-        "hasPermission('employmentrecord', 'DELETE')")
+    @PreAuthorize("hasPermission('employmentrecord', 'DELETE')")
     @DeleteMapping("/employmentrecord/{id}")
     public ResponseEntity<HttpStatus> deleteEmploymentRecord(
             @PathVariable(value = "id") final UUID employmentRecordId)
