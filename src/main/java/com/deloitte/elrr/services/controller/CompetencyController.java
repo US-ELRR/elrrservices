@@ -53,7 +53,7 @@ public class CompetencyController {
      * @return ResponseEntity<List<CompetencyDto>>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('competency', 'READ')")
+    @PreAuthorize("hasPermission('competency', 'READ')")
     @GetMapping("/competency")
     public ResponseEntity<List<CompetencyDto>> getAllCompetencies(
             @RequestParam(value = "id", required = false)
@@ -90,7 +90,7 @@ public class CompetencyController {
      * @return ResponseEntity<CompetencyDto>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('competency', 'READ')")
+    @PreAuthorize("hasPermission('competency', 'READ')")
     @GetMapping("/competency/{id}")
     public ResponseEntity<CompetencyDto> getCompetencyById(
             @PathVariable(value = "id") final UUID competencyId)
@@ -127,7 +127,7 @@ public class CompetencyController {
      * @return ResponseEntity<CompetencyDto>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('competency', 'UPDATE')")
+    @PreAuthorize("hasPermission('competency', 'UPDATE')")
     @PutMapping("/competency/{id}")
     public ResponseEntity<CompetencyDto> updateCompetency(
             @PathVariable(value = "id") final UUID competencyId,
@@ -156,7 +156,7 @@ public class CompetencyController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('competency', 'DELETE')")
+    @PreAuthorize("hasPermission('competency', 'DELETE')")
     @DeleteMapping("/competency/{id}")
     public ResponseEntity<HttpStatus> deleteCompetency(
             @PathVariable(value = "id") final UUID competencyId)

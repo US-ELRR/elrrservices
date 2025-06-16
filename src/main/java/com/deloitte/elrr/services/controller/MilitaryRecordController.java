@@ -49,7 +49,7 @@ public class MilitaryRecordController {
      * @return ResponseEntity<List<MilitaryRecordDto>>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('militaryrecord', 'READ')")
+    @PreAuthorize("hasPermission('militaryrecord', 'READ')")
     @GetMapping("/militaryrecord")
     public ResponseEntity<List<MilitaryRecordDto>> getAllMilitaryRecords(
             @RequestParam(value = "id", required = false)
@@ -88,7 +88,7 @@ public class MilitaryRecordController {
      * @return ResponseEntity<MilitaryRecordDto>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('militaryrecord', 'READ')")
+    @PreAuthorize("hasPermission('militaryrecord', 'READ')")
     @GetMapping("/militaryrecord/{id}")
     public ResponseEntity<MilitaryRecordDto> getMilitaryRecordById(
             @PathVariable(value = "id") final UUID militaryRecordId)
@@ -111,7 +111,7 @@ public class MilitaryRecordController {
      * @throws ResourceNotFoundException
      */
     @PreAuthorize(
-        "hasRole('API') and hasPermission('militaryrecord', 'UPDATE')")
+        "hasPermission('militaryrecord', 'UPDATE')")
     @PutMapping("/militaryrecord/{id}")
     public ResponseEntity<MilitaryRecordDto> updateMilitaryRecord(
             @PathVariable(value = "id") final UUID militaryRecordId,
@@ -144,7 +144,7 @@ public class MilitaryRecordController {
      * @throws ResourceNotFoundException
      */
     @PreAuthorize(
-        "hasRole('API') and hasPermission('militaryrecord', 'DELETE')")
+        "hasPermission('militaryrecord', 'DELETE')")
     @DeleteMapping("/militaryrecord/{id}")
     public ResponseEntity<HttpStatus> deleteMilitaryRecord(
             @PathVariable(value = "id") final UUID militaryRecordId)

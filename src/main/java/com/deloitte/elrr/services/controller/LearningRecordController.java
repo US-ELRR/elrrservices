@@ -54,7 +54,7 @@ public class LearningRecordController {
      * @return ResponseEntity<List<LearningRecordDto>>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('learningrecord', 'READ')")
+    @PreAuthorize("hasPermission('learningrecord', 'READ')")
     @GetMapping("/learningrecord")
     public ResponseEntity<List<LearningRecordDto>> getAllLearningRecords(
             @RequestParam(value = "id", required = false)
@@ -93,7 +93,7 @@ public class LearningRecordController {
      * @return ResponseEntity<LearningRecordDto>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('learningrecord', 'READ')")
+    @PreAuthorize("hasPermission('learningrecord', 'READ')")
     @GetMapping("/learningrecord/{id}")
     public ResponseEntity<LearningRecordDto> getLearningRecordById(
             @PathVariable(value = "id") final UUID learningRecordId)
@@ -116,7 +116,7 @@ public class LearningRecordController {
      * @throws ResourceNotFoundException
      */
     @PreAuthorize(
-        "hasRole('API') and hasPermission('learningrecord', 'UPDATE')")
+        "hasPermission('learningrecord', 'UPDATE')")
     @PutMapping("/learningrecord/{id}")
     public ResponseEntity<LearningRecordDto> updateLearningRecord(
             @PathVariable(value = "id") final UUID learningRecordId,
@@ -152,7 +152,7 @@ public class LearningRecordController {
      * @throws ResourceNotFoundException
      */
     @PreAuthorize(
-        "hasRole('API') and hasPermission('learningrecord', 'DELETE')")
+        "hasPermission('learningrecord', 'DELETE')")
     @DeleteMapping("/learningrecord/{id}")
     public ResponseEntity<HttpStatus> deleteLearningRecord(
             @PathVariable(value = "id") final UUID learningRecordId)

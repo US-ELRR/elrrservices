@@ -50,7 +50,7 @@ public class FacilityController {
      * @return ResponseEntity<List<FacilityDto>>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('facility', 'READ')")
+    @PreAuthorize("hasPermission('facility', 'READ')")
     @GetMapping("/facility")
     public ResponseEntity<List<FacilityDto>> getAllFacilitys(
             @RequestParam(value = "id", required = false) final UUID facilityId)
@@ -87,7 +87,7 @@ public class FacilityController {
      * @return ResponseEntity<FacilityDto>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('facility', 'READ')")
+    @PreAuthorize("hasPermission('facility', 'READ')")
     @GetMapping("/facility/{id}")
     public ResponseEntity<FacilityDto> getFacilityById(
             @PathVariable(value = "id") final UUID facilityId)
@@ -107,7 +107,7 @@ public class FacilityController {
      * @param facilityDto
      * @return ResponseEntity<FacilityDto>
      */
-    @PreAuthorize("hasRole('API') and hasPermission('facility', 'CREATE')")
+    @PreAuthorize("hasPermission('facility', 'CREATE')")
     @PostMapping("/facility")
     public ResponseEntity<FacilityDto> createFacility(
             @Valid @RequestBody final FacilityDto facilityDto) {
@@ -124,7 +124,7 @@ public class FacilityController {
      * @return ResponseEntity<FacilityDto>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('facility', 'UPDATE')")
+    @PreAuthorize("hasPermission('facility', 'UPDATE')")
     @PutMapping("/facility/{id}")
     public ResponseEntity<FacilityDto> updateFacility(
             @PathVariable(value = "id") final UUID facilityId,
@@ -153,7 +153,7 @@ public class FacilityController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('facility', 'DELETE')")
+    @PreAuthorize("hasPermission('facility', 'DELETE')")
     @DeleteMapping("/facility/{id}")
     public ResponseEntity<HttpStatus> deleteFacility(
             @PathVariable(value = "id") final UUID facilityId)

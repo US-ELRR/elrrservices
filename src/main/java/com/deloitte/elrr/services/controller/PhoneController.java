@@ -53,7 +53,7 @@ public class PhoneController {
      * @return ResponseEntity<List<PhoneDto>>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('phone', 'READ')")
+    @PreAuthorize("hasPermission('phone', 'READ')")
     @GetMapping("/phone")
     public ResponseEntity<List<PhoneDto>> getAllPhones(
             @RequestParam(value = "id", required = false) final UUID phoneId)
@@ -89,7 +89,7 @@ public class PhoneController {
      * @return ResponseEntity<PhoneDto>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('phone', 'READ')")
+    @PreAuthorize("hasPermission('phone', 'READ')")
     @GetMapping("/phone/{id}")
     public ResponseEntity<PhoneDto> getPhoneById(
             @PathVariable(value = "id") final UUID phoneId)
@@ -109,7 +109,7 @@ public class PhoneController {
      * @param phoneDto
      * @return ResponseEntity<PhoneDto>
      */
-    @PreAuthorize("hasRole('API') and hasPermission('phone', 'CREATE')")
+    @PreAuthorize("hasPermission('phone', 'CREATE')")
     @PostMapping("/phone")
     public ResponseEntity<PhoneDto> createPhone(
             @Valid @RequestBody final PhoneDto phoneDto) {
@@ -125,7 +125,7 @@ public class PhoneController {
      * @return ResponseEntity<PhoneDto>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('phone', 'UPDATE')")
+    @PreAuthorize("hasPermission('phone', 'UPDATE')")
     @PutMapping("/phone/{id}")
     public ResponseEntity<PhoneDto> updatePhone(
             @PathVariable(value = "id") final UUID phoneId,
@@ -154,7 +154,7 @@ public class PhoneController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('phone', 'DELETE')")
+    @PreAuthorize("hasPermission('phone', 'DELETE')")
     @DeleteMapping("/phone/{id}")
     public ResponseEntity<HttpStatus> deletePhone(
             @PathVariable(value = "id") final UUID phoneId)

@@ -53,7 +53,7 @@ public class CredentialController {
      * @return ResponseEntity<List<CredentialDto>>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('credential', 'READ')")
+    @PreAuthorize("hasPermission('credential', 'READ')")
     @GetMapping("/credential")
     public ResponseEntity<List<CredentialDto>> getAllCredentials(
             @RequestParam(value = "id", required = false)
@@ -90,7 +90,7 @@ public class CredentialController {
      * @return ResponseEntity<CredentialDto>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('credential', 'READ')")
+    @PreAuthorize("hasPermission('credential', 'READ')")
     @GetMapping("/credential/{id}")
     public ResponseEntity<CredentialDto> getCredentialById(
             @PathVariable(value = "id") final UUID credentialId)
@@ -110,7 +110,7 @@ public class CredentialController {
      * @param credentialDto
      * @return ResponseEntity<CredentialDto>
      */
-    @PreAuthorize("hasRole('API') and hasPermission('credential', 'CREATE')")
+    @PreAuthorize("hasPermission('credential', 'CREATE')")
     @PostMapping("/credential")
     public ResponseEntity<CredentialDto> createCredential(
             @Valid @RequestBody final CredentialDto credentialDto) {
@@ -127,7 +127,7 @@ public class CredentialController {
      * @return ResponseEntity<CredentialDto>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('credential', 'UPDATE')")
+    @PreAuthorize("hasPermission('credential', 'UPDATE')")
     @PutMapping("/credential/{id}")
     public ResponseEntity<CredentialDto> updateCredential(
             @PathVariable(value = "id") final UUID credentialId,
@@ -156,7 +156,7 @@ public class CredentialController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('credential', 'DELETE')")
+    @PreAuthorize("hasPermission('credential', 'DELETE')")
     @DeleteMapping("/credential/{id}")
     public ResponseEntity<HttpStatus> deleteCredential(
             @PathVariable(value = "id") final UUID credentialId)

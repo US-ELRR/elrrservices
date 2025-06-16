@@ -54,7 +54,7 @@ public class LearningResourceController {
      * @throws ResourceNotFoundException
      */
     @PreAuthorize(
-        "hasRole('API') and hasPermission('learningresource', 'READ')")
+        "hasPermission('learningresource', 'READ')")
     @GetMapping("/learningresource")
     public ResponseEntity<List<LearningResourceDto>> getAllLearningResources(
             @RequestParam(value = "id", required = false)
@@ -94,7 +94,7 @@ public class LearningResourceController {
      * @throws ResourceNotFoundException
      */
     @PreAuthorize(
-        "hasRole('API') and hasPermission('learningresource', 'READ')")
+        "hasPermission('learningresource', 'READ')")
     @GetMapping("/learningresource/{id}")
     public ResponseEntity<LearningResourceDto> getLearningResourceById(
             @PathVariable(value = "id") final UUID learningResourceId)
@@ -116,7 +116,7 @@ public class LearningResourceController {
      * @return ResponseEntity<LearningResourceDto>
      */
     @PreAuthorize(
-        "hasRole('API') and hasPermission('learningresource', 'CREATE')")
+        "hasPermission('learningresource', 'CREATE')")
     @PostMapping("/learningresource")
     public ResponseEntity<LearningResourceDto> createLearningResource(
             @Valid @RequestBody final LearningResourceDto learningResourceDto) {
@@ -135,7 +135,7 @@ public class LearningResourceController {
      * @throws ResourceNotFoundException
      */
     @PreAuthorize(
-        "hasRole('API') and hasPermission('learningresource', 'UPDATE')")
+        "hasPermission('learningresource', 'UPDATE')")
     @PutMapping("/learningresource/{id}")
     public ResponseEntity<LearningResourceDto> updateLearningResource(
             @PathVariable(value = "id") final UUID learningResourceId,
@@ -167,7 +167,7 @@ public class LearningResourceController {
      * @throws ResourceNotFoundException
      */
     @PreAuthorize(
-        "hasRole('API') and hasPermission('learningresource', 'DELETE')")
+        "hasPermission('learningresource', 'DELETE')")
     @DeleteMapping("/learningresource/{id}")
     public ResponseEntity<HttpStatus> deleteLearningResource(
             @PathVariable(value = "id") final UUID learningResourceId)

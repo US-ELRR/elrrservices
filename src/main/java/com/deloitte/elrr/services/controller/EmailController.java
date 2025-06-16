@@ -53,7 +53,7 @@ public class EmailController {
      * @return ResponseEntity<List<EmailDto>>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('email', 'READ')")
+    @PreAuthorize("hasPermission('email', 'READ')")
     @GetMapping("/email")
     public ResponseEntity<List<EmailDto>> getAllEmails(
             @RequestParam(value = "id", required = false)
@@ -89,7 +89,7 @@ public class EmailController {
      * @return ResponseEntity<EmailDto>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('email', 'READ')")
+    @PreAuthorize("hasPermission('email', 'READ')")
     @GetMapping("/email/{id}")
     public ResponseEntity<EmailDto> getEmailById(
             @PathVariable(value = "id") final UUID emailId)
@@ -109,7 +109,7 @@ public class EmailController {
      * @param emailDto
      * @return ResponseEntity<EmailDto>
      */
-    @PreAuthorize("hasRole('API') and hasPermission('email', 'CREATE')")
+    @PreAuthorize("hasPermission('email', 'CREATE')")
     @PostMapping("/email")
     public ResponseEntity<EmailDto> createEmail(
             @Valid @RequestBody final EmailDto emailDto) {
@@ -125,7 +125,7 @@ public class EmailController {
      * @return ResponseEntity<EmailDto>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('email', 'UPDATE')")
+    @PreAuthorize("hasPermission('email', 'UPDATE')")
     @PutMapping("/email/{id}")
     public ResponseEntity<EmailDto> updateEmail(
             @PathVariable(value = "id") final UUID emailId,
@@ -154,7 +154,7 @@ public class EmailController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('email', 'DELETE')")
+    @PreAuthorize("hasPermission('email', 'DELETE')")
     @DeleteMapping("/email/{id}")
     public ResponseEntity<HttpStatus> deleteEmail(
             @PathVariable(value = "id") final UUID emailId)

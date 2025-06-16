@@ -53,7 +53,7 @@ public class LocationController {
      * @return ResponseEntity<List<LocationDto>>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('location', 'READ')")
+    @PreAuthorize("hasPermission('location', 'READ')")
     @GetMapping("/location")
     public ResponseEntity<List<LocationDto>> getAllLocations(
             @RequestParam(value = "id", required = false) final UUID locationId)
@@ -90,7 +90,7 @@ public class LocationController {
      * @return ResponseEntity<LocationDto>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('location', 'READ')")
+    @PreAuthorize("hasPermission('location', 'READ')")
     @GetMapping("/location/{id}")
     public ResponseEntity<LocationDto> getLocationById(
             @PathVariable(value = "id") final UUID locationId)
@@ -110,7 +110,7 @@ public class LocationController {
      * @param locationDto
      * @return ResponseEntity<LocationDto>
      */
-    @PreAuthorize("hasRole('API') and hasPermission('location', 'CREATE')")
+    @PreAuthorize("hasPermission('location', 'CREATE')")
     @PostMapping("/location")
     public ResponseEntity<LocationDto> createLocation(
             @Valid @RequestBody final LocationDto locationDto) {
@@ -127,7 +127,7 @@ public class LocationController {
      * @return ResponseEntity<LocationDto>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('location', 'UPDATE')")
+    @PreAuthorize("hasPermission('location', 'UPDATE')")
     @PutMapping("/location/{id}")
     public ResponseEntity<LocationDto> updateLocation(
             @PathVariable(value = "id") final UUID locationId,
@@ -156,7 +156,7 @@ public class LocationController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('location', 'DELETE')")
+    @PreAuthorize("hasPermission('location', 'DELETE')")
     @DeleteMapping("/location/{id}")
     public ResponseEntity<HttpStatus> deleteLocation(
             @PathVariable(value = "id") final UUID locationId)

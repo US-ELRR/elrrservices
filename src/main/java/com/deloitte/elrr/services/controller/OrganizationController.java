@@ -57,7 +57,7 @@ public class OrganizationController {
      * @return ResponseEntity<List<OrganizationDto>>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('organization', 'READ')")
+    @PreAuthorize("hasPermission('organization', 'READ')")
     @GetMapping("/organization")
     public ResponseEntity<List<OrganizationDto>> getAllOrganizations(
             @RequestParam(value = "id", required = false)
@@ -102,7 +102,7 @@ public class OrganizationController {
      * @return ResponseEntity<OrganizationDto>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('organization', 'READ')")
+    @PreAuthorize("hasPermission('organization', 'READ')")
     @GetMapping("/organization/{id}")
     public ResponseEntity<OrganizationDto> getOrganizationById(
             @PathVariable(value = "id") final UUID organizationid)
@@ -123,7 +123,7 @@ public class OrganizationController {
      * @param organizationDto
      * @return ResponseEntity<OrganizationDto>
      */
-    @PreAuthorize("hasRole('API') and hasPermission('organization', 'CREATE')")
+    @PreAuthorize("hasPermission('organization', 'CREATE')")
     @PostMapping("/organization")
     public ResponseEntity<OrganizationDto> createOrganization(
             @Valid @RequestBody final OrganizationDto organizationDto) {
@@ -140,7 +140,7 @@ public class OrganizationController {
      * @return ResponseEntity<OrganizationDto>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('organization', 'UPDATE')")
+    @PreAuthorize("hasPermission('organization', 'UPDATE')")
     @PutMapping("/organization/{id}")
     public ResponseEntity<OrganizationDto> updateOrganization(
             @PathVariable(value = "id") final UUID organizationid,
@@ -169,7 +169,7 @@ public class OrganizationController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
-    @PreAuthorize("hasRole('API') and hasPermission('organization', 'DELETE')")
+    @PreAuthorize("hasPermission('organization', 'DELETE')")
     @DeleteMapping("/organization/{id}")
     public ResponseEntity<HttpStatus> deleteOrganization(
             @PathVariable(value = "id") final UUID organizationId)
