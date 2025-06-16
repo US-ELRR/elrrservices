@@ -42,7 +42,9 @@ import lombok.Setter;
  * @author mnelakurti
  *
  */
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 class CommonControllerTest {
 
     @MockitoBean
