@@ -110,7 +110,7 @@ public class CompetencyController {
      * @param competencyDto
      * @return ResponseEntity<CompetencyDto>
      */
-    @PreAuthorize("hasRole('API') and hasPermission('competency', 'CREATE')")
+    @PreAuthorize("hasPermission('competency', 'CREATE')")
     @PostMapping("/competency")
     public ResponseEntity<CompetencyDto> createCompetency(
             @Valid @RequestBody final CompetencyDto competencyDto) {
