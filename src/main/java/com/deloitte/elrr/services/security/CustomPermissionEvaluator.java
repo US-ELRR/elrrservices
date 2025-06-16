@@ -43,14 +43,4 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
         throw new UnsupportedOperationException(
                 "hasPermission with targetId and targetType is not supported");
     }
-
-    /*
-     * might use later...
-     *
-     * private boolean verifyRole(JwtAuthenticationToken token, SystemRole role)
-     * { GrantedAuthority apiAuth = token.getAuthorities().stream() .filter(auth
-     * -> auth.getAuthority().equals(role.name())) .findAny() .orElse(null);
-     * return apiAuth != null; }
-     */
-
 }
