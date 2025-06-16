@@ -86,7 +86,7 @@ public class JwtUtil {
 
     /**
      * Create a new admin token for testing.
-     * @param seekrit optional secret to use for signing
+     * @param seekrit secret to use for signing
      * @return JWT Token String with ROLE_ADMIN claim
      */
     public String createAdminToken(String seekrit) {
@@ -95,14 +95,6 @@ public class JwtUtil {
             .withIssuedAt(new Date())
             .withClaim("roles", Collections.singletonList("ROLE_ADMIN"))
             .sign(Algorithm.HMAC512(seekrit));
-    }
-
-    /**
-     * Create a new admin token for testing.
-     * @return JWT Token String with ROLE_ADMIN claim
-     */
-    public String createAdminToken() {
-        return createAdminToken(secret);
     }
 
     /**
