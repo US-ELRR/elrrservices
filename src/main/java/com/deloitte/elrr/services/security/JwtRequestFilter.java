@@ -33,7 +33,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
 
         String jwtStr = (authHeader != null && authHeader.startsWith("Bearer "))
-            ? authHeader.substring(7) : null;
+                ? authHeader.substring(7)
+                : null;
 
         if (SecurityContextHolder.getContext().getAuthentication() == null
                 && jwtStr != null) {
@@ -41,34 +42,35 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             DecodedJWT jwt;
             List<SystemAuthority> authList = new ArrayList<SystemAuthority>();
             try {
-                //Proper client JWT
-                jwt = jwtUtil.verify(jwtStr);
-                // TODO internal issuer verification
-                authList.add(new SystemAuthority(SystemRole.ROLE_API));
-            } catch (AlgorithmMismatchException
-                    | SignatureVerificationException e) {
-                //Potentially admin user JWT
+                // First decode the token to check the issuer
                 jwt = jwtUtil.decodeToken(jwtStr);
 
-                // Check if the issuer is on the no-validation whitelist
-                if (!jwtUtil.getAdminIssuerWhitelist()
+                // Check if the issuer is on the admin whitelist
+                if (jwtUtil.getAdminIssuerWhitelist()
                         .contains(jwt.getIssuer())) {
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                        "Invalid Issuer");
-                    return;
+                    // Admin user JWT - skip verification
+                    List<String> roles = jwt.getClaim(jwtUtil.getAdminRoleKey())
+                            .asList(String.class);
+                    if (roles.contains(jwtUtil.getAdminRole())) {
+                        authList.add(
+                                new SystemAuthority(SystemRole.ROLE_ADMIN));
+                    }
+                } else {
+                    // Not on whitelist - verify the token
+                    jwt = jwtUtil.verify(jwtStr);
+                    // TODO internal issuer verification
+                    authList.add(new SystemAuthority(SystemRole.ROLE_API));
                 }
-
-                // Check role and add if it is there.
-                List<String> roles = jwt.getClaim(
-                    jwtUtil.getAdminRoleKey()).asList(String.class);
-                if (roles.contains(jwtUtil.getAdminRole())) {
-                    authList.add(new SystemAuthority(SystemRole.ROLE_ADMIN));
-                }
+            } catch (AlgorithmMismatchException
+                    | SignatureVerificationException e) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                        "Invalid Token");
+                return;
             }
 
             if (jwt != null) {
                 JwtAuthenticationToken authToken = new JwtAuthenticationToken(
-                    authList, jwt);
+                        authList, jwt);
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
