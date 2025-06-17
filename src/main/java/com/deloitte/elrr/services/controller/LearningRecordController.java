@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.deloitte.elrr.entity.LearningRecord;
 import com.deloitte.elrr.entity.LearningResource;
@@ -53,6 +54,7 @@ public class LearningRecordController {
      * @return ResponseEntity<List<LearningRecordDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('learningrecord', 'READ')")
     @GetMapping("/learningrecord")
     public ResponseEntity<List<LearningRecordDto>> getAllLearningRecords(
             @RequestParam(value = "id", required = false)
@@ -91,6 +93,7 @@ public class LearningRecordController {
      * @return ResponseEntity<LearningRecordDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('learningrecord', 'READ')")
     @GetMapping("/learningrecord/{id}")
     public ResponseEntity<LearningRecordDto> getLearningRecordById(
             @PathVariable(value = "id") final UUID learningRecordId)
@@ -112,6 +115,7 @@ public class LearningRecordController {
      * @return ResponseEntity<LearningRecordDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('learningrecord', 'UPDATE')")
     @PutMapping("/learningrecord/{id}")
     public ResponseEntity<LearningRecordDto> updateLearningRecord(
             @PathVariable(value = "id") final UUID learningRecordId,
@@ -146,6 +150,7 @@ public class LearningRecordController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('learningrecord', 'DELETE')")
     @DeleteMapping("/learningrecord/{id}")
     public ResponseEntity<HttpStatus> deleteLearningRecord(
             @PathVariable(value = "id") final UUID learningRecordId)

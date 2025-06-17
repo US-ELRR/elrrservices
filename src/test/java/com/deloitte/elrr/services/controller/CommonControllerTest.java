@@ -1,9 +1,12 @@
 package com.deloitte.elrr.services.controller;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.http.HttpHeaders;
 
 import com.deloitte.elrr.jpa.svc.AssociationSvc;
 import com.deloitte.elrr.jpa.svc.CompetencySvc;
@@ -23,6 +26,8 @@ import com.deloitte.elrr.jpa.svc.PersonalCredentialSvc;
 import com.deloitte.elrr.jpa.svc.PhoneSvc;
 import com.deloitte.elrr.repository.OrganizationRepository;
 import com.deloitte.elrr.services.security.JwtUtil;
+import com.deloitte.elrr.services.dto.PermissionDto;
+import com.deloitte.elrr.services.model.Action;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -115,6 +120,41 @@ class CommonControllerTest {
             testJwt = String.format("Bearer %s", jwtUtil.createToken());
         }
         return testJwt;
+    }
+
+    /**
+     * Get a test JWT header with a comma-separated list of resource|action
+     * pairs.
+     *
+     * @param resourceActions a comma-separated list of resource|action pairs
+     * @return String formatted JWT header
+     */
+    public String getTestJwtHeader(String resourceActions) {
+        List<PermissionDto> permissions = new ArrayList<>();
+        for (String resourceAction : resourceActions.split(",")) {
+            String[] parts = resourceAction.split("\\|");
+            if (parts.length == 2) {
+                String resource = parts[0];
+                String action = parts[1];
+                permissions.add(new PermissionDto(resource, null,
+                        List.of(Action.valueOf(action))));
+            }
+        }
+        return String.format("Bearer %s", jwtUtil.createToken(permissions));
+    }
+
+    /**
+     * Get all headers for a request.
+     *
+     * @param resourceActions a comma-separated list of resource|action pairs
+     * @return HttpHeaders
+     */
+    public HttpHeaders getHeaders(String resourceActions) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", " */*");
+        headers.set("X-Forwarded-Proto", "https");
+        headers.set("Authorization", this.getTestJwtHeader(resourceActions));
+        return headers;
     }
 
     public static <T> T resultsAsObject(String results, TypeReference<T> type)

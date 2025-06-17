@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,14 +48,6 @@ public class EmailControllerTest extends CommonControllerTest {
 
     private static final String EMAIL_API = "/api/email";
 
-    @BeforeEach
-    void addHeaders() {
-        headers = new HttpHeaders();
-        headers.set("Content-Type", " */*");
-        headers.set("X-Forwarded-Proto", "https");
-        headers.set("Authorization", this.getTestJwtHeader());
-    }
-
     /**
      *
      * @param obj
@@ -84,7 +75,7 @@ public class EmailControllerTest extends CommonControllerTest {
                 .get(EMAIL_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("email|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -105,7 +96,7 @@ public class EmailControllerTest extends CommonControllerTest {
                 .get(EMAIL_API + "/" + EMAIL_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("email|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -124,7 +115,7 @@ public class EmailControllerTest extends CommonControllerTest {
                 .get(EMAIL_API + "/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("email|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -140,7 +131,7 @@ public class EmailControllerTest extends CommonControllerTest {
                 .get(EMAIL_API + "?id=" + EMAIL_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("email|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -163,7 +154,7 @@ public class EmailControllerTest extends CommonControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(emailDto))
-                .headers(headers);
+                .headers(this.getHeaders("email|CREATE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -188,7 +179,7 @@ public class EmailControllerTest extends CommonControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(emailDto))
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("email|UPDATE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -209,7 +200,7 @@ public class EmailControllerTest extends CommonControllerTest {
                 .delete(EMAIL_API + "/" + EMAIL_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("email|DELETE"));
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 

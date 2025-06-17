@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,14 +48,6 @@ public class LearningRecordControllerTest extends CommonControllerTest {
 
     private static final String LEARNING_RECORD_API = "/api/learningrecord";
 
-    @BeforeEach
-    void addHeaders() {
-        headers = new HttpHeaders();
-        headers.set("Content-Type", " */*");
-        headers.set("X-Forwarded-Proto", "https");
-        headers.set("Authorization", this.getTestJwtHeader());
-    }
-
     /**
      *
      * @param obj
@@ -85,7 +76,7 @@ public class LearningRecordControllerTest extends CommonControllerTest {
                 .get(LEARNING_RECORD_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("learningrecord|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -106,7 +97,7 @@ public class LearningRecordControllerTest extends CommonControllerTest {
                 .get(LEARNING_RECORD_API + "/" + LEARNING_RECORD_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("learningrecord|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -125,7 +116,7 @@ public class LearningRecordControllerTest extends CommonControllerTest {
                 .get(LEARNING_RECORD_API + "/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("learningrecord|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -141,7 +132,7 @@ public class LearningRecordControllerTest extends CommonControllerTest {
                 .get(LEARNING_RECORD_API + "?id=" + LEARNING_RECORD_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("learningrecord|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -167,7 +158,7 @@ public class LearningRecordControllerTest extends CommonControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(learningRecordDto))
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("learningrecord|UPDATE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -189,7 +180,7 @@ public class LearningRecordControllerTest extends CommonControllerTest {
                 .delete(LEARNING_RECORD_API + "/" + LEARNING_RECORD_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("learningrecord|DELETE"));
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 

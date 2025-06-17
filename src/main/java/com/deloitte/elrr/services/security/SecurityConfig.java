@@ -42,7 +42,11 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/ping").permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers("/api/**")
+                            .hasRole("API")
+                        .requestMatchers("/admin/**")
+                            .hasRole("ADMIN")
+                        .anyRequest().denyAll())
                 .addFilterBefore(jwtRequestFilter,
                         UsernamePasswordAuthenticationFilter.class)
                 .build();

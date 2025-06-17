@@ -6,11 +6,13 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 
+import com.deloitte.elrr.services.dto.PermissionDto;
+
 /**
  * Implementation of AbstractAuthenticationToken Specifically for carrying
  * JWT details with security context.
  */
-public class JwtAuthenticationToken  extends AbstractAuthenticationToken {
+public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 
     private DecodedJWT jwt;
 
@@ -18,7 +20,7 @@ public class JwtAuthenticationToken  extends AbstractAuthenticationToken {
      * Construct Auth Token. Will set authenticated to true.
      *
      * @param auths Granted Authorities
-     * @param jwt Decoded JWT
+     * @param jwt   Decoded JWT
      */
     public JwtAuthenticationToken(List<SystemAuthority> auths, DecodedJWT jwt) {
         super(auths);
@@ -33,7 +35,7 @@ public class JwtAuthenticationToken  extends AbstractAuthenticationToken {
 
     @Override
     public Object getPrincipal() {
-        //TODO Figure out canonical username claims for both token types
+        // TODO Figure out canonical username claims for both token types
         return jwt.getClaim("username");
     }
 
@@ -45,4 +47,10 @@ public class JwtAuthenticationToken  extends AbstractAuthenticationToken {
         return jwt.getClaim(key);
     }
 
+    /**
+     * @return List<PermissionDto> permissions
+     */
+    public List<PermissionDto> getPermissions() {
+        return jwt.getClaim("elrr_permissions").asList(PermissionDto.class);
+    }
 }

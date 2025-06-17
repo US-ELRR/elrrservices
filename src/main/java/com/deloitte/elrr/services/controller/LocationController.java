@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.deloitte.elrr.entity.Location;
 import com.deloitte.elrr.jpa.svc.LocationSvc;
@@ -52,6 +53,7 @@ public class LocationController {
      * @return ResponseEntity<List<LocationDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('location', 'READ')")
     @GetMapping("/location")
     public ResponseEntity<List<LocationDto>> getAllLocations(
             @RequestParam(value = "id", required = false) final UUID locationId)
@@ -88,6 +90,7 @@ public class LocationController {
      * @return ResponseEntity<LocationDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('location', 'READ')")
     @GetMapping("/location/{id}")
     public ResponseEntity<LocationDto> getLocationById(
             @PathVariable(value = "id") final UUID locationId)
@@ -107,6 +110,7 @@ public class LocationController {
      * @param locationDto
      * @return ResponseEntity<LocationDto>
      */
+    @PreAuthorize("hasPermission('location', 'CREATE')")
     @PostMapping("/location")
     public ResponseEntity<LocationDto> createLocation(
             @Valid @RequestBody final LocationDto locationDto) {
@@ -123,6 +127,7 @@ public class LocationController {
      * @return ResponseEntity<LocationDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('location', 'UPDATE')")
     @PutMapping("/location/{id}")
     public ResponseEntity<LocationDto> updateLocation(
             @PathVariable(value = "id") final UUID locationId,
@@ -151,6 +156,7 @@ public class LocationController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('location', 'DELETE')")
     @DeleteMapping("/location/{id}")
     public ResponseEntity<HttpStatus> deleteLocation(
             @PathVariable(value = "id") final UUID locationId)
