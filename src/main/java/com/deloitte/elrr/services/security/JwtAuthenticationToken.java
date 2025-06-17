@@ -2,6 +2,7 @@ package com.deloitte.elrr.services.security;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -13,6 +14,9 @@ import com.deloitte.elrr.services.dto.PermissionDto;
  * JWT details with security context.
  */
 public class JwtAuthenticationToken extends AbstractAuthenticationToken {
+
+    @Value("${api.jwt.user-id-key}")
+    private String userIdKey;
 
     private DecodedJWT jwt;
 
@@ -35,8 +39,7 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getPrincipal() {
-        // TODO Figure out canonical username claims for both token types
-        return jwt.getClaim("username");
+        return jwt.getClaim(userIdKey);
     }
 
     /**
