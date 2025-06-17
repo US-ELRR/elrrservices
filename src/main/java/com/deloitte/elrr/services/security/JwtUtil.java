@@ -42,11 +42,10 @@ public class JwtUtil {
     @Value("${api.jwt.user-id-key}")
     private String apiUserIdKey;
 
-    private Algorithm algorithm;
+    @Value("${api.jwt.issuer}")
+    private String apiIssuer;
 
-    // TODO internal issuer should be configurable and also a URI
-    private static final String ISSUER = "ELRR Client Token Authentication";
-    private static final String CREATOR_KEY = "token-creator";
+    private Algorithm algorithm;
 
     /**
      * No-arg constructor for JwtUtil.
@@ -117,28 +116,9 @@ public class JwtUtil {
     public DecodedJWT verify(String jwt)
             throws AlgorithmMismatchException, SignatureVerificationException {
         JWTVerifier verifier = JWT.require(getAlgorithm())
-            .withIssuer(ISSUER)
+            .withIssuer(apiIssuer)
             .build();
         return verifier.verify(jwt);
-    }
-
-    /**
-     * Create a new Client Token.
-     * @return JWT Token String
-     */
-    public String createToken() {
-        String creatorUname = "";
-        if (SecurityContextHolder.getContext().getAuthentication() != null) {
-            creatorUname = SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal()
-                .toString();
-        }
-        return JWT.create()
-            .withIssuer(ISSUER)
-            .withIssuedAt(new Date())
-            .withClaim(CREATOR_KEY, creatorUname)
-            .sign(getAlgorithm());
     }
 
     /**
@@ -174,9 +154,9 @@ public class JwtUtil {
             .collect(Collectors.toList());
 
         return JWT.create()
-            .withIssuer(ISSUER)
+            .withIssuer(apiIssuer)
             .withIssuedAt(new Date())
-            .withClaim(CREATOR_KEY, creatorUname)
+            .withClaim(apiUserIdKey, creatorUname)
             .withClaim("elrr_permissions", permissionsAsMap)
             .sign(getAlgorithm());
     }

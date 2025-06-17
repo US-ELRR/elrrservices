@@ -21,6 +21,7 @@ import org.mockito.Mockito;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.util.ReflectionTestUtils;
 
 class JwtAuthenticationTokenTest {
 
@@ -47,6 +48,8 @@ class JwtAuthenticationTokenTest {
 
         // Create a JWT token with admin role
         JwtUtil jwtUtil = new JwtUtil("test-secret");
+        ReflectionTestUtils.setField(jwtUtil, "apiUserIdKey",
+                "token-creator");
         testToken = jwtUtil.createToken(permissions);
         jwt = jwtUtil.verify(testToken);
 

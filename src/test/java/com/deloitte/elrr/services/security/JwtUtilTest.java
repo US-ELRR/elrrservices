@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.deloitte.elrr.services.dto.PermissionDto;
 import com.deloitte.elrr.services.model.Action;
+import org.springframework.test.util.ReflectionTestUtils;
 
 class JwtUtilTest {
 
@@ -20,6 +21,9 @@ class JwtUtilTest {
     @BeforeEach
     void setUp() {
         jwtUtil = new JwtUtil("test-secret");
+        // set the apiUserIdKey for the JWT
+        ReflectionTestUtils.setField(jwtUtil, "apiUserIdKey",
+                "token-creator");
     }
 
     @Test
