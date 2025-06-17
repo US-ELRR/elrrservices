@@ -2,7 +2,6 @@ package com.deloitte.elrr.services.security;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -10,26 +9,27 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.deloitte.elrr.services.dto.PermissionDto;
 
 /**
- * Implementation of AbstractAuthenticationToken Specifically for carrying
- * JWT details with security context.
+ * Implementation of AbstractAuthenticationToken Specifically for carrying JWT
+ * details with security context.
  */
 public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 
-    @Value("${api.jwt.user-id-key}")
     private String userIdKey;
-
     private DecodedJWT jwt;
 
     /**
      * Construct Auth Token. Will set authenticated to true.
      *
      * @param auths Granted Authorities
-     * @param jwt   Decoded JWT
+     * @param jwt Decoded JWT
+     * @param userIdKey Key to retrieve user ID from JWT
      */
-    public JwtAuthenticationToken(List<SystemAuthority> auths, DecodedJWT jwt) {
+    public JwtAuthenticationToken(List<SystemAuthority> auths, DecodedJWT jwt,
+            String userIdKey) {
         super(auths);
         super.setAuthenticated(true);
         this.jwt = jwt;
+        this.userIdKey = userIdKey;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getPrincipal() {
-        return jwt.getClaim(userIdKey);
+        return jwt.getClaim(userIdKey).asString();
     }
 
     /**

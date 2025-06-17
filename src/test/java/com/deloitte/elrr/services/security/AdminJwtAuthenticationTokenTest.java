@@ -12,6 +12,11 @@ import org.junit.jupiter.api.Test;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.test.util.ReflectionTestUtils;
+
+@Slf4j
 class AdminJwtAuthenticationTokenTest {
 
     private AdminJwtAuthenticationToken adminJwtAuthToken;
@@ -23,14 +28,23 @@ class AdminJwtAuthenticationTokenTest {
     void setUp() {
         // Create a JWT token with admin role
         JwtUtil jwtUtil = new JwtUtil("test-secret");
-        testToken = jwtUtil.createToken();
-        jwt = jwtUtil.verify(testToken);
+        // Set the admin user ID key for the JWT
+        // This is necessary because the @Value annotation in
+        // AdminJwtAuthenticationToken expects a property that
+        // is not set properly.
+        // TODO remove this when no longer needed
+        ReflectionTestUtils.setField(jwtUtil, "adminUserIdKey",
+            "preferred_username");
+        testToken = jwtUtil.createAdminToken("external-secret");
+        // decode rather than verify
+        jwt = jwtUtil.decodeToken(testToken);
 
         // Set up authentication token
         SystemAuthority authority = new SystemAuthority(
                 SystemAuthority.SystemRole.ROLE_ADMIN);
         authorities = Collections.singletonList(authority);
-        adminJwtAuthToken = new AdminJwtAuthenticationToken(authorities, jwt);
+        adminJwtAuthToken = new AdminJwtAuthenticationToken(authorities, jwt,
+                "preferred_username");
     }
 
     @Test
@@ -50,6 +64,7 @@ class AdminJwtAuthenticationTokenTest {
 
         // Assert
         assertNotNull(principal);
+        assertEquals("admin-user", principal);
     }
 
     @Test

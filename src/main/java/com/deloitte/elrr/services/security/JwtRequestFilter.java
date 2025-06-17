@@ -55,7 +55,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                         authList.add(
                                 new SystemAuthority(SystemRole.ROLE_ADMIN));
                         SecurityContextHolder.getContext().setAuthentication(
-                                new AdminJwtAuthenticationToken(authList, jwt));
+                                new AdminJwtAuthenticationToken(authList, jwt,
+                                        jwtUtil.getAdminUserIdKey()));
                     }
                 } else {
                     // Not on whitelist - verify the token
@@ -63,7 +64,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     // TODO internal issuer verification
                     authList.add(new SystemAuthority(SystemRole.ROLE_API));
                     SecurityContextHolder.getContext().setAuthentication(
-                            new JwtAuthenticationToken(authList, jwt));
+                            new JwtAuthenticationToken(authList, jwt,
+                                    jwtUtil.getApiUserIdKey()));
                 }
             } catch (AlgorithmMismatchException
                     | SignatureVerificationException e) {

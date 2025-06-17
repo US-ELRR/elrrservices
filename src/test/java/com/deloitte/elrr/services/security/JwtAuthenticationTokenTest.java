@@ -16,28 +16,45 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.deloitte.elrr.services.dto.PermissionDto;
 import com.deloitte.elrr.services.model.Action;
 
+import org.mockito.Mockito;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 class JwtAuthenticationTokenTest {
-    
+
     private JwtAuthenticationToken jwtAuthToken;
     private List<SystemAuthority> authorities;
     private String testToken;
     private DecodedJWT jwt;
     private List<PermissionDto> permissions = List.of(
-            new PermissionDto("resource1", null, List.of(Action.READ, Action.UPDATE)),
-            new PermissionDto("resource2", null, List.of(Action.CREATE, Action.DELETE))
-        );
+            new PermissionDto("resource1", null,
+                    List.of(Action.READ, Action.UPDATE)),
+            new PermissionDto("resource2", null,
+                    List.of(Action.CREATE, Action.DELETE)));
 
     @BeforeEach
     void setUp() {
+        // Mock Authentication and SecurityContext
+        Authentication authentication = Mockito.mock(Authentication.class);
+        Mockito.when(authentication.getPrincipal()).thenReturn("api-user");
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication())
+                .thenReturn(authentication);
+
+        SecurityContextHolder.setContext(securityContext);
+
         // Create a JWT token with admin role
         JwtUtil jwtUtil = new JwtUtil("test-secret");
         testToken = jwtUtil.createToken(permissions);
         jwt = jwtUtil.verify(testToken);
-        
+
         // Set up authentication token
-        SystemAuthority authority = new SystemAuthority(SystemAuthority.SystemRole.ROLE_ADMIN);
+        SystemAuthority authority = new SystemAuthority(
+                SystemAuthority.SystemRole.ROLE_ADMIN);
         authorities = Collections.singletonList(authority);
-        jwtAuthToken = new JwtAuthenticationToken(authorities, jwt);
+        jwtAuthToken = new JwtAuthenticationToken(authorities, jwt,
+                "token-creator");
     }
 
     @Test
@@ -55,15 +72,18 @@ class JwtAuthenticationTokenTest {
         // Act
         Object principal = jwtAuthToken.getPrincipal();
 
-        // Assert 
+        // Assert
         assertNotNull(principal);
+        assertEquals("api-user", principal);
     }
 
-    @Test 
+    @Test
     void testGetPermissionsClaim() {
         // Act
-        Claim permissionsClaim = (Claim)jwtAuthToken.getClaim("elrr_permissions");
-        List<PermissionDto> tokenPermissions = permissionsClaim.asList(PermissionDto.class);
+        Claim permissionsClaim = (Claim) jwtAuthToken
+                .getClaim("elrr_permissions");
+        List<PermissionDto> tokenPermissions = permissionsClaim
+                .asList(PermissionDto.class);
 
         // Assert
         assertNotNull(tokenPermissions);

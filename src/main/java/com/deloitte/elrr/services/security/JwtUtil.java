@@ -18,6 +18,9 @@ import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.deloitte.elrr.services.dto.PermissionDto;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class JwtUtil {
 
@@ -35,6 +38,9 @@ public class JwtUtil {
 
     @Value("${admin.jwt.user-id-key}")
     private String adminUserIdKey;
+
+    @Value("${api.jwt.user-id-key}")
+    private String apiUserIdKey;
 
     private Algorithm algorithm;
 
@@ -76,6 +82,22 @@ public class JwtUtil {
      */
     public List<String> getAdminIssuerWhitelist() {
         return List.of(adminIssuerWhitelist.split(","));
+    }
+
+    /**
+     * Get the admin user ID key configured for admin users.
+     * @return the admin user ID key configured for admin users
+     */
+    public String getAdminUserIdKey() {
+        return adminUserIdKey;
+    }
+
+    /**
+     * Get the API user ID key configured for API users.
+     * @return the API user ID key configured for API users
+     */
+    public String getApiUserIdKey() {
+        return apiUserIdKey;
     }
 
     /**
