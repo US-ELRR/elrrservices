@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,7 @@ class JwtUtilTest {
                 permission2);
 
         // Act
-        String token = jwtUtil.createToken(permissions);
+        String token = jwtUtil.createToken(UUID.randomUUID(), permissions);
         DecodedJWT decodedJWT = jwtUtil.decodeToken(token);
         List<?> permissionsClaim = decodedJWT.getClaim("elrr_permissions")
                 .asList(Object.class);

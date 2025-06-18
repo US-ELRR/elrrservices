@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -137,11 +138,12 @@ public class JwtUtil {
 
     /**
      * Create a new Client Token with permissions.
+     * @param tokenId Entity identifier for the token
      * @param permissions List of permissions to be added as a claim in the
      *   token
      * @return JWT Token String
      */
-    public String createToken(List<PermissionDto> permissions) {
+    public String createToken(UUID tokenId, List<PermissionDto> permissions) {
         String creatorUname = "";
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
             creatorUname = SecurityContextHolder.getContext()

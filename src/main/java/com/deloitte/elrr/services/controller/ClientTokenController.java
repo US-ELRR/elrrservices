@@ -1,5 +1,7 @@
 package com.deloitte.elrr.services.controller;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,8 +39,10 @@ public class ClientTokenController {
             @Valid @RequestBody PermissionsWrapperDto wrapper)
             throws ResourceNotFoundException {
 
+        // TODO actual entity id for token
+        UUID tokenId = UUID.randomUUID();
         ClientTokenDto clientToken = new ClientTokenDto();
-        clientToken.setToken(jwtUtil.createToken(wrapper.getPermissions()));
+        clientToken.setToken(jwtUtil.createToken(tokenId, wrapper.getPermissions()));
 
         return ResponseEntity.ok(clientToken);
     }

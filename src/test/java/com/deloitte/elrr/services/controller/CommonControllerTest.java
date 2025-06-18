@@ -2,6 +2,7 @@ package com.deloitte.elrr.services.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,7 +134,8 @@ class CommonControllerTest {
                         List.of(Action.valueOf(action))));
             }
         }
-        return String.format("Bearer %s", jwtUtil.createToken(permissions));
+        UUID tokenId = UUID.randomUUID();
+        return String.format("Bearer %s", jwtUtil.createToken(tokenId, permissions));
     }
 
     /**
