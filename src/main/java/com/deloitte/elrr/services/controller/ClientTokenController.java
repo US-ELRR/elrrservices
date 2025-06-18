@@ -59,7 +59,8 @@ public class ClientTokenController {
         Map<String, Object> payload = decodedJWT.getClaims().entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
                         e -> e.getValue().as(Object.class)));
-        ClientToken clientToken = new ClientToken(payload);
+        ClientToken clientToken = new ClientToken();
+        clientToken.setJwtPayload(payload);
         clientToken.setId(tokenId);
         clientTokenSvc.save(clientToken);
         // Output the token to the client
