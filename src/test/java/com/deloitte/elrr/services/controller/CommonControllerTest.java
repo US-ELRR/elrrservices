@@ -134,6 +134,7 @@ class CommonControllerTest {
                         List.of(Action.valueOf(action))));
             }
         }
+        // TODO: we probably need to make a real entity ID here
         UUID tokenId = UUID.randomUUID();
         return String.format("Bearer %s", jwtUtil.createToken(tokenId, permissions));
     }
