@@ -25,6 +25,7 @@ import com.deloitte.elrr.jpa.svc.PersonSvc;
 import com.deloitte.elrr.jpa.svc.PersonalCompetencySvc;
 import com.deloitte.elrr.jpa.svc.PersonalCredentialSvc;
 import com.deloitte.elrr.jpa.svc.PhoneSvc;
+import com.deloitte.elrr.jpa.svc.ClientTokenSvc;
 import com.deloitte.elrr.repository.OrganizationRepository;
 import com.deloitte.elrr.services.security.JwtUtil;
 import com.deloitte.elrr.services.dto.PermissionDto;
@@ -95,6 +96,9 @@ class CommonControllerTest {
 
     @MockitoBean
     private LearningRecordSvc learningRecordSvc;
+
+    @MockitoBean
+    private ClientTokenSvc clientTokenSvc;
 
     @MockitoBean
     private OrganizationRepository organizationRepository;

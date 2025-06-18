@@ -1,6 +1,8 @@
 package com.deloitte.elrr.services.controller;
 
 import java.util.UUID;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.deloitte.elrr.entity.ClientToken;
+import com.fasterxml.uuid.Generators;
+import com.deloitte.elrr.jpa.svc.ClientTokenSvc;
 import com.deloitte.elrr.services.dto.ClientTokenDto;
 import com.deloitte.elrr.services.dto.PermissionsWrapperDto;
 import com.deloitte.elrr.services.exception.ResourceNotFoundException;
@@ -23,12 +29,18 @@ import jakarta.validation.Valid;
 @Slf4j
 public class ClientTokenController {
     /**
+    *
+    */
+    @Autowired
+    private ClientTokenSvc clientTokenSvc;
+    /**
      *
      */
     @Autowired
     private JwtUtil jwtUtil;
 
     /**
+     * Create a new client token.
      *
      * @param wrapper Contains list of permissions to be included in the token
      * @return ResponseEntity<ClientTokenDto> containing the generated token
@@ -39,11 +51,21 @@ public class ClientTokenController {
             @Valid @RequestBody PermissionsWrapperDto wrapper)
             throws ResourceNotFoundException {
 
-        // TODO actual entity id for token
-        UUID tokenId = UUID.randomUUID();
-        ClientTokenDto clientToken = new ClientTokenDto();
-        clientToken.setToken(jwtUtil.createToken(tokenId, wrapper.getPermissions()));
+        UUID tokenId = Generators.timeBasedEpochRandomGenerator().generate();
+        String token = jwtUtil.createToken(tokenId, wrapper.getPermissions());
+        // get the payload back out
+        // TODO figure out a way to avoid this
+        DecodedJWT decodedJWT = jwtUtil.decodeToken(token);
+        Map<String, Object> payload = decodedJWT.getClaims().entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                        e -> e.getValue().as(Object.class)));
+        ClientToken clientToken = new ClientToken(payload);
+        clientToken.setId(tokenId);
+        clientTokenSvc.save(clientToken);
+        // Output the token to the client
+        ClientTokenDto clientTokenDto = new ClientTokenDto();
+        clientTokenDto.setToken(token);
 
-        return ResponseEntity.ok(clientToken);
+        return ResponseEntity.ok(clientTokenDto);
     }
 }
