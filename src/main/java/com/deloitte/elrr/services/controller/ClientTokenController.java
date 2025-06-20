@@ -1,12 +1,15 @@
 package com.deloitte.elrr.services.controller;
 
 import java.util.UUID;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +21,7 @@ import com.deloitte.elrr.entity.ClientToken;
 import com.fasterxml.uuid.Generators;
 import com.deloitte.elrr.jpa.svc.ClientTokenSvc;
 import com.deloitte.elrr.services.dto.ClientTokenDto;
+import com.deloitte.elrr.services.dto.ClientTokenListItemDto;
 import com.deloitte.elrr.services.dto.PermissionsWrapperDto;
 import com.deloitte.elrr.services.exception.ResourceNotFoundException;
 import com.deloitte.elrr.services.security.JwtUtil;
@@ -94,5 +98,26 @@ public class ClientTokenController {
             throw new ResourceNotFoundException(
                     "Token not found with ID: " + tokenId);
         }
+    }
+
+    /**
+     * List all client tokens.
+     *
+     * @return ResponseEntity<List<ClientTokenListDto>> containing all
+     * tokens with their ID and label
+     */
+    @GetMapping("/tokens")
+    public ResponseEntity<List<ClientTokenListItemDto>> listTokens() {
+        Iterable<ClientToken> tokens = clientTokenSvc.findAll();
+        List<ClientTokenListItemDto> tokenList = new ArrayList<>();
+
+        for (ClientToken token : tokens) {
+            ClientTokenListItemDto dto = new ClientTokenListItemDto();
+            dto.setId(token.getId());
+            dto.setLabel(token.getLabel());
+            tokenList.add(dto);
+        }
+
+        return ResponseEntity.ok(tokenList);
     }
 }
