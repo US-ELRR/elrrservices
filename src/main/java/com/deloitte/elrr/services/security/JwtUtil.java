@@ -101,6 +101,14 @@ public class JwtUtil {
     }
 
     /**
+     * Get the API issuer configured for API users.
+     * @return the API issuer configured for API users
+     */
+    public String getApiIssuer() {
+        return apiIssuer;
+    }
+
+    /**
      *
      * @param jwt
      * @return If it is a jwt token or not

@@ -1,10 +1,14 @@
 package com.deloitte.elrr.services.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.ArrayList;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.HttpHeaders;
@@ -107,6 +111,12 @@ class CommonControllerTest {
     private JwtUtil jwtUtil;
 
     private String testJwt;
+
+    @BeforeEach
+    void setUp() {
+        // Mock clientTokenSvc.existsById to always return true
+        when(clientTokenSvc.existsById(any())).thenReturn(true);
+    }
 
     /**
      *
