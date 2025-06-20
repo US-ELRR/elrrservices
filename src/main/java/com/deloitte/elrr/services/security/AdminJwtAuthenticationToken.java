@@ -6,13 +6,11 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 
-import com.deloitte.elrr.services.dto.PermissionDto;
-
 /**
- * Implementation of AbstractAuthenticationToken Specifically for carrying JWT
- * details with security context.
+ * Implementation of AbstractAuthenticationToken Specifically for carrying admin
+ * JWT details with security context.
  */
-public class JwtAuthenticationToken extends AbstractAuthenticationToken {
+public class AdminJwtAuthenticationToken extends AbstractAuthenticationToken {
 
     private String userIdKey;
     private DecodedJWT jwt;
@@ -24,12 +22,12 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
      * @param jwt Decoded JWT
      * @param userIdKey Key to retrieve user ID from JWT
      */
-    public JwtAuthenticationToken(List<SystemAuthority> auths, DecodedJWT jwt,
-            String userIdKey) {
+    public AdminJwtAuthenticationToken(List<SystemAuthority> auths,
+            DecodedJWT jwt, String userIdKey) {
         super(auths);
         super.setAuthenticated(true);
-        this.jwt = jwt;
         this.userIdKey = userIdKey;
+        this.jwt = jwt;
     }
 
     @Override
@@ -48,12 +46,5 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
      */
     public Object getClaim(String key) {
         return jwt.getClaim(key);
-    }
-
-    /**
-     * @return List<PermissionDto> permissions
-     */
-    public List<PermissionDto> getPermissions() {
-        return jwt.getClaim("elrr_permissions").asList(PermissionDto.class);
     }
 }

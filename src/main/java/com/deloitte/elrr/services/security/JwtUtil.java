@@ -18,16 +18,34 @@ import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.deloitte.elrr.services.dto.PermissionDto;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class JwtUtil {
 
     @Value("${client.jwt.secret}")
     private String secret;
 
-    private Algorithm algorithm;
+    @Value("${admin.jwt.role}")
+    private String adminRole;
 
-    private static final String ISSUER = "ELRR Client Token Authentication";
-    private static final String CREATOR_KEY = "token-creator";
+    @Value("${admin.jwt.role-key}")
+    private String adminRoleKey;
+
+    @Value("${admin.jwt.issuer-whitelist}")
+    private String adminIssuerWhitelist;
+
+    @Value("${admin.jwt.user-id-key}")
+    private String adminUserIdKey;
+
+    @Value("${api.jwt.user-id-key}")
+    private String apiUserIdKey;
+
+    @Value("${api.jwt.issuer}")
+    private String apiIssuer;
+
+    private Algorithm algorithm;
 
     /**
      * No-arg constructor for JwtUtil.
@@ -41,6 +59,44 @@ public class JwtUtil {
      */
     public JwtUtil(String secret) {
         this.secret = secret;
+    }
+
+    /**
+     * Get the role configured for admin users.
+     * @return the role configured for admin users
+     */
+    public String getAdminRole() {
+        return adminRole;
+    }
+    /**
+     * Get the role key configured for admin users.
+     * @return the role key configured for admin users
+     */
+    public String getAdminRoleKey() {
+        return adminRoleKey;
+    }
+    /**
+     * Get the issuer whitelist configured for admin users.
+     * @return the issuer whitelist configured for admin users
+     */
+    public List<String> getAdminIssuerWhitelist() {
+        return List.of(adminIssuerWhitelist.split(","));
+    }
+
+    /**
+     * Get the admin user ID key configured for admin users.
+     * @return the admin user ID key configured for admin users
+     */
+    public String getAdminUserIdKey() {
+        return adminUserIdKey;
+    }
+
+    /**
+     * Get the API user ID key configured for API users.
+     * @return the API user ID key configured for API users
+     */
+    public String getApiUserIdKey() {
+        return apiUserIdKey;
     }
 
     /**
@@ -60,28 +116,9 @@ public class JwtUtil {
     public DecodedJWT verify(String jwt)
             throws AlgorithmMismatchException, SignatureVerificationException {
         JWTVerifier verifier = JWT.require(getAlgorithm())
-            .withIssuer(ISSUER)
+            .withIssuer(apiIssuer)
             .build();
         return verifier.verify(jwt);
-    }
-
-    /**
-     * Create a new Client Token.
-     * @return JWT Token String
-     */
-    public String createToken() {
-        String creatorUname = "";
-        if (SecurityContextHolder.getContext().getAuthentication() != null) {
-            creatorUname = SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal()
-                .toString();
-        }
-        return JWT.create()
-            .withIssuer(ISSUER)
-            .withIssuedAt(new Date())
-            .withClaim(CREATOR_KEY, creatorUname)
-            .sign(getAlgorithm());
     }
 
     /**
@@ -91,9 +128,10 @@ public class JwtUtil {
      */
     public String createAdminToken(String seekrit) {
         return JWT.create()
-            .withIssuer(ISSUER)
+            .withIssuer("http://example.com")
             .withIssuedAt(new Date())
-            .withClaim("roles", Collections.singletonList("ADMIN"))
+            .withClaim(adminUserIdKey, "admin-user")
+            .withClaim("group-simple", Collections.singletonList("elrr-admin"))
             .sign(Algorithm.HMAC512(seekrit));
     }
 
@@ -116,9 +154,9 @@ public class JwtUtil {
             .collect(Collectors.toList());
 
         return JWT.create()
-            .withIssuer(ISSUER)
+            .withIssuer(apiIssuer)
             .withIssuedAt(new Date())
-            .withClaim(CREATOR_KEY, creatorUname)
+            .withClaim(apiUserIdKey, creatorUname)
             .withClaim("elrr_permissions", permissionsAsMap)
             .sign(getAlgorithm());
     }

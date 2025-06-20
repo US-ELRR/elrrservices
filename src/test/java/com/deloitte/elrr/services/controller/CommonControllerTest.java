@@ -115,13 +115,6 @@ class CommonControllerTest {
         return new ObjectMapper().writeValueAsString(obj);
     }
 
-    public String getTestJwtHeader() {
-        if (testJwt == null) {
-            testJwt = String.format("Bearer %s", jwtUtil.createToken());
-        }
-        return testJwt;
-    }
-
     /**
      * Get a test JWT header with a comma-separated list of resource|action
      * pairs.
