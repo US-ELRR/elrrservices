@@ -62,6 +62,10 @@ public class ClientTokenController {
                 .collect(Collectors.toMap(Map.Entry::getKey,
                         e -> e.getValue().as(Object.class)));
         ClientToken clientToken = new ClientToken();
+        // set the label if provided
+        if (wrapper.getLabel() != null && !wrapper.getLabel().isEmpty()) {
+            clientToken.setLabel(wrapper.getLabel());
+        }
         clientToken.setJwtPayload(payload);
         clientToken.setId(tokenId);
         clientTokenSvc.save(clientToken);

@@ -74,7 +74,7 @@ public class ClientTokenControllerTest extends CommonControllerTest {
                 .post(TOKEN_API)
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(String.format("{\"permissions\": %s}",
+                .content(String.format("{\"label\":\"test-label\",\"permissions\": %s}",
                 asJsonString(permissions)));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
