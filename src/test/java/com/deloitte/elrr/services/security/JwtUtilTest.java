@@ -36,9 +36,10 @@ class JwtUtilTest {
                 Arrays.asList(Action.UPDATE, Action.DELETE));
         List<PermissionDto> permissions = Arrays.asList(permission1,
                 permission2);
+        UUID testTokenId = UUID.randomUUID();
 
         // Act
-        String token = jwtUtil.createToken(UUID.randomUUID(), permissions);
+        String token = jwtUtil.createToken(testTokenId, permissions);
         DecodedJWT decodedJWT = jwtUtil.decodeToken(token);
         List<?> permissionsClaim = decodedJWT.getClaim("elrr_permissions")
                 .asList(Object.class);
@@ -47,6 +48,10 @@ class JwtUtilTest {
         assertNotNull(token);
         assertNotNull(decodedJWT);
         assertNotNull(permissionsClaim);
+        
+        // Verify that the UUID is present in the JWT payload as the 'jti' claim
+        assertEquals(testTokenId.toString(), decodedJWT.getId());
+        
         assertTrue(permissionsClaim.stream().anyMatch(
                 map -> "resource1".equals(((Map<?, ?>) map).get("resource"))));
         assertTrue(permissionsClaim.stream()

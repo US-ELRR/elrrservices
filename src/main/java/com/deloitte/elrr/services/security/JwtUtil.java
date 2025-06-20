@@ -158,6 +158,7 @@ public class JwtUtil {
         return JWT.create()
             .withIssuer(apiIssuer)
             .withIssuedAt(new Date())
+            .withJWTId(tokenId.toString())
             .withClaim(apiUserIdKey, creatorUname)
             .withClaim("elrr_permissions", permissionsAsMap)
             .sign(getAlgorithm());
