@@ -16,4 +16,6 @@ import jakarta.validation.constraints.NotEmpty;
 public class PermissionsWrapperDto {
     @NotEmpty
     private List<PermissionDto> permissions;
+
+    private String label;
 }

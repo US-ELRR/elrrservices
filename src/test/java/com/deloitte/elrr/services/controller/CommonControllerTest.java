@@ -1,9 +1,14 @@
 package com.deloitte.elrr.services.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.ArrayList;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.HttpHeaders;
@@ -24,6 +29,7 @@ import com.deloitte.elrr.jpa.svc.PersonSvc;
 import com.deloitte.elrr.jpa.svc.PersonalCompetencySvc;
 import com.deloitte.elrr.jpa.svc.PersonalCredentialSvc;
 import com.deloitte.elrr.jpa.svc.PhoneSvc;
+import com.deloitte.elrr.jpa.svc.ClientTokenSvc;
 import com.deloitte.elrr.repository.OrganizationRepository;
 import com.deloitte.elrr.services.security.JwtUtil;
 import com.deloitte.elrr.services.dto.PermissionDto;
@@ -96,12 +102,21 @@ class CommonControllerTest {
     private LearningRecordSvc learningRecordSvc;
 
     @MockitoBean
+    private ClientTokenSvc clientTokenSvc;
+
+    @MockitoBean
     private OrganizationRepository organizationRepository;
 
     @Autowired
     private JwtUtil jwtUtil;
 
     private String testJwt;
+
+    @BeforeEach
+    void setUp() {
+        // Mock clientTokenSvc.existsById to always return true
+        when(clientTokenSvc.existsById(any())).thenReturn(true);
+    }
 
     /**
      *
@@ -133,7 +148,9 @@ class CommonControllerTest {
                         List.of(Action.valueOf(action))));
             }
         }
-        return String.format("Bearer %s", jwtUtil.createToken(permissions));
+        // TODO: we probably need to make a real entity ID here
+        UUID tokenId = UUID.randomUUID();
+        return String.format("Bearer %s", jwtUtil.createToken(tokenId, permissions));
     }
 
     /**

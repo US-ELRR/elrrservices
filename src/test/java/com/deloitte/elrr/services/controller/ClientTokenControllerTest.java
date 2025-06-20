@@ -1,9 +1,11 @@
 package com.deloitte.elrr.services.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,6 +26,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.deloitte.elrr.services.TestAppConfig;
 import com.deloitte.elrr.services.dto.PermissionDto;
 import com.deloitte.elrr.services.model.Action;
+import com.deloitte.elrr.entity.ClientToken;
 import com.deloitte.elrr.services.security.JwtUtil;
 import com.deloitte.elrr.services.security.MethodSecurityConfig;
 import com.deloitte.elrr.services.security.SecurityConfig;
@@ -73,12 +76,85 @@ public class ClientTokenControllerTest extends CommonControllerTest {
                 .post(TOKEN_API)
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(String.format("{\"permissions\": %s}",
+                .content(String.format("{\"label\":\"test-label\",\"permissions\": %s}",
                 asJsonString(permissions)));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         // Assert
         assertEquals(200, mvcResult.getResponse().getStatus());
+    }
+
+    @Test
+    void testRevokeTokenSuccess() throws Exception {
+        // Arrange
+        UUID tokenId = UUID.randomUUID();
+        
+        // Act
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete(TOKEN_API + "/" + tokenId)
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        // Assert
+        assertEquals(204, mvcResult.getResponse().getStatus());
+    }
+
+    @Test
+    void testRevokeTokenNotFound() throws Exception {
+        // Arrange
+        UUID tokenId = UUID.randomUUID();
+        
+        // Mock the service to throw RuntimeServiceException when delete is called
+        org.mockito.Mockito.doThrow(new com.deloitte.elrr.exception.RuntimeServiceException("Token not found"))
+                .when(getClientTokenSvc()).delete(tokenId);
+
+        // Act
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete(TOKEN_API + "/" + tokenId)
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        // Assert
+        assertEquals(404, mvcResult.getResponse().getStatus());
+    }
+
+    @Test
+    void testListTokens() throws Exception {
+        // Arrange
+        UUID tokenId1 = UUID.randomUUID();
+        UUID tokenId2 = UUID.randomUUID();
+        
+        ClientToken token1 = new ClientToken();
+        token1.setId(tokenId1);
+        token1.setLabel("test-token-1");
+        
+        ClientToken token2 = new ClientToken();
+        token2.setId(tokenId2);
+        token2.setLabel("test-token-2");
+        
+        List<ClientToken> tokens = Arrays.asList(token1, token2);
+        
+        // Mock the service to return test tokens
+        org.mockito.Mockito.when(getClientTokenSvc().findAll()).thenReturn(tokens);
+
+        // Act
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(TOKEN_API + "s")  // Note: endpoint is /tokens
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        // Assert
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        
+        // Verify response contains both tokens
+        String responseContent = mvcResult.getResponse().getContentAsString();
+        assertTrue(responseContent.contains(tokenId1.toString()));
+        assertTrue(responseContent.contains("test-token-1"));
+        assertTrue(responseContent.contains(tokenId2.toString()));
+        assertTrue(responseContent.contains("test-token-2"));
     }
 
 }

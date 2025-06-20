@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,7 +51,8 @@ class JwtAuthenticationTokenTest {
         JwtUtil jwtUtil = new JwtUtil("test-secret");
         ReflectionTestUtils.setField(jwtUtil, "apiUserIdKey",
                 "token-creator");
-        testToken = jwtUtil.createToken(permissions);
+        UUID testTokenId = UUID.randomUUID();
+        testToken = jwtUtil.createToken(testTokenId, permissions);
         jwt = jwtUtil.verify(testToken);
 
         // Set up authentication token

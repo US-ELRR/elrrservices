@@ -3,6 +3,7 @@ package com.deloitte.elrr.services.security;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,8 +20,13 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import com.deloitte.elrr.jpa.svc.ClientTokenSvc;
+
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
+
+    @Autowired
+    private ClientTokenSvc clientTokenSvc;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -61,7 +67,19 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 } else {
                     // Not on whitelist - verify the token
                     jwt = jwtUtil.verify(jwtStr);
-                    // TODO internal issuer verification
+                    // internal issuer verification
+                    if (!jwt.getIssuer().equals(jwtUtil.getApiIssuer())) {
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                        "Invalid Token Issuer");
+                        return;
+                        }
+                    // verify that the token exists in the database
+                    if (!clientTokenSvc
+                            .existsById(UUID.fromString(jwt.getId()))) {
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                                "Invalid Token");
+                        return;
+                    }
                     authList.add(new SystemAuthority(SystemRole.ROLE_API));
                     SecurityContextHolder.getContext().setAuthentication(
                             new JwtAuthenticationToken(authList, jwt,
