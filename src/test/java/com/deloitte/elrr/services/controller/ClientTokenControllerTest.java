@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -79,6 +80,42 @@ public class ClientTokenControllerTest extends CommonControllerTest {
 
         // Assert
         assertEquals(200, mvcResult.getResponse().getStatus());
+    }
+
+    @Test
+    void testRevokeTokenSuccess() throws Exception {
+        // Arrange
+        UUID tokenId = UUID.randomUUID();
+        
+        // Act
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete(TOKEN_API + "/" + tokenId)
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        // Assert
+        assertEquals(204, mvcResult.getResponse().getStatus());
+    }
+
+    @Test
+    void testRevokeTokenNotFound() throws Exception {
+        // Arrange
+        UUID tokenId = UUID.randomUUID();
+        
+        // Mock the service to throw RuntimeServiceException when delete is called
+        org.mockito.Mockito.doThrow(new com.deloitte.elrr.exception.RuntimeServiceException("Token not found"))
+                .when(getClientTokenSvc()).delete(tokenId);
+
+        // Act
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete(TOKEN_API + "/" + tokenId)
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        // Assert
+        assertEquals(404, mvcResult.getResponse().getStatus());
     }
 
 }
