@@ -19,6 +19,7 @@ import com.deloitte.elrr.jpa.svc.CredentialSvc;
 import com.deloitte.elrr.jpa.svc.EmailSvc;
 import com.deloitte.elrr.jpa.svc.EmploymentRecordSvc;
 import com.deloitte.elrr.jpa.svc.FacilitySvc;
+import com.deloitte.elrr.jpa.svc.GoalSvc;
 import com.deloitte.elrr.jpa.svc.IdentitySvc;
 import com.deloitte.elrr.jpa.svc.LearningRecordSvc;
 import com.deloitte.elrr.jpa.svc.LearningResourceSvc;
@@ -79,6 +80,9 @@ class CommonControllerTest {
 
     @MockitoBean
     private FacilitySvc facilitySvc;
+
+    @MockitoBean
+    private GoalSvc goalSvc;
 
     @MockitoBean
     private EmploymentRecordSvc employmentRecordSvc;
