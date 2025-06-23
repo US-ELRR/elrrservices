@@ -1,0 +1,292 @@
+package com.deloitte.elrr.services.controller;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import com.deloitte.elrr.entity.Goal;
+import com.deloitte.elrr.entity.types.GoalType;
+import com.deloitte.elrr.services.TestAppConfig;
+import com.deloitte.elrr.services.dto.GoalDto;
+import com.deloitte.elrr.services.security.MethodSecurityConfig;
+import com.deloitte.elrr.services.security.SecurityConfig;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import lombok.extern.slf4j.Slf4j;
+
+@WebMvcTest(GoalController.class)
+@ContextConfiguration
+@AutoConfigureMockMvc(addFilters = true)
+@Import({TestAppConfig.class, SecurityConfig.class, MethodSecurityConfig.class})
+@Slf4j
+public class GoalControllerTest extends CommonControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    private static final String GOAL_API = "/api/goal";
+
+    /**
+     * Convert object to JSON string
+     *
+     * @param obj the object to convert
+     * @return String JSON representation
+     * @throws JsonProcessingException
+     */
+    public static String asJsonString(final Object obj)
+            throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        return mapper.writeValueAsString(obj);
+    }
+
+    private static final UUID GOAL_ID = UUID.randomUUID();
+    private static final UUID PERSON_ID = UUID.randomUUID();
+
+    /**
+     * Test getting all goals
+     *
+     * @throws Exception
+     */
+    @Test
+    void getAllGoalsTest() throws Exception {
+        Mockito.doReturn(getGoalList()).when(getGoalSvc()).findAll();
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(GOAL_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("goal|READ"));
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertNotNull(mvcResult.getResponse().getContentAsString());
+
+        List<GoalDto> results = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<GoalDto>>() {});
+
+        assertEquals(2, results.size());
+        log.info("Test result: {}", results);
+    }
+
+    /**
+     * Test getting a goal by ID
+     *
+     * @throws Exception
+     */
+    @Test
+    void getGoalByIdTest() throws Exception {
+        Mockito.doReturn(Optional.of(getGoal())).when(getGoalSvc()).get(GOAL_ID);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(GOAL_API + "/" + GOAL_ID)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("goal|READ"));
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertNotNull(mvcResult.getResponse().getContentAsString());
+
+        GoalDto result = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<GoalDto>() {});
+
+        assertEquals(GOAL_ID, result.getId());
+        assertEquals("Test Goal", result.getName());
+        log.info("Test result: {}", result);
+    }
+
+    /**
+     * Test creating a goal
+     *
+     * @throws Exception
+     */
+    @Test
+    void createGoalTest() throws Exception {
+        GoalDto goalDto = getGoalDto();
+        Goal savedGoal = getGoal();
+
+        Mockito.doReturn(savedGoal).when(getGoalSvc()).save(any(Goal.class));
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post(GOAL_API)
+                .content(asJsonString(goalDto))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("goal|CREATE"));
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertEquals(201, mvcResult.getResponse().getStatus());
+        assertNotNull(mvcResult.getResponse().getContentAsString());
+
+        GoalDto result = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<GoalDto>() {});
+
+        assertEquals("Test Goal", result.getName());
+        assertEquals(GoalType.SELF, result.getType());
+        log.info("Test result: {}", result);
+    }
+
+    /**
+     * Test updating a goal
+     *
+     * @throws Exception
+     */
+    @Test
+    void updateGoalTest() throws Exception {
+        GoalDto goalDto = getGoalDto();
+        goalDto.setName("Updated Goal");
+        Goal existingGoal = getGoal();
+        Goal updatedGoal = getGoal();
+        updatedGoal.setName("Updated Goal");
+
+        Mockito.doReturn(Optional.of(existingGoal)).when(getGoalSvc()).get(GOAL_ID);
+        Mockito.doReturn(updatedGoal).when(getGoalSvc()).save(any(Goal.class));
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put(GOAL_API + "/" + GOAL_ID)
+                .content(asJsonString(goalDto))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("goal|UPDATE"));
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertNotNull(mvcResult.getResponse().getContentAsString());
+
+        GoalDto result = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<GoalDto>() {});
+
+        assertEquals("Updated Goal", result.getName());
+        log.info("Test result: {}", result);
+    }
+
+    /**
+     * Test deleting a goal
+     *
+     * @throws Exception
+     */
+    @Test
+    void deleteGoalTest() throws Exception {
+        Mockito.doReturn(Optional.of(getGoal())).when(getGoalSvc()).get(GOAL_ID);
+        Mockito.doNothing().when(getGoalSvc()).delete(GOAL_ID);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete(GOAL_API + "/" + GOAL_ID)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("goal|DELETE"));
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertEquals(204, mvcResult.getResponse().getStatus());
+        log.info("Goal deleted successfully");
+    }
+
+    /**
+     * Test getting goal by ID - not found
+     *
+     * @throws Exception
+     */
+    @Test
+    void getGoalByIdNotFoundTest() throws Exception {
+        Mockito.doReturn(Optional.empty()).when(getGoalSvc()).get(GOAL_ID);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(GOAL_API + "/" + GOAL_ID)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("goal|READ"));
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertEquals(404, mvcResult.getResponse().getStatus());
+    }
+
+    /**
+     * Create a test Goal entity
+     *
+     * @return Goal
+     */
+    private Goal getGoal() {
+        Goal goal = new Goal();
+        goal.setId(GOAL_ID);
+        goal.setName("Test Goal");
+        goal.setDescription("Test Description");
+        goal.setType(GoalType.SELF);
+        goal.setStartDate(LocalDate.now());
+        goal.setAchievedByDate(LocalDate.now().plusMonths(6));
+        goal.setCompetencies(new HashSet<>());
+        goal.setCredentials(new HashSet<>());
+        goal.setLearningResources(new HashSet<>());
+        return goal;
+    }
+
+    /**
+     * Create a test GoalDto
+     *
+     * @return GoalDto
+     */
+    private GoalDto getGoalDto() {
+        GoalDto goalDto = new GoalDto();
+        goalDto.setPersonId(PERSON_ID);
+        goalDto.setName("Test Goal");
+        goalDto.setDescription("Test Description");
+        goalDto.setType(GoalType.SELF);
+        goalDto.setStartDate(LocalDate.now());
+        goalDto.setAchievedByDate(LocalDate.now().plusMonths(6));
+        goalDto.setCompetencyIds(new HashSet<>());
+        goalDto.setCredentialIds(new HashSet<>());
+        goalDto.setLearningResourceIds(new HashSet<>());
+        return goalDto;
+    }
+
+    /**
+     * Create a list of test Goal entities
+     *
+     * @return List<Goal>
+     */
+    private List<Goal> getGoalList() {
+        List<Goal> goals = new ArrayList<>();
+        
+        Goal goal1 = getGoal();
+        goals.add(goal1);
+        
+        Goal goal2 = new Goal();
+        goal2.setId(UUID.randomUUID());
+        goal2.setName("Second Goal");
+        goal2.setDescription("Second Description");
+        goal2.setType(GoalType.ASSIGNED);
+        goal2.setStartDate(LocalDate.now());
+        goal2.setAchievedByDate(LocalDate.now().plusMonths(3));
+        goal2.setCompetencies(new HashSet<>());
+        goal2.setCredentials(new HashSet<>());
+        goal2.setLearningResources(new HashSet<>());
+        goals.add(goal2);
+        
+        return goals;
+    }
+}
