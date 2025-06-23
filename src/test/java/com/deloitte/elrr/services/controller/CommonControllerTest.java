@@ -40,6 +40,7 @@ import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -173,6 +174,8 @@ class CommonControllerTest {
 
     public static <T> T resultsAsObject(String results, TypeReference<T> type)
             throws StreamReadException, DatabindException, IOException {
-        return (T) new ObjectMapper().readValue(results, type);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        return (T) mapper.readValue(results, type);
     }
 }
