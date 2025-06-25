@@ -376,6 +376,9 @@
                         --add-opens java.base/java.time=ALL-UNNAMED
                         --add-opens java.base/java.lang.reflect=ALL-UNNAMED <!-- handy for spying spring proxies -->
                     </argLine>
+                    <systemPropertyVariables>
+                        <elrr.integration.tests>true</elrr.integration.tests>
+                    </systemPropertyVariables>
                 </configuration>
                 <executions>
                     <execution>
