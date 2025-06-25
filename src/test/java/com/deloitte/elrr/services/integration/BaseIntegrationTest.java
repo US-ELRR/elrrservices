@@ -19,7 +19,7 @@ import org.testcontainers.utility.DockerImageName;
 @SpringBootTest
 @Testcontainers
 @ContextConfiguration(initializers = {BaseIntegrationTest.Initializer.class})
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-integration.properties")
 public abstract class BaseIntegrationTest {
 
     @Container
