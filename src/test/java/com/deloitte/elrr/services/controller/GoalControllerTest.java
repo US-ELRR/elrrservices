@@ -126,11 +126,17 @@ public class GoalControllerTest extends CommonControllerTest {
      */
     @Test
     void createGoalTest() throws Exception {
+        // Arrange
         GoalDto goalDto = getGoalDto();
         Goal savedGoal = getGoal();
-
+        
+        // Mock the setXXXFromIds methods to return the goal unchanged
+        Mockito.doReturn(savedGoal).when(getGoalSvc()).setCompetenciesFromIds(any(Goal.class), any());
+        Mockito.doReturn(savedGoal).when(getGoalSvc()).setCredentialsFromIds(any(Goal.class), any());
+        Mockito.doReturn(savedGoal).when(getGoalSvc()).setLearningResourcesFromIds(any(Goal.class), any());
         Mockito.doReturn(savedGoal).when(getGoalSvc()).save(any(Goal.class));
 
+        // Act
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post(GOAL_API)
                 .content(asJsonString(goalDto))
@@ -138,7 +144,7 @@ public class GoalControllerTest extends CommonControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(getHeaders("goal|CREATE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
-
+        // Assert
         assertEquals(201, mvcResult.getResponse().getStatus());
         assertNotNull(mvcResult.getResponse().getContentAsString());
 
@@ -164,6 +170,10 @@ public class GoalControllerTest extends CommonControllerTest {
         Goal updatedGoal = getGoal();
         updatedGoal.setName("Updated Goal");
 
+        // Mock the setXXXFromIds methods to return the goal unchanged
+        Mockito.doReturn(updatedGoal).when(getGoalSvc()).setCompetenciesFromIds(any(Goal.class), any());
+        Mockito.doReturn(updatedGoal).when(getGoalSvc()).setCredentialsFromIds(any(Goal.class), any());
+        Mockito.doReturn(updatedGoal).when(getGoalSvc()).setLearningResourcesFromIds(any(Goal.class), any());
         Mockito.doReturn(Optional.of(existingGoal)).when(getGoalSvc()).get(GOAL_ID);
         Mockito.doReturn(updatedGoal).when(getGoalSvc()).save(any(Goal.class));
 
