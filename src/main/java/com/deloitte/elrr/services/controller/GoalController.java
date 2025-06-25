@@ -167,7 +167,6 @@ public class GoalController {
             }
             goal.setLearningResources(learningResources);
         }
-        // do other rels ...
         GoalDto response = mapper.map(goalSvc.save(goal), GoalDto.class);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
