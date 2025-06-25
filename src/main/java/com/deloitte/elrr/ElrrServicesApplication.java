@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.client.RestTemplate;
 
 import com.deloitte.elrr.services.RepoConfig;
@@ -14,6 +15,7 @@ import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties
 @SpringBootApplication
 @Import({ JacksonAutoConfiguration.class, RepoConfig.class })
 @EnableEncryptableProperties
+@EnableJpaAuditing
 public class ElrrServicesApplication {
 
     /**
