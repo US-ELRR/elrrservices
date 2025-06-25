@@ -36,13 +36,13 @@ class PersonIntegrationTest extends BaseIntegrationTest {
     @Test
     @Transactional
     void testCreateAndRetrievePerson() {
-        // Given
+        // Arrange
         Person person = createTestPerson();
 
-        // When
+        // Act
         Person savedPerson = personRepository.save(person);
 
-        // Then
+        // Assert
         assertNotNull(savedPerson.getId());
         assertThat(savedPerson.getFirstName()).isEqualTo("John");
         assertThat(savedPerson.getLastName()).isEqualTo("Doe");
@@ -52,17 +52,17 @@ class PersonIntegrationTest extends BaseIntegrationTest {
     @Test
     @Transactional
     void testPersonWithLocation() {
-        // Given
+        // Arrange
         Location location = createTestLocation();
         Location savedLocation = locationRepository.save(location);
 
         Person person = createTestPerson();
         person.setMailingAddress(savedLocation);
 
-        // When
+        // Act
         Person savedPerson = personRepository.save(person);
 
-        // Then
+        // Assert
         assertNotNull(savedPerson.getId());
         assertNotNull(savedPerson.getMailingAddress());
         assertThat(savedPerson.getMailingAddress().getCity()).isEqualTo("Test City");
@@ -71,14 +71,14 @@ class PersonIntegrationTest extends BaseIntegrationTest {
     @Test
     @Transactional
     void testFindPersonById() {
-        // Given
+        // Arrange
         Person person = createTestPerson();
         Person savedPerson = personRepository.save(person);
 
-        // When
+        // Act
         Optional<Person> foundPerson = personRepository.findById(savedPerson.getId());
 
-        // Then
+        // Assert
         assertTrue(foundPerson.isPresent());
         assertThat(foundPerson.get().getFirstName()).isEqualTo("John");
         assertThat(foundPerson.get().getLastName()).isEqualTo("Doe");
@@ -87,16 +87,16 @@ class PersonIntegrationTest extends BaseIntegrationTest {
     @Test
     @Transactional
     void testUpdatePerson() {
-        // Given
+        // Arrange
         Person person = createTestPerson();
         Person savedPerson = personRepository.save(person);
 
-        // When
+        // Act
         savedPerson.setFirstName("Jane");
         savedPerson.setLastModified(LocalDateTime.now());
         Person updatedPerson = personRepository.save(savedPerson);
 
-        // Then
+        // Assert
         assertThat(updatedPerson.getFirstName()).isEqualTo("Jane");
         assertThat(updatedPerson.getLastName()).isEqualTo("Doe");
     }
@@ -104,15 +104,15 @@ class PersonIntegrationTest extends BaseIntegrationTest {
     @Test
     @Transactional
     void testDeletePerson() {
-        // Given
+        // Arrange
         Person person = createTestPerson();
         Person savedPerson = personRepository.save(person);
         UUID personId = savedPerson.getId();
 
-        // When
+        // Act
         personRepository.delete(savedPerson);
 
-        // Then
+        // Assert
         Optional<Person> deletedPerson = personRepository.findById(personId);
         assertThat(deletedPerson).isEmpty();
     }
@@ -120,15 +120,16 @@ class PersonIntegrationTest extends BaseIntegrationTest {
     @Test
     @Transactional
     void testPersonValidation() {
+        // Arrange
         // Test that Person can be saved with minimal required data
         Person person = new Person();
         person.setFirstName("Test");
         person.setLastName("User");
 
-        // When
+        // Act
         Person savedPerson = personRepository.save(person);
 
-        // Then
+        // Assert
         assertNotNull(savedPerson.getId());
         assertThat(savedPerson.getFirstName()).isEqualTo("Test");
         assertThat(savedPerson.getLastName()).isEqualTo("User");
