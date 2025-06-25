@@ -3,6 +3,7 @@ package com.deloitte.elrr.services.controller;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -154,6 +155,13 @@ public class GoalControllerTest extends CommonControllerTest {
 
         assertEquals("Test Goal", result.getName());
         assertEquals(GoalType.SELF, result.getType());
+        
+        // Verify that the setXXXFromIds methods were called
+        verify(getGoalSvc()).setCompetenciesFromIds(any(Goal.class), any());
+        verify(getGoalSvc()).setCredentialsFromIds(any(Goal.class), any());
+        verify(getGoalSvc()).setLearningResourcesFromIds(any(Goal.class), any());
+        verify(getGoalSvc()).save(any(Goal.class));
+        
         log.info("Test result: {}", result);
     }
 
@@ -193,6 +201,14 @@ public class GoalControllerTest extends CommonControllerTest {
                 new TypeReference<GoalDto>() {});
 
         assertEquals("Updated Goal", result.getName());
+        
+        // Verify that the setXXXFromIds methods were called
+        verify(getGoalSvc()).setCompetenciesFromIds(any(Goal.class), any());
+        verify(getGoalSvc()).setCredentialsFromIds(any(Goal.class), any());
+        verify(getGoalSvc()).setLearningResourcesFromIds(any(Goal.class), any());
+        verify(getGoalSvc()).get(GOAL_ID);
+        verify(getGoalSvc()).save(any(Goal.class));
+        
         log.info("Test result: {}", result);
     }
 
