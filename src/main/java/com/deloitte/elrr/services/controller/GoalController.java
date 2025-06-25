@@ -1,7 +1,9 @@
 package com.deloitte.elrr.services.controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import jakarta.validation.Valid;
@@ -22,7 +24,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.deloitte.elrr.entity.Competency;
+import com.deloitte.elrr.entity.Credential;
 import com.deloitte.elrr.entity.Goal;
+import com.deloitte.elrr.entity.LearningResource;
+import com.deloitte.elrr.jpa.svc.CredentialSvc;
+import com.deloitte.elrr.jpa.svc.CompetencySvc;
+import com.deloitte.elrr.jpa.svc.LearningResourceSvc;
 import com.deloitte.elrr.jpa.svc.GoalSvc;
 import com.deloitte.elrr.services.dto.GoalDto;
 import com.deloitte.elrr.services.exception.ResourceNotFoundException;
@@ -39,6 +47,15 @@ public class GoalController {
 
     @Autowired
     private GoalSvc goalSvc;
+
+    @Autowired
+    private CompetencySvc competencySvc;
+
+    @Autowired
+    private CredentialSvc credentialSvc;
+
+    @Autowired
+    private LearningResourceSvc learningResourceSvc;
 
     @Autowired
     private ModelMapper mapper;
@@ -109,9 +126,48 @@ public class GoalController {
     @PreAuthorize("hasPermission('goal', 'CREATE')")
     @PostMapping("/goal")
     public ResponseEntity<GoalDto> createGoal(
-            @Valid @RequestBody final GoalDto goalDto) {
+            @Valid @RequestBody final GoalDto goalDto)
+            throws ResourceNotFoundException {
         log.debug("Creating goal: {}", goalDto);
         Goal goal = mapper.map(goalDto, Goal.class);
+        // Find and associate any competencies if provided
+        if (goalDto.getCompetencyIds() != null) {
+            Set<Competency> competencies = new HashSet<>();
+            for (UUID competencyId : goalDto.getCompetencyIds()) {
+                Competency competency = competencySvc.get(competencyId)
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "Competency not found for id: "
+                                        + competencyId));
+                competencies.add(competency);
+            }
+            goal.setCompetencies(competencies);
+        }
+        // Find and associate any credentials if provided
+        if (goalDto.getCredentialIds() != null) {
+            Set<Credential> credentials = new HashSet<>();
+            for (UUID credentialId : goalDto.getCredentialIds()) {
+                Credential credential = credentialSvc.get(credentialId)
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "Credential not found for id: "
+                                        + credentialId));
+                credentials.add(credential);
+            }
+            goal.setCredentials(credentials);
+        }
+        // Find and associate any learning resources if provided
+        if (goalDto.getLearningResourceIds() != null) {
+            Set<LearningResource> learningResources = new HashSet<>();
+            for (UUID learningResourceId : goalDto.getLearningResourceIds()) {
+                LearningResource learningResource = learningResourceSvc
+                        .get(learningResourceId)
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "Learning Resource not found for id: "
+                                        + learningResourceId));
+                learningResources.add(learningResource);
+            }
+            goal.setLearningResources(learningResources);
+        }
+        // do other rels ...
         GoalDto response = mapper.map(goalSvc.save(goal), GoalDto.class);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
