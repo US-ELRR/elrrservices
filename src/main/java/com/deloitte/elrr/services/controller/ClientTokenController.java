@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.deloitte.elrr.entity.ClientToken;
@@ -44,6 +45,11 @@ public class ClientTokenController {
      */
     @Autowired
     private JwtUtil jwtUtil;
+    /**
+     * ModelMapper instance for mapping between entity and DTO.
+     */
+    @Autowired
+    private org.modelmapper.ModelMapper mapper;
 
     /**
      * Create a new client token.
@@ -123,5 +129,25 @@ public class ClientTokenController {
         }
 
         return ResponseEntity.ok(tokenList);
+    }
+
+    /**
+     * Get a client token by its JWT ID (as a query parameter).
+     *
+     * @param jwtId The UUID of the JWT
+     * @return ResponseEntity<ClientTokenDto> containing the token details
+     * @throws ResourceNotFoundException if token is not found
+     */
+    @GetMapping("/token")
+    public ResponseEntity<ClientTokenDto> getTokenByJwtId(
+            @RequestParam UUID jwtId) throws ResourceNotFoundException {
+        ClientToken clientToken = clientTokenSvc.findByJwtId(jwtId);
+        if (clientToken == null) {
+            throw new ResourceNotFoundException(
+                    "Token not found with JWT ID: " + jwtId);
+        }
+        ClientTokenDto clientTokenDto = mapper.map(
+            clientToken, ClientTokenDto.class);
+        return ResponseEntity.ok(clientTokenDto);
     }
 }
