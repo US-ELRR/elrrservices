@@ -114,8 +114,8 @@ class CommonControllerTest {
 
     @BeforeEach
     void setUp() {
-        // Mock clientTokenSvc.existsById to always return true
-        when(clientTokenSvc.existsById(any())).thenReturn(true);
+        // Mock clientTokenSvc.existsByJwtId to always return true
+        when(clientTokenSvc.existsByJwtId(any())).thenReturn(true);
     }
 
     /**

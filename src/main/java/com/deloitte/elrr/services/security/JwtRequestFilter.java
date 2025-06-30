@@ -75,7 +75,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                         }
                     // verify that the token exists in the database
                     if (!clientTokenSvc
-                            .existsById(UUID.fromString(jwt.getId()))) {
+                            .existsByJwtId(UUID.fromString(jwt.getId()))) {
                         response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                                 "Invalid Token");
                         return;

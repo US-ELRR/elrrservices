@@ -57,8 +57,8 @@ public class ClientTokenController {
             @Valid @RequestBody PermissionsWrapperDto wrapper)
             throws ResourceNotFoundException {
 
-        UUID tokenId = Generators.timeBasedEpochRandomGenerator().generate();
-        String token = jwtUtil.createToken(tokenId, wrapper.getPermissions());
+        UUID jwtId = Generators.timeBasedEpochRandomGenerator().generate();
+        String token = jwtUtil.createToken(jwtId, wrapper.getPermissions());
         // get the payload back out
         // TODO figure out a way to avoid this
         DecodedJWT decodedJWT = jwtUtil.decodeToken(token);
@@ -71,12 +71,16 @@ public class ClientTokenController {
             clientToken.setLabel(wrapper.getLabel());
         }
         clientToken.setJwtPayload(payload);
-        clientToken.setId(tokenId);
+        clientToken.setJwtId(jwtId);
         clientTokenSvc.save(clientToken);
         // Output the token to the client
         ClientTokenDto clientTokenDto = new ClientTokenDto();
+        clientTokenDto.setId(clientToken.getId());
         clientTokenDto.setToken(token);
-
+        clientTokenDto.setJwtId(jwtId);
+        if (wrapper.getLabel() != null && !wrapper.getLabel().isEmpty()) {
+            clientTokenDto.setLabel(wrapper.getLabel());
+        }
         return ResponseEntity.ok(clientTokenDto);
     }
 

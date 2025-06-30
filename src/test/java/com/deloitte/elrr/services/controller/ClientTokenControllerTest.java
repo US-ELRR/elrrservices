@@ -82,6 +82,9 @@ public class ClientTokenControllerTest extends CommonControllerTest {
 
         // Assert
         assertEquals(200, mvcResult.getResponse().getStatus());
+        // Should have a jwtId in the response
+        String responseContent = mvcResult.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("jwtId"));
     }
 
     @Test
