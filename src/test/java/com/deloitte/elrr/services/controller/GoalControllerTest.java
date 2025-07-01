@@ -90,7 +90,6 @@ public class GoalControllerTest extends CommonControllerTest {
                 new TypeReference<List<GoalDto>>() {});
 
         assertEquals(2, results.size());
-        log.info("Test result: {}", results);
     }
 
     /**
@@ -117,7 +116,6 @@ public class GoalControllerTest extends CommonControllerTest {
 
         assertEquals(GOAL_ID, result.getId());
         assertEquals("Test Goal", result.getName());
-        log.info("Test result: {}", result);
     }
 
     /**
@@ -161,8 +159,10 @@ public class GoalControllerTest extends CommonControllerTest {
         verify(getGoalSvc()).setCredentialsFromIds(any(Goal.class), any());
         verify(getGoalSvc()).setLearningResourcesFromIds(any(Goal.class), any());
         verify(getGoalSvc()).save(any(Goal.class));
-        
-        log.info("Test result: {}", result);
+        // Verify that related entity ids are present on the saved goal
+        assertNotNull(result.getCompetencyIds());
+        assertNotNull(result.getCredentialIds());
+        assertNotNull(result.getLearningResourceIds());
     }
 
     /**
@@ -208,8 +208,6 @@ public class GoalControllerTest extends CommonControllerTest {
         verify(getGoalSvc()).setLearningResourcesFromIds(any(Goal.class), any());
         verify(getGoalSvc()).get(GOAL_ID);
         verify(getGoalSvc()).save(any(Goal.class));
-        
-        log.info("Test result: {}", result);
     }
 
     /**
@@ -230,7 +228,6 @@ public class GoalControllerTest extends CommonControllerTest {
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertEquals(204, mvcResult.getResponse().getStatus());
-        log.info("Goal deleted successfully");
     }
 
     /**
@@ -284,9 +281,9 @@ public class GoalControllerTest extends CommonControllerTest {
         goalDto.setType(GoalType.SELF);
         goalDto.setStartDate(LocalDate.now());
         goalDto.setAchievedByDate(LocalDate.now().plusMonths(6));
-        goalDto.setCompetencyIds(new HashSet<>());
-        goalDto.setCredentialIds(new HashSet<>());
-        goalDto.setLearningResourceIds(new HashSet<>());
+        goalDto.setCompetencyIds(new HashSet<>(List.of(UUID.randomUUID())));
+        goalDto.setCredentialIds(new HashSet<>(List.of(UUID.randomUUID())));
+        goalDto.setLearningResourceIds(new HashSet<>(List.of(UUID.randomUUID())));
         return goalDto;
     }
 
