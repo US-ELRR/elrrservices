@@ -1,5 +1,7 @@
 package com.deloitte.elrr.services.dto;
 
+import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,5 +14,7 @@ import lombok.RequiredArgsConstructor;
 public class ClientTokenDto extends AbstractDto {
 
     private String token;
+    private UUID jwtId;
+    private String label;
 
 }
