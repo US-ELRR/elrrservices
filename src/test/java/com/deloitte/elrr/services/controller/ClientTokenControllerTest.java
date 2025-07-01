@@ -82,6 +82,9 @@ public class ClientTokenControllerTest extends CommonControllerTest {
 
         // Assert
         assertEquals(200, mvcResult.getResponse().getStatus());
+        // Should have a jwtId in the response
+        String responseContent = mvcResult.getResponse().getContentAsString();
+        assertTrue(responseContent.contains("jwtId"));
     }
 
     @Test
@@ -155,6 +158,32 @@ public class ClientTokenControllerTest extends CommonControllerTest {
         assertTrue(responseContent.contains("test-token-1"));
         assertTrue(responseContent.contains(tokenId2.toString()));
         assertTrue(responseContent.contains("test-token-2"));
+    }
+
+    @Test
+    void testGetTokenByJwtId() throws Exception {
+        // Arrange
+        UUID tokenId = UUID.randomUUID();
+        UUID jwtId = UUID.randomUUID();
+        ClientToken clientToken = new ClientToken();
+        clientToken.setJwtId(jwtId);
+        clientToken.setLabel("test-token");
+        clientToken.setId(tokenId);
+        // Mock the service to return the test token
+        org.mockito.Mockito.when(getClientTokenSvc().findByJwtId(jwtId))
+                .thenReturn(clientToken);
+        // Act
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(TOKEN_API + "?jwtId=" + jwtId)
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        // Assert
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        // Verify that the tokenId is in the response
+        String responseContent = mvcResult.getResponse().getContentAsString();
+        assertTrue(responseContent.contains(tokenId.toString()));
     }
 
 }
