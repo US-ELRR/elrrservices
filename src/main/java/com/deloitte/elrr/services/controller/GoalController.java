@@ -87,9 +87,9 @@ public class GoalController {
             } else {
                 return ResponseEntity.ok(goalList);
             }
-        } catch (Exception e) {
-            log.error("Error retrieving goals", e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (ResourceNotFoundException e) {
+            // return an empty list if no goals found for id
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
         }
     }
 
