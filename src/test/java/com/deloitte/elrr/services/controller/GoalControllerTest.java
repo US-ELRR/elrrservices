@@ -93,6 +93,51 @@ public class GoalControllerTest extends CommonControllerTest {
     }
 
     /**
+     * Test getting goals with a specific ID
+     *
+     * @throws Exception
+     */
+    @Test
+    void getAllGoalsByIdTest() throws Exception {
+        // Internally goalSvc.get is used so we mock that
+        Mockito.doReturn(Optional.of(getGoal())).when(getGoalSvc()).get(GOAL_ID);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(GOAL_API + "?id=" + GOAL_ID)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("goal|READ"));
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertNotNull(mvcResult.getResponse().getContentAsString());
+
+        List<GoalDto> results = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<GoalDto>>() {});
+
+        assertEquals(1, results.size());
+        assertEquals(GOAL_ID, results.get(0).getId());
+    }
+    
+    /**
+     * Test getting goals with a specific ID that does not exist
+     *
+     * @throws Exception
+     */
+    @Test
+    void getAllGoalsByIdNotFoundTest() throws Exception {
+        // We don't need to mock get here since it will return an empty list
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(GOAL_API + "?id=" + GOAL_ID)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("goal|READ"));
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertNotNull(mvcResult.getResponse().getContentAsString());
+    }
+
+    /**
      * Test getting a goal by ID
      *
      * @throws Exception
