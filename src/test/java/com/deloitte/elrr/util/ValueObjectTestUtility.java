@@ -30,8 +30,9 @@ public final class ValueObjectTestUtility {
      * @param clazz
      */
     public static void validateAccessors(final Class<?> clazz) {
-        // Register custom generator for LocalDate to avoid Java module access issues
+        // Register custom generators for LocalDate and LocalDateTime to avoid Java module access issues
         RandomFactory.addRandomGenerator(new LocalDateRandomGenerator());
+        RandomFactory.addRandomGenerator(new LocalDateTimeRandomGenerator());
         ACCESSOR_VALIDATOR.validate(PojoClassFactory.getPojoClass(clazz));
     }
 }
