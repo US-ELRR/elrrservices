@@ -19,6 +19,7 @@ import com.deloitte.elrr.jpa.svc.CredentialSvc;
 import com.deloitte.elrr.jpa.svc.EmailSvc;
 import com.deloitte.elrr.jpa.svc.EmploymentRecordSvc;
 import com.deloitte.elrr.jpa.svc.FacilitySvc;
+import com.deloitte.elrr.jpa.svc.GoalSvc;
 import com.deloitte.elrr.jpa.svc.IdentitySvc;
 import com.deloitte.elrr.jpa.svc.LearningRecordSvc;
 import com.deloitte.elrr.jpa.svc.LearningResourceSvc;
@@ -39,6 +40,7 @@ import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -79,6 +81,9 @@ class CommonControllerTest {
 
     @MockitoBean
     private FacilitySvc facilitySvc;
+
+    @MockitoBean
+    private GoalSvc goalSvc;
 
     @MockitoBean
     private EmploymentRecordSvc employmentRecordSvc;
@@ -169,6 +174,8 @@ class CommonControllerTest {
 
     public static <T> T resultsAsObject(String results, TypeReference<T> type)
             throws StreamReadException, DatabindException, IOException {
-        return (T) new ObjectMapper().readValue(results, type);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        return (T) mapper.readValue(results, type);
     }
 }
