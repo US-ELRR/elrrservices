@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -24,7 +24,10 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.deloitte.elrr.entity.Facility;
+import com.deloitte.elrr.services.TestAppConfig;
 import com.deloitte.elrr.services.dto.FacilityDto;
+import com.deloitte.elrr.services.security.MethodSecurityConfig;
+import com.deloitte.elrr.services.security.SecurityConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +36,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @WebMvcTest(FacilityController.class)
 @ContextConfiguration
-@AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureMockMvc(addFilters = true)
+@Import({TestAppConfig.class, SecurityConfig.class, MethodSecurityConfig.class})
 @Slf4j
 public class FacilityControllerTest extends CommonControllerTest {
 
@@ -43,13 +47,6 @@ public class FacilityControllerTest extends CommonControllerTest {
     private HttpHeaders headers;
 
     private static final String FACILITY_API = "/api/facility";
-
-    @BeforeEach
-    void addHeaders() {
-        headers = new HttpHeaders();
-        headers.set("Content-Type", " */*");
-        headers.set("X-Forwarded-Proto", "https");
-    }
 
     /**
      *
@@ -78,7 +75,7 @@ public class FacilityControllerTest extends CommonControllerTest {
                 .get(FACILITY_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("facility|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -99,7 +96,7 @@ public class FacilityControllerTest extends CommonControllerTest {
                 .get(FACILITY_API + "/" + FACILITY_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("facility|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -118,7 +115,7 @@ public class FacilityControllerTest extends CommonControllerTest {
                 .get(FACILITY_API + "/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("facility|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -134,7 +131,7 @@ public class FacilityControllerTest extends CommonControllerTest {
                 .get(FACILITY_API + "?id=" + FACILITY_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("facility|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -158,7 +155,7 @@ public class FacilityControllerTest extends CommonControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(facilityDto))
-                .headers(headers);
+                .headers(getHeaders("facility|CREATE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -184,7 +181,7 @@ public class FacilityControllerTest extends CommonControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(facilityDto))
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("facility|UPDATE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -205,7 +202,7 @@ public class FacilityControllerTest extends CommonControllerTest {
                 .delete(FACILITY_API + "/" + FACILITY_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("facility|DELETE"));
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 

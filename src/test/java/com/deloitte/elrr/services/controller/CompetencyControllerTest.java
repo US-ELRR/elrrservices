@@ -15,6 +15,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -25,6 +26,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.deloitte.elrr.entity.Competency;
 import com.deloitte.elrr.services.dto.CompetencyDto;
+import com.deloitte.elrr.services.security.MethodSecurityConfig;
+import com.deloitte.elrr.services.security.SecurityConfig;
+import com.deloitte.elrr.services.TestAppConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +37,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @WebMvcTest(CompetencyController.class)
 @ContextConfiguration
-@AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureMockMvc(addFilters = true)
+@Import({TestAppConfig.class, SecurityConfig.class, MethodSecurityConfig.class})
 @Slf4j
 public class CompetencyControllerTest extends CommonControllerTest {
 
@@ -43,13 +48,6 @@ public class CompetencyControllerTest extends CommonControllerTest {
     private HttpHeaders headers;
 
     private static final String COMP_API = "/api/competency";
-
-    @BeforeEach
-    void addHeaders() {
-        headers = new HttpHeaders();
-        headers.set("Content-Type", " */*");
-        headers.set("X-Forwarded-Proto", "https");
-    }
 
     /**
      *
@@ -79,7 +77,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
                 .get(COMP_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("competency|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -100,7 +98,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
                 .get(COMP_API + "/" + COMPETENCY_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("competency|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -119,7 +117,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
                 .get(COMP_API + "/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("competency|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -135,7 +133,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
                 .get(COMP_API + "?id=" + COMPETENCY_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("competency|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -159,7 +157,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(competencyDto))
-                .headers(headers);
+                .headers(this.getHeaders("competency|CREATE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -185,7 +183,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(competencyDto))
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("competency|UPDATE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -206,7 +204,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
                 .delete(COMP_API + "/" + COMPETENCY_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(this.getHeaders("competency|DELETE"));
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 

@@ -1,5 +1,6 @@
 package com.deloitte.elrr.util;
 
+import com.openpojo.random.RandomFactory;
 import com.openpojo.reflection.impl.PojoClassFactory;
 import com.openpojo.validation.Validator;
 import com.openpojo.validation.ValidatorBuilder;
@@ -29,6 +30,9 @@ public final class ValueObjectTestUtility {
      * @param clazz
      */
     public static void validateAccessors(final Class<?> clazz) {
+        // Register custom generators for LocalDate and LocalDateTime to avoid Java module access issues
+        RandomFactory.addRandomGenerator(new LocalDateRandomGenerator());
+        RandomFactory.addRandomGenerator(new LocalDateTimeRandomGenerator());
         ACCESSOR_VALIDATOR.validate(PojoClassFactory.getPojoClass(clazz));
     }
 }

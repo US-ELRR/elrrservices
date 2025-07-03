@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.deloitte.elrr.entity.Credential;
 import com.deloitte.elrr.jpa.svc.CredentialSvc;
@@ -52,6 +53,7 @@ public class CredentialController {
      * @return ResponseEntity<List<CredentialDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('credential', 'READ')")
     @GetMapping("/credential")
     public ResponseEntity<List<CredentialDto>> getAllCredentials(
             @RequestParam(value = "id", required = false)
@@ -88,6 +90,7 @@ public class CredentialController {
      * @return ResponseEntity<CredentialDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('credential', 'READ')")
     @GetMapping("/credential/{id}")
     public ResponseEntity<CredentialDto> getCredentialById(
             @PathVariable(value = "id") final UUID credentialId)
@@ -107,6 +110,7 @@ public class CredentialController {
      * @param credentialDto
      * @return ResponseEntity<CredentialDto>
      */
+    @PreAuthorize("hasPermission('credential', 'CREATE')")
     @PostMapping("/credential")
     public ResponseEntity<CredentialDto> createCredential(
             @Valid @RequestBody final CredentialDto credentialDto) {
@@ -123,6 +127,7 @@ public class CredentialController {
      * @return ResponseEntity<CredentialDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('credential', 'UPDATE')")
     @PutMapping("/credential/{id}")
     public ResponseEntity<CredentialDto> updateCredential(
             @PathVariable(value = "id") final UUID credentialId,
@@ -151,6 +156,7 @@ public class CredentialController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('credential', 'DELETE')")
     @DeleteMapping("/credential/{id}")
     public ResponseEntity<HttpStatus> deleteCredential(
             @PathVariable(value = "id") final UUID credentialId)

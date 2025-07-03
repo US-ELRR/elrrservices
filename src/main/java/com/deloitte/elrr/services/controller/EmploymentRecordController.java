@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.deloitte.elrr.entity.EmploymentRecord;
 import com.deloitte.elrr.entity.Organization;
@@ -75,6 +76,7 @@ public class EmploymentRecordController {
      * @return ResponseEntity<List<EmploymentRecordDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('employmentrecord', 'READ')")
     @GetMapping("/employmentrecord")
     public ResponseEntity<List<EmploymentRecordDto>> getAllEmploymentRecords(
             @RequestParam(value = "id", required = false)
@@ -113,6 +115,7 @@ public class EmploymentRecordController {
      * @return ResponseEntity<EmploymentRecordDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('employmentrecord', 'READ')")
     @GetMapping("/employmentrecord/{id}")
     public ResponseEntity<EmploymentRecordDto> getEmploymentRecordById(
             @PathVariable(value = "id") final UUID employmentRecordId)
@@ -135,6 +138,7 @@ public class EmploymentRecordController {
      * @return ResponseEntity<EmploymentRecordDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('employmentrecord', 'UPDATE')")
     @PutMapping("/employmentrecord/{id}")
     public ResponseEntity<EmploymentRecordDto> updateEmploymentRecord(
             @PathVariable(value = "id") final UUID employmentRecordId,
@@ -212,6 +216,7 @@ public class EmploymentRecordController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('employmentrecord', 'DELETE')")
     @DeleteMapping("/employmentrecord/{id}")
     public ResponseEntity<HttpStatus> deleteEmploymentRecord(
             @PathVariable(value = "id") final UUID employmentRecordId)

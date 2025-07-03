@@ -83,30 +83,9 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-saml2-service-provider</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.bouncycastle</groupId>
-                    <artifactId>bcprov-jdk15on</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.bouncycastle</groupId>
-                    <artifactId>bcpkix-jdk18on</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-io</groupId>
-                    <artifactId>commons-io</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.velocity</groupId>
-                    <artifactId>velocity-engine-core</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>4.5.0</version>
         </dependency>
         <dependency>
             <!--override for spring-security-saml2-service-provider-->
@@ -348,8 +327,6 @@
                 <configuration>
                     <argLine>
                         @{argLine}
-                        --add-opens java.base/java.time=ALL-UNNAMED
-                        --add-opens java.base/java.lang.reflect=ALL-UNNAMED <!-- handy for spying spring proxies -->
                     </argLine>
                 </configuration>
                 <executions>

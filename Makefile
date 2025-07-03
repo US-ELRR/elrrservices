@@ -1,4 +1,4 @@
-.phony: dev, clean, debug, test, test-debug, dependency-scan, lint, build
+.phony: dev, clean, debug, test, test-debug, dependency-scan, lint, build, openapi
 
 clean:
 	mvn clean
@@ -23,3 +23,6 @@ lint:
 
 build:
 	mvn clean package
+
+openapi:
+	bash scripts/generate_openapi.sh
