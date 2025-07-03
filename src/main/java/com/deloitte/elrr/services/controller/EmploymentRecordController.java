@@ -99,11 +99,7 @@ public class EmploymentRecordController {
                 employmentRecordList.add(employmentRecordDto);
             }
 
-            if (employmentRecordList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(employmentRecordList);
-            }
+            return ResponseEntity.ok(employmentRecordList);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

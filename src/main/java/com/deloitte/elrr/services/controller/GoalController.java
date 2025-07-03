@@ -82,11 +82,7 @@ public class GoalController {
                 goalList.add(goalDto);
             }
 
-            if (goalList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(goalList);
-            }
+            return ResponseEntity.ok(goalList);
         } catch (ResourceNotFoundException e) {
             // return an empty list if no goals found for id
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);

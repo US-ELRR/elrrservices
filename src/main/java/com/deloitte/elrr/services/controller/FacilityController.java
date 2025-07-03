@@ -71,11 +71,7 @@ public class FacilityController {
                 facilityList.add(facilityDto);
             }
 
-            if (facilityList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(facilityList);
-            }
+            return ResponseEntity.ok(facilityList);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

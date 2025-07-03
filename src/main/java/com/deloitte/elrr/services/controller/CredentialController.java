@@ -74,11 +74,7 @@ public class CredentialController {
                 credentialList.add(credentialDto);
             }
 
-            if (credentialList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(credentialList);
-            }
+            return ResponseEntity.ok(credentialList);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

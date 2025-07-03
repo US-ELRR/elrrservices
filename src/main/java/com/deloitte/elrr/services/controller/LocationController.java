@@ -74,11 +74,7 @@ public class LocationController {
                 locationList.add(locationDto);
             }
 
-            if (locationList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(locationList);
-            }
+            return ResponseEntity.ok(locationList);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -129,6 +129,32 @@ public class PersonControllerTest extends CommonControllerTest {
         assertEquals(PERSON_ID, result.get(0).getId());
     }
 
+    /**
+     * Test getting all persons when no persons exist - should return 200 with empty array
+     *
+     * @throws Exception
+     */
+    @Test
+    void getAllPersonsEmptyListTest() throws Exception {
+        // Mock empty list
+        Mockito.doReturn(new ArrayList<>()).when(getPersonSvc()).findAll();
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(PERSON_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("person|READ"));
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertNotNull(mvcResult.getResponse().getContentAsString());
+
+        // Verify empty array is returned
+        List<PersonDto> results = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<PersonDto>>() {});
+        assertEquals(0, results.size());
+    }
+
     @Test
     void getPersonByIdTest() throws Exception {
 

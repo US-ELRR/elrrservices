@@ -77,11 +77,7 @@ public class LearningRecordController {
                 learningRecordList.add(learningRecordDto);
             }
 
-            if (learningRecordList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(learningRecordList);
-            }
+            return ResponseEntity.ok(learningRecordList);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -73,11 +73,7 @@ public class PhoneController {
                 phoneList.add(phoneDto);
             }
 
-            if (phoneList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(phoneList);
-            }
+            return ResponseEntity.ok(phoneList);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

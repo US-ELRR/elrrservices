@@ -88,6 +88,32 @@ public class LearningRecordControllerTest extends CommonControllerTest {
         assertEquals(LEARNING_RECORD_ID, result.get(0).getId());
     }
 
+    /**
+     * Test getting all learning records when no learning records exist - should return 200 with empty array
+     *
+     * @throws Exception
+     */
+    @Test
+    void getAllLearningRecordsEmptyListTest() throws Exception {
+        // Mock empty list
+        Mockito.doReturn(new ArrayList<>()).when(getLearningRecordSvc()).findAll();
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(LEARNING_RECORD_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("learningrecord|READ"));
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertNotNull(mvcResult.getResponse().getContentAsString());
+
+        // Verify empty array is returned
+        List<LearningRecordDto> results = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<LearningRecordDto>>() {});
+        assertEquals(0, results.size());
+    }
+
     @Test
     void getLearningRecordByIdTest() throws Exception {
 

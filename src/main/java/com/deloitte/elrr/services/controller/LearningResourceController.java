@@ -76,11 +76,7 @@ public class LearningResourceController {
                 learningResourceList.add(learningResourceDto);
             }
 
-            if (learningResourceList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(learningResourceList);
-            }
+            return ResponseEntity.ok(learningResourceList);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -180,11 +180,7 @@ public class PersonController {
                 }
             }
 
-            if (persontoList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(persontoList);
-            }
+            return ResponseEntity.ok(persontoList);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -295,6 +295,32 @@ public class GoalControllerTest extends CommonControllerTest {
     }
 
     /**
+     * Test getting all goals when no goals exist - should return 200 with empty array
+     *
+     * @throws Exception
+     */
+    @Test
+    void getAllGoalsEmptyListTest() throws Exception {
+        // Mock empty list
+        Mockito.doReturn(new ArrayList<>()).when(getGoalSvc()).findAll();
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(GOAL_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("goal|READ"));
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertNotNull(mvcResult.getResponse().getContentAsString());
+        
+        // Verify empty array is returned
+        List<GoalDto> results = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<GoalDto>>() {});
+        assertEquals(0, results.size());
+    }
+
+    /**
      * Create a test Goal entity
      *
      * @return Goal

@@ -72,11 +72,7 @@ public class MilitaryRecordController {
                 militaryRecordList.add(militaryRecordDto);
             }
 
-            if (militaryRecordList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(militaryRecordList);
-            }
+            return ResponseEntity.ok(militaryRecordList);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

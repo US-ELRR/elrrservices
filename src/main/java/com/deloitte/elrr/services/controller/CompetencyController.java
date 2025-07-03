@@ -74,11 +74,7 @@ public class CompetencyController {
                 competencyList.add(competencyDto);
             }
 
-            if (competencyList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(competencyList);
-            }
+            return ResponseEntity.ok(competencyList);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

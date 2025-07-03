@@ -86,11 +86,7 @@ public class OrganizationController {
 
             }
 
-            if (organizationList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(organizationList);
-            }
+            return ResponseEntity.ok(organizationList);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

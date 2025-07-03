@@ -73,11 +73,7 @@ public class EmailController {
                 emailList.add(emailDto);
             }
 
-            if (emailList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(emailList);
-            }
+            return ResponseEntity.ok(emailList);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
