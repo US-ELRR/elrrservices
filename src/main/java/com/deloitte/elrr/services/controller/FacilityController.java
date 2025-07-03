@@ -62,13 +62,11 @@ public class FacilityController {
                 facilitySvc.findAll().forEach(fac -> facilityList.add(
                         mapper.map(fac, FacilityDto.class)));
             } else {
-                Facility facility = facilitySvc.get(facilityId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "Facility not found for this id :: "
-                                        + facilityId));
-                FacilityDto facilityDto = mapper.map(facility,
-                        FacilityDto.class);
-                facilityList.add(facilityDto);
+                facilitySvc.get(facilityId).ifPresent(facility -> {
+                    FacilityDto facilityDto = mapper.map(facility,
+                            FacilityDto.class);
+                    facilityList.add(facilityDto);
+                });
             }
 
             return ResponseEntity.ok(facilityList);

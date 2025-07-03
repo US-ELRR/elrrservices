@@ -65,13 +65,11 @@ public class CompetencyController {
                 competencySvc.findAll().forEach(comp -> competencyList.add(
                         mapper.map(comp, CompetencyDto.class)));
             } else {
-                Competency competency = competencySvc.get(competencyId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "Competency not found for this id :: "
-                                        + competencyId));
-                CompetencyDto competencyDto = mapper.map(competency,
-                        CompetencyDto.class);
-                competencyList.add(competencyDto);
+                competencySvc.get(competencyId).ifPresent(competency -> {
+                    CompetencyDto competencyDto = mapper.map(competency,
+                            CompetencyDto.class);
+                    competencyList.add(competencyDto);
+                });
             }
 
             return ResponseEntity.ok(competencyList);

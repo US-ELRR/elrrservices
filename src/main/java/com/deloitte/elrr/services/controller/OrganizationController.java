@@ -76,13 +76,11 @@ public class OrganizationController {
                     organizationList.add(organizationDto);
                 }
             } else {
-                Organization organization = organizationSvc.get(organizationid)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "Organization not found for this id :: "
-                                        + organizationid));
-                OrganizationDto organizationDto = mapper.map(organization,
-                        OrganizationDto.class);
-                organizationList.add(organizationDto);
+                organizationSvc.get(organizationid).ifPresent(organization -> {
+                    OrganizationDto organizationDto = mapper.map(organization,
+                            OrganizationDto.class);
+                    organizationList.add(organizationDto);
+                });
 
             }
 

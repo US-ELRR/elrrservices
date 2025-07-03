@@ -65,13 +65,11 @@ public class LocationController {
                 locationSvc.findAll().forEach(loc -> locationList.add(
                         mapper.map(loc, LocationDto.class)));
             } else {
-                Location location = locationSvc.get(locationId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "Location not found for this id :: "
-                                        + locationId));
-                LocationDto locationDto = mapper.map(location,
-                        LocationDto.class);
-                locationList.add(locationDto);
+                locationSvc.get(locationId).ifPresent(location -> {
+                    LocationDto locationDto = mapper.map(location,
+                            LocationDto.class);
+                    locationList.add(locationDto);
+                });
             }
 
             return ResponseEntity.ok(locationList);

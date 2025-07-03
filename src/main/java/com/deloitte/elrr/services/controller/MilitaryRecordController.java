@@ -62,14 +62,13 @@ public class MilitaryRecordController {
                         .forEach(loc -> militaryRecordList.add(
                                 mapper.map(loc, MilitaryRecordDto.class)));
             } else {
-                MilitaryRecord militaryRecord = militaryRecordSvc
-                        .get(militaryRecordId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "MilitaryRecord not found for this id :: "
-                                        + militaryRecordId));
-                MilitaryRecordDto militaryRecordDto = mapper.map(militaryRecord,
-                        MilitaryRecordDto.class);
-                militaryRecordList.add(militaryRecordDto);
+                militaryRecordSvc.get(militaryRecordId)
+                .ifPresent(militaryRecord -> {
+                    MilitaryRecordDto militaryRecordDto = mapper
+                    .map(militaryRecord,
+                            MilitaryRecordDto.class);
+                    militaryRecordList.add(militaryRecordDto);
+                });
             }
 
             return ResponseEntity.ok(militaryRecordList);

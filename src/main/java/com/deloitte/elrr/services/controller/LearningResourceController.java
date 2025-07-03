@@ -66,14 +66,12 @@ public class LearningResourceController {
                     .forEach(loc -> learningResourceList.add(
                         mapper.map(loc, LearningResourceDto.class)));
             } else {
-                LearningResource learningResource = learningResourceSvc
-                    .get(learningResourceId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "LearningResource not found for this id :: "
-                                        + learningResourceId));
-                LearningResourceDto learningResourceDto = mapper.map(
-                        learningResource, LearningResourceDto.class);
-                learningResourceList.add(learningResourceDto);
+                learningResourceSvc.get(learningResourceId)
+                .ifPresent(learningResource -> {
+                    LearningResourceDto learningResourceDto = mapper.map(
+                            learningResource, LearningResourceDto.class);
+                    learningResourceList.add(learningResourceDto);
+                });
             }
 
             return ResponseEntity.ok(learningResourceList);

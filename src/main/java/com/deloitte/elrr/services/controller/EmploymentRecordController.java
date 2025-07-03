@@ -89,14 +89,12 @@ public class EmploymentRecordController {
                         .forEach(loc -> employmentRecordList.add(
                                 mapper.map(loc, EmploymentRecordDto.class)));
             } else {
-                EmploymentRecord employmentRecord = employmentRecordSvc
-                        .get(employmentRecordId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "EmploymentRecord not found for this id :: "
-                                        + employmentRecordId));
-                EmploymentRecordDto employmentRecordDto = mapper
-                        .map(employmentRecord, EmploymentRecordDto.class);
-                employmentRecordList.add(employmentRecordDto);
+                employmentRecordSvc.get(employmentRecordId)
+                .ifPresent(employmentRecord -> {
+                    EmploymentRecordDto employmentRecordDto = mapper
+                            .map(employmentRecord, EmploymentRecordDto.class);
+                    employmentRecordList.add(employmentRecordDto);
+                });
             }
 
             return ResponseEntity.ok(employmentRecordList);

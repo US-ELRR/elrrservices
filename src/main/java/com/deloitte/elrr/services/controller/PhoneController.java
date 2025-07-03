@@ -65,12 +65,10 @@ public class PhoneController {
                 phoneSvc.findAll().forEach(phn -> phoneList.add(
                         mapper.map(phn, PhoneDto.class)));
             } else {
-                Phone phone = phoneSvc.get(phoneId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "Phone not found for this id :: "
-                                        + phoneId));
-                PhoneDto phoneDto = mapper.map(phone, PhoneDto.class);
-                phoneList.add(phoneDto);
+                phoneSvc.get(phoneId).ifPresent(phone -> {
+                    PhoneDto phoneDto = mapper.map(phone, PhoneDto.class);
+                    phoneList.add(phoneDto);
+                });
             }
 
             return ResponseEntity.ok(phoneList);

@@ -75,17 +75,15 @@ public class GoalController {
                 goalSvc.findAll().forEach(goal -> goalList.add(
                         mapper.map(goal, GoalDto.class)));
             } else {
-                Goal goal = goalSvc.get(goalId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "Goal not found for this id :: " + goalId));
-                GoalDto goalDto = mapper.map(goal, GoalDto.class);
-                goalList.add(goalDto);
+                goalSvc.get(goalId).ifPresent(goal -> {
+                    GoalDto goalDto = mapper.map(goal, GoalDto.class);
+                    goalList.add(goalDto);
+                });
             }
 
             return ResponseEntity.ok(goalList);
-        } catch (ResourceNotFoundException e) {
-            // return an empty list if no goals found for id
-            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
