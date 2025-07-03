@@ -88,6 +88,32 @@ public class MilitaryRecordControllerTest extends CommonControllerTest {
         assertEquals(MILITARY_RECORD_ID, result.get(0).getId());
     }
 
+    /**
+     * Test getting all military records when no military records exist - should return 200 with empty array
+     *
+     * @throws Exception
+     */
+    @Test
+    void getAllMilitaryRecordsEmptyListTest() throws Exception {
+        // Mock empty list
+        Mockito.doReturn(new ArrayList<>()).when(getMilitaryRecordSvc()).findAll();
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(MILITARY_RECORD_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("militaryrecord|READ"));
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertNotNull(mvcResult.getResponse().getContentAsString());
+
+        // Verify empty array is returned
+        List<MilitaryRecordDto> results = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<MilitaryRecordDto>>() {});
+        assertEquals(0, results.size());
+    }
+
     @Test
     void getMilitaryRecordByIdTest() throws Exception {
 

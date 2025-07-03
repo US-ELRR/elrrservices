@@ -65,20 +65,14 @@ public class CredentialController {
                 credentialSvc.findAll().forEach(cred -> credentialList.add(
                         mapper.map(cred, CredentialDto.class)));
             } else {
-                Credential credential = credentialSvc.get(credentialId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "Credential not found for this id :: "
-                                        + credentialId));
-                CredentialDto credentialDto = mapper.map(credential,
-                        CredentialDto.class);
-                credentialList.add(credentialDto);
+                credentialSvc.get(credentialId).ifPresent(credential -> {
+                    CredentialDto credentialDto = mapper.map(credential,
+                            CredentialDto.class);
+                    credentialList.add(credentialDto);
+                });
             }
 
-            if (credentialList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(credentialList);
-            }
+            return ResponseEntity.ok(credentialList);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

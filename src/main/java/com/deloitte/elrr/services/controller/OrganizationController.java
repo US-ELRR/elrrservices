@@ -76,21 +76,15 @@ public class OrganizationController {
                     organizationList.add(organizationDto);
                 }
             } else {
-                Organization organization = organizationSvc.get(organizationid)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "Organization not found for this id :: "
-                                        + organizationid));
-                OrganizationDto organizationDto = mapper.map(organization,
-                        OrganizationDto.class);
-                organizationList.add(organizationDto);
+                organizationSvc.get(organizationid).ifPresent(organization -> {
+                    OrganizationDto organizationDto = mapper.map(organization,
+                            OrganizationDto.class);
+                    organizationList.add(organizationDto);
+                });
 
             }
 
-            if (organizationList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(organizationList);
-            }
+            return ResponseEntity.ok(organizationList);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

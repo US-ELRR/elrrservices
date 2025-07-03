@@ -88,6 +88,33 @@ public class OrganizationControllerTest extends CommonControllerTest {
         assertEquals(ORGANIZATION_ID, result.get(0).getId());
     }
 
+    /**
+     * Test getting all organizations when no organizations exist - should return 200 with empty array
+     *
+     * @throws Exception
+     */
+    @Test
+    void getAllOrganizationsEmptyListTest() throws Exception {
+        // Mock empty list
+        Mockito.doReturn(new ArrayList<>()).when(getOrganizationSvc()).findAll();
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(ORGANIZATION_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("organization|READ"));
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertNotNull(mvcResult.getResponse().getContentAsString());
+
+        // Verify empty array is returned
+        List<OrganizationDto> results = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<OrganizationDto>>() {
+                });
+        assertEquals(0, results.size());
+    }
+
     @Test
     void getOrganizationByIdTest() throws Exception {
 

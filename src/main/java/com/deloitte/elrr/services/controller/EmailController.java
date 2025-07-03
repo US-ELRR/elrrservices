@@ -65,19 +65,13 @@ public class EmailController {
                 emailSvc.findAll().forEach(email -> emailList.add(
                         mapper.map(email, EmailDto.class)));
             } else {
-                Email email = emailSvc.get(emailId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "Email not found for this id :: "
-                                        + emailId));
-                EmailDto emailDto = mapper.map(email, EmailDto.class);
-                emailList.add(emailDto);
+                emailSvc.get(emailId).ifPresent(email -> {
+                    EmailDto emailDto = mapper.map(email, EmailDto.class);
+                    emailList.add(emailDto);
+                });
             }
 
-            if (emailList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(emailList);
-            }
+            return ResponseEntity.ok(emailList);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

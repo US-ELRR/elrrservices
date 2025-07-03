@@ -88,6 +88,33 @@ public class CredentialControllerTest extends CommonControllerTest {
         assertEquals(CREDENTIAL_ID, result.get(0).getId());
     }
 
+    /**
+     * Test getting all credentials when no credentials exist - should return 200 with empty array
+     *
+     * @throws Exception
+     */
+    @Test
+    void getAllCredentialsEmptyListTest() throws Exception {
+        // Mock empty list
+        Mockito.doReturn(new ArrayList<>()).when(getCredentialSvc()).findAll();
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(CRED_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("credential|READ"));
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertNotNull(mvcResult.getResponse().getContentAsString());
+
+        // Verify empty array is returned
+        List<CredentialDto> results = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<CredentialDto>>() {
+                });
+        assertEquals(0, results.size());
+    }
+
     @Test
     void getCredentialByIdTest() throws Exception {
 

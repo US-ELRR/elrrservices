@@ -87,6 +87,33 @@ public class EmailControllerTest extends CommonControllerTest {
         assertEquals(EMAIL_ID, result.get(0).getId());
     }
 
+    /**
+     * Test getting all emails when no emails exist - should return 200 with empty array
+     *
+     * @throws Exception
+     */
+    @Test
+    void getAllEmailsEmptyListTest() throws Exception {
+        // Mock empty list
+        Mockito.doReturn(new ArrayList<>()).when(getEmailSvc()).findAll();
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(EMAIL_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("email|READ"));
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertNotNull(mvcResult.getResponse().getContentAsString());
+
+        // Verify empty array is returned
+        List<EmailDto> results = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<EmailDto>>() {
+                });
+        assertEquals(0, results.size());
+    }
+
     @Test
     void getEmailByIdTest() throws Exception {
 

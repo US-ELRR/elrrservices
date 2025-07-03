@@ -87,6 +87,33 @@ public class LocationControllerTest extends CommonControllerTest {
         assertEquals(LOCATION_ID, result.get(0).getId());
     }
 
+    /**
+     * Test getting all locations when no locations exist - should return 200 with empty array
+     *
+     * @throws Exception
+     */
+    @Test
+    void getAllLocationsEmptyListTest() throws Exception {
+        // Mock empty list
+        Mockito.doReturn(new ArrayList<>()).when(getLocationSvc()).findAll();
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(LOCATION_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("location|READ"));
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertNotNull(mvcResult.getResponse().getContentAsString());
+
+        // Verify empty array is returned
+        List<LocationDto> results = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<LocationDto>>() {
+                });
+        assertEquals(0, results.size());
+    }
+
     @Test
     void getLocationByIdTest() throws Exception {
 

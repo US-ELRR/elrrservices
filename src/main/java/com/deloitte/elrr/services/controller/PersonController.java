@@ -160,11 +160,10 @@ public class PersonController {
             log.info("getting Person id:........." + personId);
             List<PersonDto> persontoList = new ArrayList<>();
             if (personId != null) {
-                Person person = personSvc.get(personId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                PERSON_NOT_FOUND + personId));
-                PersonDto personDto = mapper.map(person, PersonDto.class);
-                persontoList.add(personDto);
+                personSvc.get(personId).ifPresent(person -> {
+                    PersonDto personDto = mapper.map(person, PersonDto.class);
+                    persontoList.add(personDto);
+                });
             } else if (ifi != null) {
                 Identity ifiIdentity = identitySvc.getByIfi(ifi);
                 if (ifiIdentity != null) {
@@ -180,11 +179,7 @@ public class PersonController {
                 }
             }
 
-            if (persontoList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(persontoList);
-            }
+            return ResponseEntity.ok(persontoList);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

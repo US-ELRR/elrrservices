@@ -88,6 +88,33 @@ public class EmploymentRecordControllerTest extends CommonControllerTest {
         assertEquals(EMPLOYMENT_RECORD_ID, result.get(0).getId());
     }
 
+    /**
+     * Test getting all employment records when no employment records exist - should return 200 with empty array
+     *
+     * @throws Exception
+     */
+    @Test
+    void getAllEmploymentRecordsEmptyListTest() throws Exception {
+        // Mock empty list
+        Mockito.doReturn(new ArrayList<>()).when(getEmploymentRecordSvc()).findAll();
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(EMPLOYMENT_RECORD_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("employmentrecord|READ"));
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertNotNull(mvcResult.getResponse().getContentAsString());
+
+        // Verify empty array is returned
+        List<EmploymentRecordDto> results = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<EmploymentRecordDto>>() {
+                });
+        assertEquals(0, results.size());
+    }
+
     @Test
     void getEmploymentRecordByIdTest() throws Exception {
 

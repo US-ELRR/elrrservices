@@ -87,6 +87,32 @@ public class FacilityControllerTest extends CommonControllerTest {
         assertEquals(FACILITY_ID, result.get(0).getId());
     }
 
+    /**
+     * Test getting all facilities when no facilities exist - should return 200 with empty array
+     *
+     * @throws Exception
+     */
+    @Test
+    void getAllFacilitiesEmptyListTest() throws Exception {
+        // Mock empty list
+        Mockito.doReturn(new ArrayList<>()).when(getFacilitySvc()).findAll();
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(FACILITY_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("facility|READ"));
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertNotNull(mvcResult.getResponse().getContentAsString());
+
+        // Verify empty array is returned
+        List<FacilityDto> results = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<FacilityDto>>() {});
+        assertEquals(0, results.size());
+    }
+
     @Test
     void getFacilityByIdTest() throws Exception {
 
