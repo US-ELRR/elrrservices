@@ -61,33 +61,29 @@ public class OrganizationController {
     @GetMapping("/organization")
     public ResponseEntity<List<OrganizationDto>> getAllOrganizations(
             @RequestParam(value = "id", required = false)
-            final UUID organizationid) throws ResourceNotFoundException {
-        try {
-            log.info("GetMapping  Organization:.........");
-            log.info("GetMapping Organization id:........." + organizationid);
-            List<OrganizationDto> organizationList = new ArrayList<>();
-            if (organizationid == null) {
-                Iterable<Organization> organizations = organizationSvc
-                        .findAll();
+            final UUID organizationid) {
+        log.info("GetMapping  Organization:.........");
+        log.info("GetMapping Organization id:........." + organizationid);
+        List<OrganizationDto> organizationList = new ArrayList<>();
+        if (organizationid == null) {
+            Iterable<Organization> organizations = organizationSvc
+                    .findAll();
 
-                for (Organization organization : organizations) {
-                    OrganizationDto organizationDto = mapper.map(organization,
-                            OrganizationDto.class);
-                    organizationList.add(organizationDto);
-                }
-            } else {
-                organizationSvc.get(organizationid).ifPresent(organization -> {
-                    OrganizationDto organizationDto = mapper.map(organization,
-                            OrganizationDto.class);
-                    organizationList.add(organizationDto);
-                });
-
+            for (Organization organization : organizations) {
+                OrganizationDto organizationDto = mapper.map(organization,
+                        OrganizationDto.class);
+                organizationList.add(organizationDto);
             }
+        } else {
+            organizationSvc.get(organizationid).ifPresent(organization -> {
+                OrganizationDto organizationDto = mapper.map(organization,
+                        OrganizationDto.class);
+                organizationList.add(organizationDto);
+            });
 
-            return ResponseEntity.ok(organizationList);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        return ResponseEntity.ok(organizationList);
     }
 
     /**

@@ -53,28 +53,24 @@ public class MilitaryRecordController {
     @GetMapping("/militaryrecord")
     public ResponseEntity<List<MilitaryRecordDto>> getAllMilitaryRecords(
             @RequestParam(value = "id", required = false)
-            final UUID militaryRecordId) throws ResourceNotFoundException {
-        try {
-            log.debug("Get MilitaryRecord id:........." + militaryRecordId);
-            List<MilitaryRecordDto> militaryRecordList = new ArrayList<>();
-            if (militaryRecordId == null) {
-                militaryRecordSvc.findAll()
-                        .forEach(loc -> militaryRecordList.add(
-                                mapper.map(loc, MilitaryRecordDto.class)));
-            } else {
-                militaryRecordSvc.get(militaryRecordId)
-                .ifPresent(militaryRecord -> {
-                    MilitaryRecordDto militaryRecordDto = mapper
-                    .map(militaryRecord,
-                            MilitaryRecordDto.class);
-                    militaryRecordList.add(militaryRecordDto);
-                });
-            }
-
-            return ResponseEntity.ok(militaryRecordList);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            final UUID militaryRecordId) {
+        log.debug("Get MilitaryRecord id:........." + militaryRecordId);
+        List<MilitaryRecordDto> militaryRecordList = new ArrayList<>();
+        if (militaryRecordId == null) {
+            militaryRecordSvc.findAll()
+                    .forEach(loc -> militaryRecordList.add(
+                            mapper.map(loc, MilitaryRecordDto.class)));
+        } else {
+            militaryRecordSvc.get(militaryRecordId)
+            .ifPresent(militaryRecord -> {
+                MilitaryRecordDto militaryRecordDto = mapper
+                .map(militaryRecord,
+                        MilitaryRecordDto.class);
+                militaryRecordList.add(militaryRecordDto);
+            });
         }
+
+        return ResponseEntity.ok(militaryRecordList);
     }
 
     /**

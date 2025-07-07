@@ -52,34 +52,29 @@ public class LearningRecordController {
      *
      * @param learningRecordId
      * @return ResponseEntity<List<LearningRecordDto>>
-     * @throws ResourceNotFoundException
      */
     @PreAuthorize("hasPermission('learningrecord', 'READ')")
     @GetMapping("/learningrecord")
     public ResponseEntity<List<LearningRecordDto>> getAllLearningRecords(
             @RequestParam(value = "id", required = false)
-            final UUID learningRecordId) throws ResourceNotFoundException {
-        try {
-            log.debug("Get LearningRecord id:........." + learningRecordId);
-            List<LearningRecordDto> learningRecordList = new ArrayList<>();
-            if (learningRecordId == null) {
-                learningRecordSvc.findAll()
-                        .forEach(loc -> learningRecordList.add(
-                                mapper.map(loc, LearningRecordDto.class)));
-            } else {
-                learningRecordSvc.get(learningRecordId)
-                        .ifPresent(learningRecord -> {
-                            LearningRecordDto learningRecordDto = mapper
-                            .map(learningRecord,
-                                    LearningRecordDto.class);
-                            learningRecordList.add(learningRecordDto);
-                        });
-            }
-
-            return ResponseEntity.ok(learningRecordList);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            final UUID learningRecordId) {
+        log.debug("Get LearningRecord id:........." + learningRecordId);
+        List<LearningRecordDto> learningRecordList = new ArrayList<>();
+        if (learningRecordId == null) {
+            learningRecordSvc.findAll()
+                    .forEach(loc -> learningRecordList.add(
+                            mapper.map(loc, LearningRecordDto.class)));
+        } else {
+            learningRecordSvc.get(learningRecordId)
+                    .ifPresent(learningRecord -> {
+                        LearningRecordDto learningRecordDto = mapper
+                        .map(learningRecord,
+                                LearningRecordDto.class);
+                        learningRecordList.add(learningRecordDto);
+                    });
         }
+
+        return ResponseEntity.ok(learningRecordList);
     }
 
     /**

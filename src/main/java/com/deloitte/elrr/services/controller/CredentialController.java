@@ -57,25 +57,21 @@ public class CredentialController {
     @GetMapping("/credential")
     public ResponseEntity<List<CredentialDto>> getAllCredentials(
             @RequestParam(value = "id", required = false)
-            final UUID credentialId) throws ResourceNotFoundException {
-        try {
-            log.debug("Get Credential id:........." + credentialId);
-            List<CredentialDto> credentialList = new ArrayList<>();
-            if (credentialId == null) {
-                credentialSvc.findAll().forEach(cred -> credentialList.add(
-                        mapper.map(cred, CredentialDto.class)));
-            } else {
-                credentialSvc.get(credentialId).ifPresent(credential -> {
-                    CredentialDto credentialDto = mapper.map(credential,
-                            CredentialDto.class);
-                    credentialList.add(credentialDto);
-                });
-            }
-
-            return ResponseEntity.ok(credentialList);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            final UUID credentialId) {
+        log.debug("Get Credential id:........." + credentialId);
+        List<CredentialDto> credentialList = new ArrayList<>();
+        if (credentialId == null) {
+            credentialSvc.findAll().forEach(cred -> credentialList.add(
+                    mapper.map(cred, CredentialDto.class)));
+        } else {
+            credentialSvc.get(credentialId).ifPresent(credential -> {
+                CredentialDto credentialDto = mapper.map(credential,
+                        CredentialDto.class);
+                credentialList.add(credentialDto);
+            });
         }
+
+        return ResponseEntity.ok(credentialList);
     }
 
     /**

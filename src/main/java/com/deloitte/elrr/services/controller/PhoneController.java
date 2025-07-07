@@ -56,25 +56,20 @@ public class PhoneController {
     @PreAuthorize("hasPermission('phone', 'READ')")
     @GetMapping("/phone")
     public ResponseEntity<List<PhoneDto>> getAllPhones(
-            @RequestParam(value = "id", required = false) final UUID phoneId)
-            throws ResourceNotFoundException {
-        try {
-            log.debug("Get Phone id:........." + phoneId);
-            List<PhoneDto> phoneList = new ArrayList<>();
-            if (phoneId == null) {
-                phoneSvc.findAll().forEach(phn -> phoneList.add(
-                        mapper.map(phn, PhoneDto.class)));
-            } else {
-                phoneSvc.get(phoneId).ifPresent(phone -> {
-                    PhoneDto phoneDto = mapper.map(phone, PhoneDto.class);
-                    phoneList.add(phoneDto);
-                });
-            }
-
-            return ResponseEntity.ok(phoneList);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            @RequestParam(value = "id", required = false) final UUID phoneId) {
+        log.debug("Get Phone id:........." + phoneId);
+        List<PhoneDto> phoneList = new ArrayList<>();
+        if (phoneId == null) {
+            phoneSvc.findAll().forEach(phn -> phoneList.add(
+                    mapper.map(phn, PhoneDto.class)));
+        } else {
+            phoneSvc.get(phoneId).ifPresent(phone -> {
+                PhoneDto phoneDto = mapper.map(phone, PhoneDto.class);
+                phoneList.add(phoneDto);
+            });
         }
+
+        return ResponseEntity.ok(phoneList);
     }
 
     /**

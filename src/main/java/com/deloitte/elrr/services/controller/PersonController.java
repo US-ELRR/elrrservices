@@ -153,36 +153,31 @@ public class PersonController {
     @GetMapping("/person")
     public ResponseEntity<List<PersonDto>> getAllPersons(
             @RequestParam(value = "id", required = false) final UUID personId,
-            @RequestParam(value = "ifi", required = false) final String ifi)
-            throws ResourceNotFoundException {
-        try {
-            log.info("getting  PersonDto:.........");
-            log.info("getting Person id:........." + personId);
-            List<PersonDto> persontoList = new ArrayList<>();
-            if (personId != null) {
-                personSvc.get(personId).ifPresent(person -> {
-                    PersonDto personDto = mapper.map(person, PersonDto.class);
-                    persontoList.add(personDto);
-                });
-            } else if (ifi != null) {
-                Identity ifiIdentity = identitySvc.getByIfi(ifi);
-                if (ifiIdentity != null) {
-                    Person person = ifiIdentity.getPerson();
-                    persontoList.add(mapper.map(person, PersonDto.class));
-                }
-            } else {
-                Iterable<Person> persons = personSvc.findAll();
-
-                for (Person person : persons) {
-                    PersonDto personDto = mapper.map(person, PersonDto.class);
-                    persontoList.add(personDto);
-                }
+            @RequestParam(value = "ifi", required = false) final String ifi) {
+        log.info("getting  PersonDto:.........");
+        log.info("getting Person id:........." + personId);
+        List<PersonDto> persontoList = new ArrayList<>();
+        if (personId != null) {
+            personSvc.get(personId).ifPresent(person -> {
+                PersonDto personDto = mapper.map(person, PersonDto.class);
+                persontoList.add(personDto);
+            });
+        } else if (ifi != null) {
+            Identity ifiIdentity = identitySvc.getByIfi(ifi);
+            if (ifiIdentity != null) {
+                Person person = ifiIdentity.getPerson();
+                persontoList.add(mapper.map(person, PersonDto.class));
             }
+        } else {
+            Iterable<Person> persons = personSvc.findAll();
 
-            return ResponseEntity.ok(persontoList);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            for (Person person : persons) {
+                PersonDto personDto = mapper.map(person, PersonDto.class);
+                persontoList.add(personDto);
+            }
         }
+
+        return ResponseEntity.ok(persontoList);
     }
 
     /**

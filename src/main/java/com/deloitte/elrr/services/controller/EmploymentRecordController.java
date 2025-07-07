@@ -80,27 +80,23 @@ public class EmploymentRecordController {
     @GetMapping("/employmentrecord")
     public ResponseEntity<List<EmploymentRecordDto>> getAllEmploymentRecords(
             @RequestParam(value = "id", required = false)
-            final UUID employmentRecordId) throws ResourceNotFoundException {
-        try {
-            log.debug("Get EmploymentRecord id:........." + employmentRecordId);
-            List<EmploymentRecordDto> employmentRecordList = new ArrayList<>();
-            if (employmentRecordId == null) {
-                employmentRecordSvc.findAll()
-                        .forEach(loc -> employmentRecordList.add(
-                                mapper.map(loc, EmploymentRecordDto.class)));
-            } else {
-                employmentRecordSvc.get(employmentRecordId)
-                .ifPresent(employmentRecord -> {
-                    EmploymentRecordDto employmentRecordDto = mapper
-                            .map(employmentRecord, EmploymentRecordDto.class);
-                    employmentRecordList.add(employmentRecordDto);
-                });
-            }
-
-            return ResponseEntity.ok(employmentRecordList);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            final UUID employmentRecordId) {
+        log.debug("Get EmploymentRecord id:........." + employmentRecordId);
+        List<EmploymentRecordDto> employmentRecordList = new ArrayList<>();
+        if (employmentRecordId == null) {
+            employmentRecordSvc.findAll()
+                    .forEach(loc -> employmentRecordList.add(
+                            mapper.map(loc, EmploymentRecordDto.class)));
+        } else {
+            employmentRecordSvc.get(employmentRecordId)
+            .ifPresent(employmentRecord -> {
+                EmploymentRecordDto employmentRecordDto = mapper
+                        .map(employmentRecord, EmploymentRecordDto.class);
+                employmentRecordList.add(employmentRecordDto);
+            });
         }
+
+        return ResponseEntity.ok(employmentRecordList);
     }
 
     /**

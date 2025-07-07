@@ -57,24 +57,20 @@ public class EmailController {
     @GetMapping("/email")
     public ResponseEntity<List<EmailDto>> getAllEmails(
             @RequestParam(value = "id", required = false)
-            final UUID emailId) throws ResourceNotFoundException {
-        try {
-            log.debug("Get Email id:........." + emailId);
-            List<EmailDto> emailList = new ArrayList<>();
-            if (emailId == null) {
-                emailSvc.findAll().forEach(email -> emailList.add(
-                        mapper.map(email, EmailDto.class)));
-            } else {
-                emailSvc.get(emailId).ifPresent(email -> {
-                    EmailDto emailDto = mapper.map(email, EmailDto.class);
-                    emailList.add(emailDto);
-                });
-            }
-
-            return ResponseEntity.ok(emailList);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            final UUID emailId) {
+        log.debug("Get Email id:........." + emailId);
+        List<EmailDto> emailList = new ArrayList<>();
+        if (emailId == null) {
+            emailSvc.findAll().forEach(email -> emailList.add(
+                    mapper.map(email, EmailDto.class)));
+        } else {
+            emailSvc.get(emailId).ifPresent(email -> {
+                EmailDto emailDto = mapper.map(email, EmailDto.class);
+                emailList.add(emailDto);
+            });
         }
+
+        return ResponseEntity.ok(emailList);
     }
 
     /**

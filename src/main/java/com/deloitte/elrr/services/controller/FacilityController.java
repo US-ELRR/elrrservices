@@ -53,26 +53,22 @@ public class FacilityController {
     @PreAuthorize("hasPermission('facility', 'READ')")
     @GetMapping("/facility")
     public ResponseEntity<List<FacilityDto>> getAllFacilitys(
-            @RequestParam(value = "id", required = false) final UUID facilityId)
-            throws ResourceNotFoundException {
-        try {
-            log.debug("Get Facility id:........." + facilityId);
-            List<FacilityDto> facilityList = new ArrayList<>();
-            if (facilityId == null) {
-                facilitySvc.findAll().forEach(fac -> facilityList.add(
-                        mapper.map(fac, FacilityDto.class)));
-            } else {
-                facilitySvc.get(facilityId).ifPresent(facility -> {
-                    FacilityDto facilityDto = mapper.map(facility,
-                            FacilityDto.class);
-                    facilityList.add(facilityDto);
-                });
-            }
-
-            return ResponseEntity.ok(facilityList);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            @RequestParam(value = "id",
+            required = false) final UUID facilityId) {
+        log.debug("Get Facility id:........." + facilityId);
+        List<FacilityDto> facilityList = new ArrayList<>();
+        if (facilityId == null) {
+            facilitySvc.findAll().forEach(fac -> facilityList.add(
+                    mapper.map(fac, FacilityDto.class)));
+        } else {
+            facilitySvc.get(facilityId).ifPresent(facility -> {
+                FacilityDto facilityDto = mapper.map(facility,
+                        FacilityDto.class);
+                facilityList.add(facilityDto);
+            });
         }
+
+        return ResponseEntity.ok(facilityList);
     }
 
     /**
