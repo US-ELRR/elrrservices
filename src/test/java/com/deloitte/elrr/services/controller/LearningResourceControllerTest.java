@@ -88,6 +88,33 @@ public class LearningResourceControllerTest extends CommonControllerTest {
         assertEquals(LEARNING_RESOURCE_ID, result.get(0).getId());
     }
 
+    /**
+     * Test getting all learning resources when no learning resources exist - should return 200 with empty array
+     *
+     * @throws Exception
+     */
+    @Test
+    void getAllLearningResourcesEmptyListTest() throws Exception {
+        // Mock empty list
+        Mockito.doReturn(new ArrayList<>()).when(getLearningResourceSvc()).findAll();
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(LEARNING_RESOURCE_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("learningresource|READ"));
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertNotNull(mvcResult.getResponse().getContentAsString());
+
+        // Verify empty array is returned
+        List<LearningResourceDto> results = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<LearningResourceDto>>() {
+                });
+        assertEquals(0, results.size());
+    }
+
     @Test
     void getLearningResourceByIdTest() throws Exception {
 

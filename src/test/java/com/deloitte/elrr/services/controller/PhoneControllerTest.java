@@ -87,6 +87,33 @@ public class PhoneControllerTest extends CommonControllerTest {
         assertEquals(PHONE_ID, result.get(0).getId());
     }
 
+    /**
+     * Test getting all phones when no phones exist - should return 200 with empty array
+     *
+     * @throws Exception
+     */
+    @Test
+    void getAllPhonesEmptyListTest() throws Exception {
+        // Mock empty list
+        Mockito.doReturn(new ArrayList<>()).when(getPhoneSvc()).findAll();
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(PHONE_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("phone|READ"));
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertNotNull(mvcResult.getResponse().getContentAsString());
+
+        // Verify empty array is returned
+        List<PhoneDto> results = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<PhoneDto>>() {
+                });
+        assertEquals(0, results.size());
+    }
+
     @Test
     void getPhoneByIdTest() throws Exception {
 

@@ -56,32 +56,22 @@ public class LocationController {
     @PreAuthorize("hasPermission('location', 'READ')")
     @GetMapping("/location")
     public ResponseEntity<List<LocationDto>> getAllLocations(
-            @RequestParam(value = "id", required = false) final UUID locationId)
-            throws ResourceNotFoundException {
-        try {
-            log.debug("Get Location id:........." + locationId);
-            List<LocationDto> locationList = new ArrayList<>();
-            if (locationId == null) {
-                locationSvc.findAll().forEach(loc -> locationList.add(
-                        mapper.map(loc, LocationDto.class)));
-            } else {
-                Location location = locationSvc.get(locationId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "Location not found for this id :: "
-                                        + locationId));
+            @RequestParam(value = "id",
+            required = false) final UUID locationId) {
+        log.debug("Get Location id:........." + locationId);
+        List<LocationDto> locationList = new ArrayList<>();
+        if (locationId == null) {
+            locationSvc.findAll().forEach(loc -> locationList.add(
+                    mapper.map(loc, LocationDto.class)));
+        } else {
+            locationSvc.get(locationId).ifPresent(location -> {
                 LocationDto locationDto = mapper.map(location,
                         LocationDto.class);
                 locationList.add(locationDto);
-            }
-
-            if (locationList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(locationList);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            });
         }
+
+        return ResponseEntity.ok(locationList);
     }
 
     /**

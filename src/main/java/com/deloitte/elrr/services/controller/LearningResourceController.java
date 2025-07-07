@@ -57,33 +57,23 @@ public class LearningResourceController {
     @GetMapping("/learningresource")
     public ResponseEntity<List<LearningResourceDto>> getAllLearningResources(
             @RequestParam(value = "id", required = false)
-            final UUID learningResourceId) throws ResourceNotFoundException {
-        try {
-            log.debug("Get LearningResource id:........." + learningResourceId);
-            List<LearningResourceDto> learningResourceList = new ArrayList<>();
-            if (learningResourceId == null) {
-                learningResourceSvc.findAll()
-                    .forEach(loc -> learningResourceList.add(
-                        mapper.map(loc, LearningResourceDto.class)));
-            } else {
-                LearningResource learningResource = learningResourceSvc
-                    .get(learningResourceId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "LearningResource not found for this id :: "
-                                        + learningResourceId));
+            final UUID learningResourceId) {
+        log.debug("Get LearningResource id:........." + learningResourceId);
+        List<LearningResourceDto> learningResourceList = new ArrayList<>();
+        if (learningResourceId == null) {
+            learningResourceSvc.findAll()
+                .forEach(loc -> learningResourceList.add(
+                    mapper.map(loc, LearningResourceDto.class)));
+        } else {
+            learningResourceSvc.get(learningResourceId)
+            .ifPresent(learningResource -> {
                 LearningResourceDto learningResourceDto = mapper.map(
                         learningResource, LearningResourceDto.class);
                 learningResourceList.add(learningResourceDto);
-            }
-
-            if (learningResourceList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(learningResourceList);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            });
         }
+
+        return ResponseEntity.ok(learningResourceList);
     }
 
     /**

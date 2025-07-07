@@ -51,37 +51,26 @@ public class CompetencyController {
      *
      * @param competencyId
      * @return ResponseEntity<List<CompetencyDto>>
-     * @throws ResourceNotFoundException
      */
     @PreAuthorize("hasPermission('competency', 'READ')")
     @GetMapping("/competency")
     public ResponseEntity<List<CompetencyDto>> getAllCompetencies(
             @RequestParam(value = "id", required = false)
-            final UUID competencyId) throws ResourceNotFoundException {
-        try {
-            log.debug("Get Competency id:........." + competencyId);
-            List<CompetencyDto> competencyList = new ArrayList<>();
-            if (competencyId == null) {
-                competencySvc.findAll().forEach(comp -> competencyList.add(
-                        mapper.map(comp, CompetencyDto.class)));
-            } else {
-                Competency competency = competencySvc.get(competencyId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "Competency not found for this id :: "
-                                        + competencyId));
+            final UUID competencyId) {
+        log.debug("Get Competency id:........." + competencyId);
+        List<CompetencyDto> competencyList = new ArrayList<>();
+        if (competencyId == null) {
+            competencySvc.findAll().forEach(comp -> competencyList.add(
+                    mapper.map(comp, CompetencyDto.class)));
+        } else {
+            competencySvc.get(competencyId).ifPresent(competency -> {
                 CompetencyDto competencyDto = mapper.map(competency,
                         CompetencyDto.class);
                 competencyList.add(competencyDto);
-            }
-
-            if (competencyList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(competencyList);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            });
         }
+
+        return ResponseEntity.ok(competencyList);
     }
 
     /**

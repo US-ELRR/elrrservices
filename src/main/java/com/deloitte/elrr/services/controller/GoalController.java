@@ -66,31 +66,20 @@ public class GoalController {
     @PreAuthorize("hasPermission('goal', 'READ')")
     @GetMapping("/goal")
     public ResponseEntity<List<GoalDto>> getAllGoals(
-            @RequestParam(value = "id", required = false) final UUID goalId)
-            throws ResourceNotFoundException {
-        try {
-            log.debug("Get Goal id: {}", goalId);
-            List<GoalDto> goalList = new ArrayList<>();
-            if (goalId == null) {
-                goalSvc.findAll().forEach(goal -> goalList.add(
-                        mapper.map(goal, GoalDto.class)));
-            } else {
-                Goal goal = goalSvc.get(goalId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "Goal not found for this id :: " + goalId));
+            @RequestParam(value = "id", required = false) final UUID goalId) {
+        log.debug("Get Goal id: {}", goalId);
+        List<GoalDto> goalList = new ArrayList<>();
+        if (goalId == null) {
+            goalSvc.findAll().forEach(goal -> goalList.add(
+                    mapper.map(goal, GoalDto.class)));
+        } else {
+            goalSvc.get(goalId).ifPresent(goal -> {
                 GoalDto goalDto = mapper.map(goal, GoalDto.class);
                 goalList.add(goalDto);
-            }
-
-            if (goalList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(goalList);
-            }
-        } catch (ResourceNotFoundException e) {
-            // return an empty list if no goals found for id
-            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+            });
         }
+
+        return ResponseEntity.ok(goalList);
     }
 
     /**
