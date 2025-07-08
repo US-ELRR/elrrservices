@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class FacilityDto extends AbstractDto {
+public class FacilityDto extends AuditableDto {
 
 
     @Size(max = 255)
