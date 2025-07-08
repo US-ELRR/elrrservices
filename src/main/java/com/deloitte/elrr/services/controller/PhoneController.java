@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.deloitte.elrr.entity.Phone;
 import com.deloitte.elrr.jpa.svc.PhoneSvc;
@@ -52,33 +53,23 @@ public class PhoneController {
      * @return ResponseEntity<List<PhoneDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('phone', 'READ')")
     @GetMapping("/phone")
     public ResponseEntity<List<PhoneDto>> getAllPhones(
-            @RequestParam(value = "id", required = false) final UUID phoneId)
-            throws ResourceNotFoundException {
-        try {
-            log.debug("Get Phone id:........." + phoneId);
-            List<PhoneDto> phoneList = new ArrayList<>();
-            if (phoneId == null) {
-                phoneSvc.findAll().forEach(phn -> phoneList.add(
-                        mapper.map(phn, PhoneDto.class)));
-            } else {
-                Phone phone = phoneSvc.get(phoneId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "Phone not found for this id :: "
-                                        + phoneId));
+            @RequestParam(value = "id", required = false) final UUID phoneId) {
+        log.debug("Get Phone id:........." + phoneId);
+        List<PhoneDto> phoneList = new ArrayList<>();
+        if (phoneId == null) {
+            phoneSvc.findAll().forEach(phn -> phoneList.add(
+                    mapper.map(phn, PhoneDto.class)));
+        } else {
+            phoneSvc.get(phoneId).ifPresent(phone -> {
                 PhoneDto phoneDto = mapper.map(phone, PhoneDto.class);
                 phoneList.add(phoneDto);
-            }
-
-            if (phoneList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(phoneList);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            });
         }
+
+        return ResponseEntity.ok(phoneList);
     }
 
     /**
@@ -87,6 +78,7 @@ public class PhoneController {
      * @return ResponseEntity<PhoneDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('phone', 'READ')")
     @GetMapping("/phone/{id}")
     public ResponseEntity<PhoneDto> getPhoneById(
             @PathVariable(value = "id") final UUID phoneId)
@@ -106,6 +98,7 @@ public class PhoneController {
      * @param phoneDto
      * @return ResponseEntity<PhoneDto>
      */
+    @PreAuthorize("hasPermission('phone', 'CREATE')")
     @PostMapping("/phone")
     public ResponseEntity<PhoneDto> createPhone(
             @Valid @RequestBody final PhoneDto phoneDto) {
@@ -121,6 +114,7 @@ public class PhoneController {
      * @return ResponseEntity<PhoneDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('phone', 'UPDATE')")
     @PutMapping("/phone/{id}")
     public ResponseEntity<PhoneDto> updatePhone(
             @PathVariable(value = "id") final UUID phoneId,
@@ -149,6 +143,7 @@ public class PhoneController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('phone', 'DELETE')")
     @DeleteMapping("/phone/{id}")
     public ResponseEntity<HttpStatus> deletePhone(
             @PathVariable(value = "id") final UUID phoneId)

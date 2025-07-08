@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.deloitte.elrr.entity.EmploymentRecord;
 import com.deloitte.elrr.entity.Organization;
@@ -75,36 +76,27 @@ public class EmploymentRecordController {
      * @return ResponseEntity<List<EmploymentRecordDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('employmentrecord', 'READ')")
     @GetMapping("/employmentrecord")
     public ResponseEntity<List<EmploymentRecordDto>> getAllEmploymentRecords(
             @RequestParam(value = "id", required = false)
-            final UUID employmentRecordId) throws ResourceNotFoundException {
-        try {
-            log.debug("Get EmploymentRecord id:........." + employmentRecordId);
-            List<EmploymentRecordDto> employmentRecordList = new ArrayList<>();
-            if (employmentRecordId == null) {
-                employmentRecordSvc.findAll()
-                        .forEach(loc -> employmentRecordList.add(
-                                mapper.map(loc, EmploymentRecordDto.class)));
-            } else {
-                EmploymentRecord employmentRecord = employmentRecordSvc
-                        .get(employmentRecordId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "EmploymentRecord not found for this id :: "
-                                        + employmentRecordId));
+            final UUID employmentRecordId) {
+        log.debug("Get EmploymentRecord id:........." + employmentRecordId);
+        List<EmploymentRecordDto> employmentRecordList = new ArrayList<>();
+        if (employmentRecordId == null) {
+            employmentRecordSvc.findAll()
+                    .forEach(loc -> employmentRecordList.add(
+                            mapper.map(loc, EmploymentRecordDto.class)));
+        } else {
+            employmentRecordSvc.get(employmentRecordId)
+            .ifPresent(employmentRecord -> {
                 EmploymentRecordDto employmentRecordDto = mapper
                         .map(employmentRecord, EmploymentRecordDto.class);
                 employmentRecordList.add(employmentRecordDto);
-            }
-
-            if (employmentRecordList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(employmentRecordList);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            });
         }
+
+        return ResponseEntity.ok(employmentRecordList);
     }
 
     /**
@@ -113,6 +105,7 @@ public class EmploymentRecordController {
      * @return ResponseEntity<EmploymentRecordDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('employmentrecord', 'READ')")
     @GetMapping("/employmentrecord/{id}")
     public ResponseEntity<EmploymentRecordDto> getEmploymentRecordById(
             @PathVariable(value = "id") final UUID employmentRecordId)
@@ -135,6 +128,7 @@ public class EmploymentRecordController {
      * @return ResponseEntity<EmploymentRecordDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('employmentrecord', 'UPDATE')")
     @PutMapping("/employmentrecord/{id}")
     public ResponseEntity<EmploymentRecordDto> updateEmploymentRecord(
             @PathVariable(value = "id") final UUID employmentRecordId,
@@ -212,6 +206,7 @@ public class EmploymentRecordController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('employmentrecord', 'DELETE')")
     @DeleteMapping("/employmentrecord/{id}")
     public ResponseEntity<HttpStatus> deleteEmploymentRecord(
             @PathVariable(value = "id") final UUID employmentRecordId)

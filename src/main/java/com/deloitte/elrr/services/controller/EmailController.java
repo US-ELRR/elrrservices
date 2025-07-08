@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.deloitte.elrr.entity.Email;
 import com.deloitte.elrr.jpa.svc.EmailSvc;
@@ -52,33 +53,24 @@ public class EmailController {
      * @return ResponseEntity<List<EmailDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('email', 'READ')")
     @GetMapping("/email")
     public ResponseEntity<List<EmailDto>> getAllEmails(
             @RequestParam(value = "id", required = false)
-            final UUID emailId) throws ResourceNotFoundException {
-        try {
-            log.debug("Get Email id:........." + emailId);
-            List<EmailDto> emailList = new ArrayList<>();
-            if (emailId == null) {
-                emailSvc.findAll().forEach(email -> emailList.add(
-                        mapper.map(email, EmailDto.class)));
-            } else {
-                Email email = emailSvc.get(emailId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "Email not found for this id :: "
-                                        + emailId));
+            final UUID emailId) {
+        log.debug("Get Email id:........." + emailId);
+        List<EmailDto> emailList = new ArrayList<>();
+        if (emailId == null) {
+            emailSvc.findAll().forEach(email -> emailList.add(
+                    mapper.map(email, EmailDto.class)));
+        } else {
+            emailSvc.get(emailId).ifPresent(email -> {
                 EmailDto emailDto = mapper.map(email, EmailDto.class);
                 emailList.add(emailDto);
-            }
-
-            if (emailList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(emailList);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            });
         }
+
+        return ResponseEntity.ok(emailList);
     }
 
     /**
@@ -87,6 +79,7 @@ public class EmailController {
      * @return ResponseEntity<EmailDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('email', 'READ')")
     @GetMapping("/email/{id}")
     public ResponseEntity<EmailDto> getEmailById(
             @PathVariable(value = "id") final UUID emailId)
@@ -106,6 +99,7 @@ public class EmailController {
      * @param emailDto
      * @return ResponseEntity<EmailDto>
      */
+    @PreAuthorize("hasPermission('email', 'CREATE')")
     @PostMapping("/email")
     public ResponseEntity<EmailDto> createEmail(
             @Valid @RequestBody final EmailDto emailDto) {
@@ -121,6 +115,7 @@ public class EmailController {
      * @return ResponseEntity<EmailDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('email', 'UPDATE')")
     @PutMapping("/email/{id}")
     public ResponseEntity<EmailDto> updateEmail(
             @PathVariable(value = "id") final UUID emailId,
@@ -149,6 +144,7 @@ public class EmailController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('email', 'DELETE')")
     @DeleteMapping("/email/{id}")
     public ResponseEntity<HttpStatus> deleteEmail(
             @PathVariable(value = "id") final UUID emailId)
