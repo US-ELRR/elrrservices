@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.deloitte.elrr.entity.LearningResource;
 import com.deloitte.elrr.jpa.svc.LearningResourceSvc;
@@ -52,36 +53,27 @@ public class LearningResourceController {
      * @return ResponseEntity<List<LearningResourceDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('learningresource', 'READ')")
     @GetMapping("/learningresource")
     public ResponseEntity<List<LearningResourceDto>> getAllLearningResources(
             @RequestParam(value = "id", required = false)
-            final UUID learningResourceId) throws ResourceNotFoundException {
-        try {
-            log.debug("Get LearningResource id:........." + learningResourceId);
-            List<LearningResourceDto> learningResourceList = new ArrayList<>();
-            if (learningResourceId == null) {
-                learningResourceSvc.findAll()
-                    .forEach(loc -> learningResourceList.add(
-                        mapper.map(loc, LearningResourceDto.class)));
-            } else {
-                LearningResource learningResource = learningResourceSvc
-                    .get(learningResourceId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "LearningResource not found for this id :: "
-                                        + learningResourceId));
+            final UUID learningResourceId) {
+        log.debug("Get LearningResource id:........." + learningResourceId);
+        List<LearningResourceDto> learningResourceList = new ArrayList<>();
+        if (learningResourceId == null) {
+            learningResourceSvc.findAll()
+                .forEach(loc -> learningResourceList.add(
+                    mapper.map(loc, LearningResourceDto.class)));
+        } else {
+            learningResourceSvc.get(learningResourceId)
+            .ifPresent(learningResource -> {
                 LearningResourceDto learningResourceDto = mapper.map(
                         learningResource, LearningResourceDto.class);
                 learningResourceList.add(learningResourceDto);
-            }
-
-            if (learningResourceList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(learningResourceList);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            });
         }
+
+        return ResponseEntity.ok(learningResourceList);
     }
 
     /**
@@ -90,6 +82,7 @@ public class LearningResourceController {
      * @return ResponseEntity<LearningResourceDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('learningresource', 'READ')")
     @GetMapping("/learningresource/{id}")
     public ResponseEntity<LearningResourceDto> getLearningResourceById(
             @PathVariable(value = "id") final UUID learningResourceId)
@@ -110,6 +103,7 @@ public class LearningResourceController {
      * @param learningResourceDto
      * @return ResponseEntity<LearningResourceDto>
      */
+    @PreAuthorize("hasPermission('learningresource', 'CREATE')")
     @PostMapping("/learningresource")
     public ResponseEntity<LearningResourceDto> createLearningResource(
             @Valid @RequestBody final LearningResourceDto learningResourceDto) {
@@ -127,6 +121,7 @@ public class LearningResourceController {
      * @return ResponseEntity<LearningResourceDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('learningresource', 'UPDATE')")
     @PutMapping("/learningresource/{id}")
     public ResponseEntity<LearningResourceDto> updateLearningResource(
             @PathVariable(value = "id") final UUID learningResourceId,
@@ -157,6 +152,7 @@ public class LearningResourceController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('learningresource', 'DELETE')")
     @DeleteMapping("/learningresource/{id}")
     public ResponseEntity<HttpStatus> deleteLearningResource(
             @PathVariable(value = "id") final UUID learningResourceId)

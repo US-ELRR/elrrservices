@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.deloitte.elrr.entity.Organization;
 import com.deloitte.elrr.jpa.svc.OrganizationSvc;
@@ -56,42 +57,33 @@ public class OrganizationController {
      * @return ResponseEntity<List<OrganizationDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('organization', 'READ')")
     @GetMapping("/organization")
     public ResponseEntity<List<OrganizationDto>> getAllOrganizations(
             @RequestParam(value = "id", required = false)
-            final UUID organizationid) throws ResourceNotFoundException {
-        try {
-            log.info("GetMapping  Organization:.........");
-            log.info("GetMapping Organization id:........." + organizationid);
-            List<OrganizationDto> organizationList = new ArrayList<>();
-            if (organizationid == null) {
-                Iterable<Organization> organizations = organizationSvc
-                        .findAll();
+            final UUID organizationid) {
+        log.info("GetMapping  Organization:.........");
+        log.info("GetMapping Organization id:........." + organizationid);
+        List<OrganizationDto> organizationList = new ArrayList<>();
+        if (organizationid == null) {
+            Iterable<Organization> organizations = organizationSvc
+                    .findAll();
 
-                for (Organization organization : organizations) {
-                    OrganizationDto organizationDto = mapper.map(organization,
-                            OrganizationDto.class);
-                    organizationList.add(organizationDto);
-                }
-            } else {
-                Organization organization = organizationSvc.get(organizationid)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "Organization not found for this id :: "
-                                        + organizationid));
+            for (Organization organization : organizations) {
                 OrganizationDto organizationDto = mapper.map(organization,
                         OrganizationDto.class);
                 organizationList.add(organizationDto);
-
             }
+        } else {
+            organizationSvc.get(organizationid).ifPresent(organization -> {
+                OrganizationDto organizationDto = mapper.map(organization,
+                        OrganizationDto.class);
+                organizationList.add(organizationDto);
+            });
 
-            if (organizationList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(organizationList);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        return ResponseEntity.ok(organizationList);
     }
 
     /**
@@ -100,6 +92,7 @@ public class OrganizationController {
      * @return ResponseEntity<OrganizationDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('organization', 'READ')")
     @GetMapping("/organization/{id}")
     public ResponseEntity<OrganizationDto> getOrganizationById(
             @PathVariable(value = "id") final UUID organizationid)
@@ -120,6 +113,7 @@ public class OrganizationController {
      * @param organizationDto
      * @return ResponseEntity<OrganizationDto>
      */
+    @PreAuthorize("hasPermission('organization', 'CREATE')")
     @PostMapping("/organization")
     public ResponseEntity<OrganizationDto> createOrganization(
             @Valid @RequestBody final OrganizationDto organizationDto) {
@@ -136,6 +130,7 @@ public class OrganizationController {
      * @return ResponseEntity<OrganizationDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('organization', 'UPDATE')")
     @PutMapping("/organization/{id}")
     public ResponseEntity<OrganizationDto> updateOrganization(
             @PathVariable(value = "id") final UUID organizationid,
@@ -164,6 +159,7 @@ public class OrganizationController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('organization', 'DELETE')")
     @DeleteMapping("/organization/{id}")
     public ResponseEntity<HttpStatus> deleteOrganization(
             @PathVariable(value = "id") final UUID organizationId)

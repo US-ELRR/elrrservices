@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -148,44 +149,35 @@ public class PersonController {
      * @return ResponseEntity<List<PersonDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person', 'READ')")
     @GetMapping("/person")
     public ResponseEntity<List<PersonDto>> getAllPersons(
             @RequestParam(value = "id", required = false) final UUID personId,
-            @RequestParam(value = "ifi", required = false) final String ifi)
-            throws ResourceNotFoundException {
-        try {
-            log.info("getting  PersonDto:.........");
-            log.info("getting Person id:........." + personId);
-            List<PersonDto> persontoList = new ArrayList<>();
-            if (personId != null) {
-                Person person = personSvc.get(personId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                PERSON_NOT_FOUND + personId));
+            @RequestParam(value = "ifi", required = false) final String ifi) {
+        log.info("getting  PersonDto:.........");
+        log.info("getting Person id:........." + personId);
+        List<PersonDto> persontoList = new ArrayList<>();
+        if (personId != null) {
+            personSvc.get(personId).ifPresent(person -> {
                 PersonDto personDto = mapper.map(person, PersonDto.class);
                 persontoList.add(personDto);
-            } else if (ifi != null) {
-                Identity ifiIdentity = identitySvc.getByIfi(ifi);
-                if (ifiIdentity != null) {
-                    Person person = ifiIdentity.getPerson();
-                    persontoList.add(mapper.map(person, PersonDto.class));
-                }
-            } else {
-                Iterable<Person> persons = personSvc.findAll();
-
-                for (Person person : persons) {
-                    PersonDto personDto = mapper.map(person, PersonDto.class);
-                    persontoList.add(personDto);
-                }
+            });
+        } else if (ifi != null) {
+            Identity ifiIdentity = identitySvc.getByIfi(ifi);
+            if (ifiIdentity != null) {
+                Person person = ifiIdentity.getPerson();
+                persontoList.add(mapper.map(person, PersonDto.class));
             }
+        } else {
+            Iterable<Person> persons = personSvc.findAll();
 
-            if (persontoList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(persontoList);
+            for (Person person : persons) {
+                PersonDto personDto = mapper.map(person, PersonDto.class);
+                persontoList.add(personDto);
             }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        return ResponseEntity.ok(persontoList);
     }
 
     /**
@@ -194,6 +186,7 @@ public class PersonController {
      * @return ResponseEntity<PersonDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person', 'READ')")
     @GetMapping("/person/{id}")
     public ResponseEntity<PersonDto> getPersonById(
             @PathVariable(value = "id") final UUID personId)
@@ -212,6 +205,7 @@ public class PersonController {
      * @param personDto
      * @return ResponseEntity<PersonDto>
      */
+    @PreAuthorize("hasPermission('person', 'CREATE')")
     @PostMapping("/person")
     public ResponseEntity<PersonDto> createPerson(
             @Valid @RequestBody final PersonDto personDto) {
@@ -228,6 +222,7 @@ public class PersonController {
      * @return ResponseEntity<PersonDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person', 'UPDATE')")
     @PutMapping("/person/{id}")
     public ResponseEntity<PersonDto> updatePerson(
             @PathVariable(value = "id") final UUID personId,
@@ -255,6 +250,7 @@ public class PersonController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person', 'DELETE')")
     @DeleteMapping("/person/{id}")
     public ResponseEntity<HttpStatus> deletePerson(
             @PathVariable(value = "id") final UUID personId)
@@ -280,6 +276,7 @@ public class PersonController {
      * @return ResponseEntity<List<IdentityDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person', 'READ')")
     @GetMapping("/person/{personId}/identity")
     public ResponseEntity<List<IdentityDto>> getIdentities(
             @PathVariable(value = "personId") final UUID personId)
@@ -302,6 +299,7 @@ public class PersonController {
      * @return ResponseEntity<List<IdentityDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person', 'UPDATE')")
     @PostMapping("/person/{personId}/identity")
     public ResponseEntity<List<IdentityDto>> addIdentityToPerson(
             @PathVariable(value = "personId") final UUID personId,
@@ -330,6 +328,7 @@ public class PersonController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+     @PreAuthorize("hasPermission('person', 'UPDATE')")
     @DeleteMapping("/person/{personId}/identity/{identityId}")
     public ResponseEntity<HttpStatus> deleteIdentity(
             @PathVariable(value = "personId") final UUID personId,
@@ -360,6 +359,7 @@ public class PersonController {
      * @return ResponseEntity<List<PhoneDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person', 'READ')")
     @GetMapping("/person/{personId}/phone")
     public ResponseEntity<List<PhoneDto>> getPhones(
             @PathVariable(value = "personId") final UUID personId)
@@ -382,6 +382,8 @@ public class PersonController {
      * @return ResponseEntity<List<PhoneDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person/phone', 'ASSOCIATE') and "
+        + "hasPermission('phone', 'CREATE')")
     @PostMapping("/person/{personId}/phone")
     public ResponseEntity<List<PhoneDto>> addPhoneToPerson(
             @PathVariable(value = "personId") final UUID personId,
@@ -407,6 +409,7 @@ public class PersonController {
      * @return ResponseEntity<List<PhoneDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person/phone', 'ASSOCIATE')")
     @PostMapping("/person/{personId}/phone/{phoneId}")
     public ResponseEntity<List<PhoneDto>> associatePhoneWithPerson(
             @PathVariable(value = "personId") final UUID personId,
@@ -434,6 +437,7 @@ public class PersonController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person/phone', 'DISASSOCIATE')")
     @DeleteMapping("/person/{personId}/phone/{phoneId}")
     public ResponseEntity<HttpStatus> removePhoneFromPerson(
             @PathVariable(value = "personId") final UUID personId,
@@ -462,6 +466,7 @@ public class PersonController {
      * @return ResponseEntity<List<EmailDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person', 'READ')")
     @GetMapping("/person/{personId}/email")
     public ResponseEntity<List<EmailDto>> getEmails(
             @PathVariable(value = "personId") final UUID personId)
@@ -483,6 +488,8 @@ public class PersonController {
      * @return ResponseEntity<List<EmailDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person/email', 'ASSOCIATE') and "
+        + "hasPermission('email', 'CREATE')")
     @PostMapping("/person/{personId}/email")
     public ResponseEntity<List<EmailDto>> addEmailToPerson(
             @PathVariable(value = "personId") final UUID personId,
@@ -508,6 +515,7 @@ public class PersonController {
      * @return ResponseEntity<List<EmailDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person/email', 'ASSOCIATE')")
     @PostMapping("/person/{personId}/email/{emailId}")
     public ResponseEntity<List<EmailDto>> associateEmailWithPerson(
             @PathVariable(value = "personId") final UUID personId,
@@ -536,6 +544,7 @@ public class PersonController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person/email', 'DISASSOCIATE')")
     @DeleteMapping("/person/{personId}/email/{emailId}")
     public ResponseEntity<HttpStatus> removeEmailFromPerson(
             @PathVariable(value = "personId") final UUID personId,
@@ -566,6 +575,7 @@ public class PersonController {
      * @return ResponseEntity<List<PersonalQualificationDto<CompetencyDto>>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person', 'READ')")
     @GetMapping("/person/{personId}/competency")
     public ResponseEntity<List<PersonalQualificationDto<CompetencyDto>>>
             getCompetencies(@PathVariable(value = "personId")
@@ -591,6 +601,7 @@ public class PersonController {
      * @return ResponseEntity<PersonalQualificationDto<CompetencyDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person', 'READ')")
     @GetMapping("/person/{personId}/competency/{competencyId}")
     public ResponseEntity<PersonalQualificationDto<CompetencyDto>>
             getCompetency(
@@ -620,6 +631,7 @@ public class PersonController {
      * @return ResponseEntity<List<PersonalQualificationDto<CompetencyDto>>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person/competency', 'ASSOCIATE')")
     @PostMapping("/person/{personId}/competency/{competencyId}")
     public ResponseEntity<List<PersonalQualificationDto<CompetencyDto>>>
             associateCompetency(
@@ -655,6 +667,7 @@ public class PersonController {
      * @return ResponseEntity<List<PersonalQualificationDto<CompetencyDto>>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person/competency', 'ASSOCIATE')")
     @PutMapping("/person/{personId}/competency/{competencyId}")
     public ResponseEntity<List<PersonalQualificationDto<CompetencyDto>>>
             updateCompetencyAssociation(
@@ -689,6 +702,7 @@ public class PersonController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person/competency', 'DISASSOCIATE')")
     @DeleteMapping("/person/{personId}/competency/{competencyId}")
     public ResponseEntity<HttpStatus> deleteCompetencyAssociation(
             @PathVariable(value = "personId") final UUID personId,
@@ -722,6 +736,7 @@ public class PersonController {
      * @return ResponseEntity<List<PersonalQualificationDto<CredentialDto>>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person', 'READ')")
     @GetMapping("/person/{personId}/credential")
     public ResponseEntity<List<PersonalQualificationDto<CredentialDto>>>
             getCredentials(
@@ -747,6 +762,7 @@ public class PersonController {
      * @return ResponseEntity<PersonalQualificationDto<CredentialDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person', 'READ')")
     @GetMapping("/person/{personId}/credential/{credentialId}")
     public ResponseEntity<PersonalQualificationDto<CredentialDto>>
             getCredential(
@@ -776,6 +792,7 @@ public class PersonController {
      * @return ResponseEntity<List<PersonalQualificationDto<CredentialDto>>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person/credential', 'ASSOCIATE')")
     @PostMapping("/person/{personId}/credential/{credentialId}")
     public ResponseEntity<List<PersonalQualificationDto<CredentialDto>>>
             associateCredential(
@@ -811,6 +828,7 @@ public class PersonController {
      * @return ResponseEntity<List<PersonalQualificationDto<CredentialDto>>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person/credential', 'ASSOCIATE')")
     @PutMapping("/person/{personId}/credential/{credentialId}")
     public ResponseEntity<List<PersonalQualificationDto<CredentialDto>>>
             updateCredentialAssociation(
@@ -845,6 +863,7 @@ public class PersonController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person/credential', 'DISASSOCIATE')")
     @DeleteMapping("/person/{personId}/credential/{credentialId}")
     public ResponseEntity<HttpStatus> deleteCredentialAssociation(
             @PathVariable(value = "personId") final UUID personId,
@@ -878,6 +897,7 @@ public class PersonController {
      * @return ResponseEntity<List<LearningRecordDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person', 'READ')")
     @GetMapping("/person/{personId}/learningrecord")
     public ResponseEntity<List<LearningRecordDto>> getLearningRecords(
             @PathVariable(value = "personId") final UUID personId)
@@ -901,6 +921,7 @@ public class PersonController {
      * @return ResponseEntity<List<LearningRecordDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('learningrecord', 'CREATE')")
     @PostMapping("/person/{personId}/learningrecord")
     public ResponseEntity<List<LearningRecordDto>> addLearningRecord(
             @PathVariable(value = "personId") final UUID personId,
@@ -940,6 +961,7 @@ public class PersonController {
      * @return ResponseEntity<List<EmploymentRecordDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person', 'READ')")
     @GetMapping("/person/{personId}/employmentrecord")
     public ResponseEntity<List<EmploymentRecordDto>> getEmploymentRecords(
             @PathVariable(value = "personId") final UUID personId)
@@ -963,6 +985,7 @@ public class PersonController {
      * @return ResponseEntity<List<EmploymentRecordDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('employmentrecord', 'CREATE')")
     @PostMapping("/person/{personId}/employmentrecord")
     public ResponseEntity<List<EmploymentRecordDto>> addEmploymentRecord(
             @PathVariable(value = "personId") final UUID personId,
@@ -1035,6 +1058,7 @@ public class PersonController {
      * @return ResponseEntity<List<MilitaryRecordDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person', 'READ')")
     @GetMapping("/person/{personId}/militaryrecord")
     public ResponseEntity<List<MilitaryRecordDto>> getMilitaryRecords(
             @PathVariable(value = "personId") final UUID personId)
@@ -1051,13 +1075,14 @@ public class PersonController {
     }
 
     /**
-     * Add Employment Record.
+     * Add Military Record.
      *
      * @param personId
      * @param militaryRecordDto Military Record Details
      * @return ResponseEntity<List<MilitaryRecordDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('militaryrecord', 'CREATE')")
     @PostMapping("/person/{personId}/militaryrecord")
     public ResponseEntity<List<MilitaryRecordDto>> addMilitaryRecord(
             @PathVariable(value = "personId") final UUID personId,
@@ -1092,6 +1117,7 @@ public class PersonController {
      * @return ResponseEntity<List<AssociationDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person', 'READ')")
     @GetMapping("/person/{personId}/organization")
     public ResponseEntity<List<AssociationDto>> getOrganizationsByPerson(
             @PathVariable(value = "personId") final UUID personId)
@@ -1114,6 +1140,7 @@ public class PersonController {
      * @return ResponseEntity<AssociationDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person', 'READ')")
     @GetMapping("/person/{personId}/organization/{organizationId}")
     public ResponseEntity<AssociationDto> getAssociationByPersonAndOrg(
             @PathVariable(value = "personId") final UUID personId,
@@ -1142,6 +1169,7 @@ public class PersonController {
      * @return ResponseEntity<List<AssociationDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person/organization', 'ASSOCIATE')")
     @PostMapping("/person/{personId}/organization/{organizationId}")
     public ResponseEntity<List<AssociationDto>> associateOrg(
             @PathVariable(value = "personId") final UUID personId,
@@ -1185,6 +1213,7 @@ public class PersonController {
      * @return ResponseEntity<List<AssociationDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person/organization', 'ASSOCIATE')")
     @PutMapping("/person/{personId}/organization/{organizationId}")
     public ResponseEntity<List<AssociationDto>> updateOrgAssociation(
             @PathVariable(value = "personId") final UUID personId,
@@ -1225,6 +1254,7 @@ public class PersonController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('person/organization', 'DISASSOCIATE')")
     @DeleteMapping("/person/{personId}/organization/{organizationId}")
     public ResponseEntity<HttpStatus> deleteOrgAssociation(
             @PathVariable(value = "personId") final UUID personId,

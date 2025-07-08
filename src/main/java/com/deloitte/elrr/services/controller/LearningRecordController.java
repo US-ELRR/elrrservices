@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.deloitte.elrr.entity.LearningRecord;
 import com.deloitte.elrr.entity.LearningResource;
@@ -51,38 +52,29 @@ public class LearningRecordController {
      *
      * @param learningRecordId
      * @return ResponseEntity<List<LearningRecordDto>>
-     * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('learningrecord', 'READ')")
     @GetMapping("/learningrecord")
     public ResponseEntity<List<LearningRecordDto>> getAllLearningRecords(
             @RequestParam(value = "id", required = false)
-            final UUID learningRecordId) throws ResourceNotFoundException {
-        try {
-            log.debug("Get LearningRecord id:........." + learningRecordId);
-            List<LearningRecordDto> learningRecordList = new ArrayList<>();
-            if (learningRecordId == null) {
-                learningRecordSvc.findAll()
-                        .forEach(loc -> learningRecordList.add(
-                                mapper.map(loc, LearningRecordDto.class)));
-            } else {
-                LearningRecord learningRecord = learningRecordSvc
-                        .get(learningRecordId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "LearningRecord not found for this id :: "
-                                        + learningRecordId));
-                LearningRecordDto learningRecordDto = mapper.map(learningRecord,
-                        LearningRecordDto.class);
-                learningRecordList.add(learningRecordDto);
-            }
-
-            if (learningRecordList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(learningRecordList);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            final UUID learningRecordId) {
+        log.debug("Get LearningRecord id:........." + learningRecordId);
+        List<LearningRecordDto> learningRecordList = new ArrayList<>();
+        if (learningRecordId == null) {
+            learningRecordSvc.findAll()
+                    .forEach(loc -> learningRecordList.add(
+                            mapper.map(loc, LearningRecordDto.class)));
+        } else {
+            learningRecordSvc.get(learningRecordId)
+                    .ifPresent(learningRecord -> {
+                        LearningRecordDto learningRecordDto = mapper
+                        .map(learningRecord,
+                                LearningRecordDto.class);
+                        learningRecordList.add(learningRecordDto);
+                    });
         }
+
+        return ResponseEntity.ok(learningRecordList);
     }
 
     /**
@@ -91,6 +83,7 @@ public class LearningRecordController {
      * @return ResponseEntity<LearningRecordDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('learningrecord', 'READ')")
     @GetMapping("/learningrecord/{id}")
     public ResponseEntity<LearningRecordDto> getLearningRecordById(
             @PathVariable(value = "id") final UUID learningRecordId)
@@ -112,6 +105,7 @@ public class LearningRecordController {
      * @return ResponseEntity<LearningRecordDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('learningrecord', 'UPDATE')")
     @PutMapping("/learningrecord/{id}")
     public ResponseEntity<LearningRecordDto> updateLearningRecord(
             @PathVariable(value = "id") final UUID learningRecordId,
@@ -146,6 +140,7 @@ public class LearningRecordController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('learningrecord', 'DELETE')")
     @DeleteMapping("/learningrecord/{id}")
     public ResponseEntity<HttpStatus> deleteLearningRecord(
             @PathVariable(value = "id") final UUID learningRecordId)

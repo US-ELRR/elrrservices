@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.deloitte.elrr.entity.Location;
 import com.deloitte.elrr.jpa.svc.LocationSvc;
@@ -52,34 +53,25 @@ public class LocationController {
      * @return ResponseEntity<List<LocationDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('location', 'READ')")
     @GetMapping("/location")
     public ResponseEntity<List<LocationDto>> getAllLocations(
-            @RequestParam(value = "id", required = false) final UUID locationId)
-            throws ResourceNotFoundException {
-        try {
-            log.debug("Get Location id:........." + locationId);
-            List<LocationDto> locationList = new ArrayList<>();
-            if (locationId == null) {
-                locationSvc.findAll().forEach(loc -> locationList.add(
-                        mapper.map(loc, LocationDto.class)));
-            } else {
-                Location location = locationSvc.get(locationId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "Location not found for this id :: "
-                                        + locationId));
+            @RequestParam(value = "id",
+            required = false) final UUID locationId) {
+        log.debug("Get Location id:........." + locationId);
+        List<LocationDto> locationList = new ArrayList<>();
+        if (locationId == null) {
+            locationSvc.findAll().forEach(loc -> locationList.add(
+                    mapper.map(loc, LocationDto.class)));
+        } else {
+            locationSvc.get(locationId).ifPresent(location -> {
                 LocationDto locationDto = mapper.map(location,
                         LocationDto.class);
                 locationList.add(locationDto);
-            }
-
-            if (locationList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(locationList);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            });
         }
+
+        return ResponseEntity.ok(locationList);
     }
 
     /**
@@ -88,6 +80,7 @@ public class LocationController {
      * @return ResponseEntity<LocationDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('location', 'READ')")
     @GetMapping("/location/{id}")
     public ResponseEntity<LocationDto> getLocationById(
             @PathVariable(value = "id") final UUID locationId)
@@ -107,6 +100,7 @@ public class LocationController {
      * @param locationDto
      * @return ResponseEntity<LocationDto>
      */
+    @PreAuthorize("hasPermission('location', 'CREATE')")
     @PostMapping("/location")
     public ResponseEntity<LocationDto> createLocation(
             @Valid @RequestBody final LocationDto locationDto) {
@@ -123,6 +117,7 @@ public class LocationController {
      * @return ResponseEntity<LocationDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('location', 'UPDATE')")
     @PutMapping("/location/{id}")
     public ResponseEntity<LocationDto> updateLocation(
             @PathVariable(value = "id") final UUID locationId,
@@ -151,6 +146,7 @@ public class LocationController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('location', 'DELETE')")
     @DeleteMapping("/location/{id}")
     public ResponseEntity<HttpStatus> deleteLocation(
             @PathVariable(value = "id") final UUID locationId)

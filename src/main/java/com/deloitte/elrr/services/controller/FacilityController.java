@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.deloitte.elrr.services.dto.FacilityDto;
 
@@ -49,34 +50,25 @@ public class FacilityController {
      * @return ResponseEntity<List<FacilityDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('facility', 'READ')")
     @GetMapping("/facility")
     public ResponseEntity<List<FacilityDto>> getAllFacilitys(
-            @RequestParam(value = "id", required = false) final UUID facilityId)
-            throws ResourceNotFoundException {
-        try {
-            log.debug("Get Facility id:........." + facilityId);
-            List<FacilityDto> facilityList = new ArrayList<>();
-            if (facilityId == null) {
-                facilitySvc.findAll().forEach(fac -> facilityList.add(
-                        mapper.map(fac, FacilityDto.class)));
-            } else {
-                Facility facility = facilitySvc.get(facilityId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "Facility not found for this id :: "
-                                        + facilityId));
+            @RequestParam(value = "id",
+            required = false) final UUID facilityId) {
+        log.debug("Get Facility id:........." + facilityId);
+        List<FacilityDto> facilityList = new ArrayList<>();
+        if (facilityId == null) {
+            facilitySvc.findAll().forEach(fac -> facilityList.add(
+                    mapper.map(fac, FacilityDto.class)));
+        } else {
+            facilitySvc.get(facilityId).ifPresent(facility -> {
                 FacilityDto facilityDto = mapper.map(facility,
                         FacilityDto.class);
                 facilityList.add(facilityDto);
-            }
-
-            if (facilityList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(facilityList);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            });
         }
+
+        return ResponseEntity.ok(facilityList);
     }
 
     /**
@@ -85,6 +77,7 @@ public class FacilityController {
      * @return ResponseEntity<FacilityDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('facility', 'READ')")
     @GetMapping("/facility/{id}")
     public ResponseEntity<FacilityDto> getFacilityById(
             @PathVariable(value = "id") final UUID facilityId)
@@ -104,6 +97,7 @@ public class FacilityController {
      * @param facilityDto
      * @return ResponseEntity<FacilityDto>
      */
+    @PreAuthorize("hasPermission('facility', 'CREATE')")
     @PostMapping("/facility")
     public ResponseEntity<FacilityDto> createFacility(
             @Valid @RequestBody final FacilityDto facilityDto) {
@@ -120,6 +114,7 @@ public class FacilityController {
      * @return ResponseEntity<FacilityDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('facility', 'UPDATE')")
     @PutMapping("/facility/{id}")
     public ResponseEntity<FacilityDto> updateFacility(
             @PathVariable(value = "id") final UUID facilityId,
@@ -148,6 +143,7 @@ public class FacilityController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('facility', 'DELETE')")
     @DeleteMapping("/facility/{id}")
     public ResponseEntity<HttpStatus> deleteFacility(
             @PathVariable(value = "id") final UUID facilityId)

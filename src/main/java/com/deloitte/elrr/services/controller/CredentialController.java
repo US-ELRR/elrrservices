@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.deloitte.elrr.entity.Credential;
 import com.deloitte.elrr.jpa.svc.CredentialSvc;
@@ -52,34 +53,25 @@ public class CredentialController {
      * @return ResponseEntity<List<CredentialDto>>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('credential', 'READ')")
     @GetMapping("/credential")
     public ResponseEntity<List<CredentialDto>> getAllCredentials(
             @RequestParam(value = "id", required = false)
-            final UUID credentialId) throws ResourceNotFoundException {
-        try {
-            log.debug("Get Credential id:........." + credentialId);
-            List<CredentialDto> credentialList = new ArrayList<>();
-            if (credentialId == null) {
-                credentialSvc.findAll().forEach(cred -> credentialList.add(
-                        mapper.map(cred, CredentialDto.class)));
-            } else {
-                Credential credential = credentialSvc.get(credentialId)
-                        .orElseThrow(() -> new ResourceNotFoundException(
-                                "Credential not found for this id :: "
-                                        + credentialId));
+            final UUID credentialId) {
+        log.debug("Get Credential id:........." + credentialId);
+        List<CredentialDto> credentialList = new ArrayList<>();
+        if (credentialId == null) {
+            credentialSvc.findAll().forEach(cred -> credentialList.add(
+                    mapper.map(cred, CredentialDto.class)));
+        } else {
+            credentialSvc.get(credentialId).ifPresent(credential -> {
                 CredentialDto credentialDto = mapper.map(credential,
                         CredentialDto.class);
                 credentialList.add(credentialDto);
-            }
-
-            if (credentialList.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.ok(credentialList);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            });
         }
+
+        return ResponseEntity.ok(credentialList);
     }
 
     /**
@@ -88,6 +80,7 @@ public class CredentialController {
      * @return ResponseEntity<CredentialDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('credential', 'READ')")
     @GetMapping("/credential/{id}")
     public ResponseEntity<CredentialDto> getCredentialById(
             @PathVariable(value = "id") final UUID credentialId)
@@ -107,6 +100,7 @@ public class CredentialController {
      * @param credentialDto
      * @return ResponseEntity<CredentialDto>
      */
+    @PreAuthorize("hasPermission('credential', 'CREATE')")
     @PostMapping("/credential")
     public ResponseEntity<CredentialDto> createCredential(
             @Valid @RequestBody final CredentialDto credentialDto) {
@@ -123,6 +117,7 @@ public class CredentialController {
      * @return ResponseEntity<CredentialDto>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('credential', 'UPDATE')")
     @PutMapping("/credential/{id}")
     public ResponseEntity<CredentialDto> updateCredential(
             @PathVariable(value = "id") final UUID credentialId,
@@ -151,6 +146,7 @@ public class CredentialController {
      * @return ResponseEntity<HttpStatus>
      * @throws ResourceNotFoundException
      */
+    @PreAuthorize("hasPermission('credential', 'DELETE')")
     @DeleteMapping("/credential/{id}")
     public ResponseEntity<HttpStatus> deleteCredential(
             @PathVariable(value = "id") final UUID credentialId)

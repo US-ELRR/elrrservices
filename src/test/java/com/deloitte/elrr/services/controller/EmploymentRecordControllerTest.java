@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -24,7 +24,10 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.deloitte.elrr.entity.EmploymentRecord;
+import com.deloitte.elrr.services.TestAppConfig;
 import com.deloitte.elrr.services.dto.EmploymentRecordDto;
+import com.deloitte.elrr.services.security.MethodSecurityConfig;
+import com.deloitte.elrr.services.security.SecurityConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +36,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @WebMvcTest(EmploymentRecordController.class)
 @ContextConfiguration
-@AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureMockMvc(addFilters = true)
+@Import({TestAppConfig.class, SecurityConfig.class, MethodSecurityConfig.class})
 @Slf4j
 public class EmploymentRecordControllerTest extends CommonControllerTest {
 
@@ -43,13 +47,6 @@ public class EmploymentRecordControllerTest extends CommonControllerTest {
     private HttpHeaders headers;
 
     private static final String EMPLOYMENT_RECORD_API = "/api/employmentrecord";
-
-    @BeforeEach
-    void addHeaders() {
-        headers = new HttpHeaders();
-        headers.set("Content-Type", " */*");
-        headers.set("X-Forwarded-Proto", "https");
-    }
 
     /**
      *
@@ -79,7 +76,7 @@ public class EmploymentRecordControllerTest extends CommonControllerTest {
                 .get(EMPLOYMENT_RECORD_API)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("employmentrecord|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -89,6 +86,33 @@ public class EmploymentRecordControllerTest extends CommonControllerTest {
                 new TypeReference<List<EmploymentRecordDto>>() {
                 });
         assertEquals(EMPLOYMENT_RECORD_ID, result.get(0).getId());
+    }
+
+    /**
+     * Test getting all employment records when no employment records exist - should return 200 with empty array
+     *
+     * @throws Exception
+     */
+    @Test
+    void getAllEmploymentRecordsEmptyListTest() throws Exception {
+        // Mock empty list
+        Mockito.doReturn(new ArrayList<>()).when(getEmploymentRecordSvc()).findAll();
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(EMPLOYMENT_RECORD_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("employmentrecord|READ"));
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertNotNull(mvcResult.getResponse().getContentAsString());
+
+        // Verify empty array is returned
+        List<EmploymentRecordDto> results = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<EmploymentRecordDto>>() {
+                });
+        assertEquals(0, results.size());
     }
 
     @Test
@@ -101,7 +125,7 @@ public class EmploymentRecordControllerTest extends CommonControllerTest {
                 .get(EMPLOYMENT_RECORD_API + "/" + EMPLOYMENT_RECORD_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("employmentrecord|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -120,7 +144,7 @@ public class EmploymentRecordControllerTest extends CommonControllerTest {
                 .get(EMPLOYMENT_RECORD_API + "/1")
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("employmentrecord|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -137,7 +161,7 @@ public class EmploymentRecordControllerTest extends CommonControllerTest {
                 .get(EMPLOYMENT_RECORD_API + "?id=" + EMPLOYMENT_RECORD_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("employmentrecord|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -164,7 +188,7 @@ public class EmploymentRecordControllerTest extends CommonControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(employmentRecordDto))
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("employmentrecord|UPDATE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertNotNull(mvcResult);
@@ -187,7 +211,7 @@ public class EmploymentRecordControllerTest extends CommonControllerTest {
                 .delete(EMPLOYMENT_RECORD_API + "/" + EMPLOYMENT_RECORD_ID)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .headers(headers);
+                .headers(getHeaders("employmentrecord|DELETE"));
 
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
