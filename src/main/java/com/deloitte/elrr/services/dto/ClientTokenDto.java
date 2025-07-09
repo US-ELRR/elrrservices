@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ClientTokenDto extends AbstractDto {
+public class ClientTokenDto extends AuditableDto {
 
     private String token;
     private UUID jwtId;

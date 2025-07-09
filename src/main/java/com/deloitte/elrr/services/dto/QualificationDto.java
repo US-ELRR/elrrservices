@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class QualificationDto extends AbstractDto {
+public class QualificationDto extends AuditableDto {
 
     @Size(max = 100)
     private String identifier;

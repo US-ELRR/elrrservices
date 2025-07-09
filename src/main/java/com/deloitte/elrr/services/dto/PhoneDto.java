@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PhoneDto extends AbstractDto {
+public class PhoneDto extends AuditableDto {
 
     @Size(max = 255)
     private String telephoneNumber;
