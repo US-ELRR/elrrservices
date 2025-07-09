@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class MilitaryRecordDto extends AbstractDto {
+public class MilitaryRecordDto extends AuditableDto {
 
     @Size(max = 255)
     @NotNull

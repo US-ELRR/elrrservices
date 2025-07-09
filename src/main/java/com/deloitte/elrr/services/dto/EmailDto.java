@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class EmailDto extends AbstractDto {
+public class EmailDto extends AuditableDto {
 
     @Size(max = 255)
     private String emailAddress;

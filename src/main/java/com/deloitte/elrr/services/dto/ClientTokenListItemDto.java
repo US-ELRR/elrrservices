@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ClientTokenListItemDto extends AbstractDto {
+public class ClientTokenListItemDto extends AuditableDto {
 
     private UUID id;
     private String label;
