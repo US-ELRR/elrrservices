@@ -24,8 +24,7 @@ public class IriKeysValidator implements
     public boolean isValid(Map<URI, Object> map,
                           ConstraintValidatorContext context) {
         if (map == null) {
-            return true; // null values are considered valid;
-                        // use @NotNull if null is not allowed
+            return true; // null values are considered valid
         }
 
         context.disableDefaultConstraintViolation();
