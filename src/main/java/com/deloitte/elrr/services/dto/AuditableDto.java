@@ -1,6 +1,6 @@
 package com.deloitte.elrr.services.dto;
 
-import jakarta.validation.Valid;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,11 +10,12 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class AssociationDto extends AuditableDto {
+public abstract class AuditableDto extends AbstractDto {
 
-    @Valid
-    private OrganizationDto organization;
+    private LocalDateTime insertedDate;
 
-    private String associationType;
+    private String updatedBy;
+
+    private LocalDateTime lastModified;
 
 }

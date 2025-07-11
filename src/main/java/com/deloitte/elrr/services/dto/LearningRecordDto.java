@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class LearningRecordDto extends AbstractDto {
+public class LearningRecordDto extends AuditableDto {
 
     @Valid
     private LearningResourceDto learningResource;

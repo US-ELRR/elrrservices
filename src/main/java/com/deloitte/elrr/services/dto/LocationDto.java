@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class LocationDto extends AbstractDto {
+public class LocationDto extends AuditableDto {
 
     @Size(max = 255)
     private String streetNumberAndName;

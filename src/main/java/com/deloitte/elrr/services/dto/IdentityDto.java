@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class IdentityDto extends AbstractDto {
+public class IdentityDto extends AuditableDto {
 
     @Size(max = 255)
     private String mboxSha1Sum;
