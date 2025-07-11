@@ -1,5 +1,6 @@
 package com.deloitte.elrr.services.dto;
 
+import java.net.URI;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
@@ -13,6 +14,6 @@ import lombok.RequiredArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public abstract class ExtensibleDto extends AuditableDto {
 
-    private Map<String, Object> extensions;
+    private Map<URI, Object> extensions;
 
 }

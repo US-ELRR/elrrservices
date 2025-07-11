@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,13 +53,13 @@ class ExtensibleDtoTest {
      */
     @Test
     void testExtensionsSetterGetter() {
-        Map<String, Object> extensions = new HashMap<>();
-        extensions.put("https://example.org/schema#customField", "test value");
+        Map<URI, Object> extensions = new HashMap<>();
+        extensions.put(URI.create("https://example.org/schema#customField"), "test value");
 
         testExtensibleDto.setExtensions(extensions);
 
         assertNotNull(testExtensibleDto.getExtensions());
-        assertEquals("test value", testExtensibleDto.getExtensions().get("https://example.org/schema#customField"));
+        assertEquals("test value", testExtensibleDto.getExtensions().get(URI.create("https://example.org/schema#customField")));
     }
 
     /**

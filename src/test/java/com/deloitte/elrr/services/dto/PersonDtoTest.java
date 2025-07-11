@@ -3,6 +3,7 @@ package com.deloitte.elrr.services.dto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,14 +35,14 @@ class PersonDtoTest {
     @Test
     void testPersonDtoExtensions() {
         PersonDto person = new PersonDto();
-        Map<String, Object> extensions = new HashMap<>();
-        extensions.put("https://example.org/schema#socialSecurityNumber", "123-45-6789");
-        extensions.put("https://example.org/schema#preferredName", "Mike");
-        
+        Map<URI, Object> extensions = new HashMap<>();
+        extensions.put(URI.create("https://example.org/schema#socialSecurityNumber"), "123-45-6789");
+        extensions.put(URI.create("https://example.org/schema#preferredName"), "Mike");
+
         person.setExtensions(extensions);
         
         assertNotNull(person.getExtensions());
-        assertEquals("123-45-6789", person.getExtensions().get("https://example.org/schema#socialSecurityNumber"));
-        assertEquals("Mike", person.getExtensions().get("https://example.org/schema#preferredName"));
+        assertEquals("123-45-6789", person.getExtensions().get(URI.create("https://example.org/schema#socialSecurityNumber")));
+        assertEquals("Mike", person.getExtensions().get(URI.create("https://example.org/schema#preferredName")));
     }
 }
