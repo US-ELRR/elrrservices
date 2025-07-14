@@ -39,6 +39,8 @@ There are make targets for a number of run modes:
 - `make dev` - local run mode using application-local.properties config
 - `make debug` - same but with an open debug port to attach to
 
+Please see the [Auth Documentation](docs/auth.md) for instructions on token usage.
+
 ## Building the OpenAPI JSON file
 When making changes to the API you should rebuild [the OpenAPI description file](docs/api/openapi.json). Set up to run the application in development, then use:
 
