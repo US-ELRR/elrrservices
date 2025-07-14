@@ -1,12 +1,7 @@
 package com.deloitte.elrr.services.dto;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,17 +44,11 @@ class ExtensibleDtoTest {
     }
 
     /**
-     * Test setting and getting extensions with IRI keys
+     * Test setting and getting extensions with IRI keys using utility method
      */
     @Test
     void testExtensionsSetterGetter() {
-        Map<URI, Object> extensions = new HashMap<>();
-        extensions.put(URI.create("https://example.org/schema#customField"), "test value");
-
-        testExtensibleDto.setExtensions(extensions);
-
-        assertNotNull(testExtensibleDto.getExtensions());
-        assertEquals("test value", testExtensibleDto.getExtensions().get(URI.create("https://example.org/schema#customField")));
+        ValueObjectTestUtility.validateExtensions(TestExtensibleDto.class);
     }
 
     /**
@@ -68,5 +57,25 @@ class ExtensibleDtoTest {
     @Test
     void testToString() {
         assertNotNull(testExtensibleDto.toString());
+    }
+
+    /**
+     * Test that validateExtensions throws exception for non-ExtensibleDto classes
+     */
+    @Test
+    void testValidateExtensionsThrowsExceptionForNonExtensibleDto() {
+        // Test with a class that doesn't extend ExtensibleDto
+        class NonExtensibleDto {
+            // This class doesn't extend ExtensibleDto
+        }
+
+        try {
+            ValueObjectTestUtility.validateExtensions(NonExtensibleDto.class);
+            // Should not reach this point
+            throw new AssertionError("Expected IllegalArgumentException but none was thrown");
+        } catch (IllegalArgumentException e) {
+            // Expected exception
+            assert e.getMessage().contains("does not extend ExtensibleDto");
+        }
     }
 }
