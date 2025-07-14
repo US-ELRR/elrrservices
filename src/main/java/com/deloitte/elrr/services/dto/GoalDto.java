@@ -18,7 +18,7 @@ import com.deloitte.elrr.entity.types.GoalType;
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class GoalDto extends AuditableDto {
+public class GoalDto extends ExtensibleDto {
 
     private UUID personId;
 

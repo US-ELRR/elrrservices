@@ -23,4 +23,12 @@ class GoalDtoTest {
     void testToString() {
         assertNotNull(new GoalDto().toString());
     }
+
+    /**
+     * Test that GoalDto can handle extensions
+     */
+    @Test
+    void testGoalDtoExtensions() {
+        ValueObjectTestUtility.validateExtensions(GoalDto.class);
+    }
 }
