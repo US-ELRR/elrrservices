@@ -1,6 +1,5 @@
 package com.deloitte.elrr.services.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.deloitte.elrr.entity.types.LearningStatus;
@@ -21,7 +20,7 @@ public class LearningRecordDto extends AuditableDto {
     @Valid
     private LearningResourceDto learningResource;
 
-    private LocalDate enrollmentDate;
+    private LocalDateTime enrollmentDate;
 
     private LearningStatus recordStatus;
 
