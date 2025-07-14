@@ -23,4 +23,12 @@ class OrganizationDtoTest {
     void testToString() {
         assertNotNull(new OrganizationDto().toString());
     }
+
+    /**
+     * Test that OrganizationDto can handle extensions
+     */
+    @Test
+    void testOrganizationDtoExtensions() {
+        ValueObjectTestUtility.validateExtensions(OrganizationDto.class);
+    }
 }
