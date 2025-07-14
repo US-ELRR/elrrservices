@@ -23,4 +23,12 @@ class FacilityDtoTest {
     void testToString() {
         assertNotNull(new FacilityDto().toString());
     }
+
+    /**
+     * Test that FacilityDto can handle extensions
+     */
+    @Test
+    void testFacilityDtoExtensions() {
+        ValueObjectTestUtility.validateExtensions(FacilityDto.class);
+    }
 }
