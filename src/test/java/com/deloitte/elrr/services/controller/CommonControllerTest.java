@@ -24,7 +24,6 @@ import com.deloitte.elrr.jpa.svc.IdentitySvc;
 import com.deloitte.elrr.jpa.svc.LearningRecordSvc;
 import com.deloitte.elrr.jpa.svc.LearningResourceSvc;
 import com.deloitte.elrr.jpa.svc.LocationSvc;
-import com.deloitte.elrr.jpa.svc.MilitaryRecordSvc;
 import com.deloitte.elrr.jpa.svc.OrganizationSvc;
 import com.deloitte.elrr.jpa.svc.PersonSvc;
 import com.deloitte.elrr.jpa.svc.PersonalCompetencySvc;
@@ -72,9 +71,6 @@ class CommonControllerTest {
 
     @MockitoBean
     private AssociationSvc associationSvc;
-
-    @MockitoBean
-    private MilitaryRecordSvc militaryRecordSvc;
 
     @MockitoBean
     private LocationSvc locationSvc;
