@@ -23,4 +23,12 @@ class LearningRecordDtoTest {
     void testToString() {
         assertNotNull(new LearningRecordDto().toString());
     }
+
+    /**
+     * Test that LearningRecordDto can handle extensions
+     */
+    @Test
+    void testLearningRecordDtoExtensions() {
+        ValueObjectTestUtility.validateExtensions(LearningRecordDto.class);
+    }
 }

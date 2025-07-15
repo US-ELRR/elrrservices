@@ -23,4 +23,12 @@ class PersonDtoTest {
     void testToString() {
         assertNotNull(new PersonDto().toString());
     }
+
+    /**
+     * Test that PersonDto can handle extensions
+     */
+    @Test
+    void testPersonDtoExtensions() {
+        ValueObjectTestUtility.validateExtensions(PersonDto.class);
+    }
 }

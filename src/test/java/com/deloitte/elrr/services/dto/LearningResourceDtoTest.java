@@ -23,4 +23,12 @@ class LearningResourceDtoTest {
     void testToString() {
         assertNotNull(new LearningResourceDto().toString());
     }
+
+    /**
+     * Test that LearningResourceDto can handle extensions
+     */
+    @Test
+    void testLearningResourceDtoExtensions() {
+        ValueObjectTestUtility.validateExtensions(LearningResourceDto.class);
+    }
 }

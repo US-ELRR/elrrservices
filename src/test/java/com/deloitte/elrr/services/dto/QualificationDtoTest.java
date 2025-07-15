@@ -23,4 +23,12 @@ class QualificationDtoTest {
     void testToString() {
         assertNotNull(new QualificationDto().toString());
     }
+
+    /**
+     * Test that QualificationDto can handle extensions
+     */
+    @Test
+    void testQualificationDtoExtensions() {
+        ValueObjectTestUtility.validateExtensions(QualificationDto.class);
+    }
 }

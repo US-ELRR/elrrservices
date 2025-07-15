@@ -23,4 +23,12 @@ class EmploymentRecordDtoTest {
     void testToString() {
         assertNotNull(new EmploymentRecordDto().toString());
     }
+
+    /**
+     * Test that EmploymentRecordDto can handle extensions
+     */
+    @Test
+    void testEmploymentRecordDtoExtensions() {
+        ValueObjectTestUtility.validateExtensions(EmploymentRecordDto.class);
+    }
 }

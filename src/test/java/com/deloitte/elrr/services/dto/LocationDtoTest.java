@@ -23,4 +23,12 @@ class LocationDtoTest {
     void testToString() {
         assertNotNull(new LocationDto().toString());
     }
+
+    /**
+     * Test that LocationDto can handle extensions
+     */
+    @Test
+    void testLocationDtoExtensions() {
+        ValueObjectTestUtility.validateExtensions(LocationDto.class);
+    }
 }

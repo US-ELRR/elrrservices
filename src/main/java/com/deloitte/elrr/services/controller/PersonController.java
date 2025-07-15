@@ -29,7 +29,6 @@ import com.deloitte.elrr.entity.EmploymentRecord;
 import com.deloitte.elrr.entity.Identity;
 import com.deloitte.elrr.entity.LearningRecord;
 import com.deloitte.elrr.entity.LearningResource;
-import com.deloitte.elrr.entity.MilitaryRecord;
 import com.deloitte.elrr.entity.Organization;
 import com.deloitte.elrr.entity.Person;
 import com.deloitte.elrr.entity.PersonalCompetency;
@@ -45,7 +44,6 @@ import com.deloitte.elrr.jpa.svc.IdentitySvc;
 import com.deloitte.elrr.jpa.svc.LearningRecordSvc;
 import com.deloitte.elrr.jpa.svc.LearningResourceSvc;
 import com.deloitte.elrr.jpa.svc.LocationSvc;
-import com.deloitte.elrr.jpa.svc.MilitaryRecordSvc;
 import com.deloitte.elrr.jpa.svc.OrganizationSvc;
 import com.deloitte.elrr.jpa.svc.PersonSvc;
 import com.deloitte.elrr.jpa.svc.PersonalCompetencySvc;
@@ -60,7 +58,6 @@ import com.deloitte.elrr.services.dto.FacilityDto;
 import com.deloitte.elrr.services.dto.IdentityDto;
 import com.deloitte.elrr.services.dto.LearningRecordDto;
 import com.deloitte.elrr.services.dto.LocationDto;
-import com.deloitte.elrr.services.dto.MilitaryRecordDto;
 import com.deloitte.elrr.services.dto.PersonDto;
 import com.deloitte.elrr.services.dto.PersonalQualificationDto;
 import com.deloitte.elrr.services.dto.PhoneDto;
@@ -101,9 +98,6 @@ public class PersonController {
 
     @Autowired
     private AssociationSvc associationSvc;
-
-    @Autowired
-    private MilitaryRecordSvc militaryRecordSvc;
 
     @Autowired
     private LocationSvc locationSvc;
@@ -1044,65 +1038,6 @@ public class PersonController {
         personSvc.save(employee);
         return ResponseEntity.ok(employee.getEmploymentRecords().stream()
                 .map(rec -> mapper.map(rec, EmploymentRecordDto.class))
-                .collect(Collectors.toList()));
-    }
-
-    /*
-     * Military Record
-     */
-
-    /**
-     * Get Military Records for Person.
-     *
-     * @param personId
-     * @return ResponseEntity<List<MilitaryRecordDto>>
-     * @throws ResourceNotFoundException
-     */
-    @PreAuthorize("hasPermission('person', 'READ')")
-    @GetMapping("/person/{personId}/militaryrecord")
-    public ResponseEntity<List<MilitaryRecordDto>> getMilitaryRecords(
-            @PathVariable(value = "personId") final UUID personId)
-            throws ResourceNotFoundException {
-        log.info(String.format(GETTING_FOR_PERSON, "EmploymentRecortds",
-            personId));
-        Person person = personSvc.get(personId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        PERSON_NOT_FOUND + personId));
-
-        return ResponseEntity.ok(person.getMilitaryRecords().stream()
-                .map(rec -> mapper.map(rec, MilitaryRecordDto.class))
-                .collect(Collectors.toList()));
-    }
-
-    /**
-     * Add Military Record.
-     *
-     * @param personId
-     * @param militaryRecordDto Military Record Details
-     * @return ResponseEntity<List<MilitaryRecordDto>>
-     * @throws ResourceNotFoundException
-     */
-    @PreAuthorize("hasPermission('militaryrecord', 'CREATE')")
-    @PostMapping("/person/{personId}/militaryrecord")
-    public ResponseEntity<List<MilitaryRecordDto>> addMilitaryRecord(
-            @PathVariable(value = "personId") final UUID personId,
-            @Valid @RequestBody final MilitaryRecordDto militaryRecordDto)
-            throws ResourceNotFoundException {
-        log.info(String.format(ADDING_TO_PERSON, "MilitaryRecord", personId));
-        Person person = personSvc.get(personId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        PERSON_NOT_FOUND + personId));
-
-        log.info("Update MilitaryRecord:........." + militaryRecordDto);
-        MilitaryRecord militaryRecord = mapper.map(militaryRecordDto,
-                MilitaryRecord.class);
-        militaryRecord.setPerson(person);
-
-        militaryRecordSvc.save(militaryRecord);
-        person.getMilitaryRecords().add(militaryRecord);
-        personSvc.save(person);
-        return ResponseEntity.ok(person.getMilitaryRecords().stream()
-                .map(rec -> mapper.map(rec, MilitaryRecordDto.class))
                 .collect(Collectors.toList()));
     }
 
