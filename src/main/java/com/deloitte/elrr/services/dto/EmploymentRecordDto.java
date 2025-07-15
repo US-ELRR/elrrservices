@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class EmploymentRecordDto extends AuditableDto {
+public class EmploymentRecordDto extends ExtensibleDto {
 
     @Valid
     private OrganizationDto employerOrganization;

@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class LearningResourceDto extends AuditableDto {
+public class LearningResourceDto extends ExtensibleDto {
 
     @Size(max = 255)
     @NotBlank

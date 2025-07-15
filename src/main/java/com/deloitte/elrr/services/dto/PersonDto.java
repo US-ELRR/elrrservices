@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PersonDto extends AuditableDto {
+public class PersonDto extends ExtensibleDto {
 
     @Size(max = 255)
     private String name;
