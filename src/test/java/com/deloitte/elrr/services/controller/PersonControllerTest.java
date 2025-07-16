@@ -110,7 +110,9 @@ public class PersonControllerTest extends CommonControllerTest {
     @Test
     void getAllPersonsTest() throws Exception {
 
-        Mockito.doReturn(getPersonList()).when(getPersonSvc()).findAll();
+        List<Person> personList = new ArrayList<>();
+        getPersonList().forEach(personList::add);
+        Mockito.doReturn(personList).when(getPersonSvc()).findPersons(null, null);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(PERSON_API)
                 .accept(MediaType.APPLICATION_JSON)
@@ -135,7 +137,7 @@ public class PersonControllerTest extends CommonControllerTest {
     @Test
     void getAllPersonsEmptyListTest() throws Exception {
         // Mock empty list
-        Mockito.doReturn(new ArrayList<>()).when(getPersonSvc()).findAll();
+        Mockito.doReturn(new ArrayList<>()).when(getPersonSvc()).findPersons(null, null);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(PERSON_API)
                 .accept(MediaType.APPLICATION_JSON)
@@ -191,8 +193,10 @@ public class PersonControllerTest extends CommonControllerTest {
     @Test
     void getPersonByIdParameterTest() throws Exception {
 
-        Mockito.doReturn(Optional.of(getTestPerson()))
-                .when(getPersonSvc()).get(PERSON_ID);
+        List<Person> singlePersonList = new ArrayList<>();
+        singlePersonList.add(getTestPerson());
+        Mockito.doReturn(singlePersonList)
+                .when(getPersonSvc()).findPersons(PERSON_ID, null);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(PERSON_API + "?id=" + PERSON_ID)
                 .accept(MediaType.APPLICATION_JSON)
