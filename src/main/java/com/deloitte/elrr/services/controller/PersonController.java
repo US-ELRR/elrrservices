@@ -1,6 +1,5 @@
 package com.deloitte.elrr.services.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -148,30 +147,16 @@ public class PersonController {
     public ResponseEntity<List<PersonDto>> getAllPersons(
             @RequestParam(value = "id", required = false) final UUID personId,
             @RequestParam(value = "ifi", required = false) final String ifi) {
-        log.info("getting  PersonDto:.........");
-        log.info("getting Person id:........." + personId);
-        List<PersonDto> persontoList = new ArrayList<>();
-        if (personId != null) {
-            personSvc.get(personId).ifPresent(person -> {
-                PersonDto personDto = mapper.map(person, PersonDto.class);
-                persontoList.add(personDto);
-            });
-        } else if (ifi != null) {
-            Identity ifiIdentity = identitySvc.getByIfi(ifi);
-            if (ifiIdentity != null) {
-                Person person = ifiIdentity.getPerson();
-                persontoList.add(mapper.map(person, PersonDto.class));
-            }
-        } else {
-            Iterable<Person> persons = personSvc.findAll();
+        log.info("getting PersonDto with filters - id: {}, ifi: {}",
+                personId, ifi);
 
-            for (Person person : persons) {
-                PersonDto personDto = mapper.map(person, PersonDto.class);
-                persontoList.add(personDto);
-            }
-        }
+        List<Person> persons = personSvc.findPersonsWithFilters(personId, ifi);
 
-        return ResponseEntity.ok(persontoList);
+        List<PersonDto> personDtoList = persons.stream()
+                .map(person -> mapper.map(person, PersonDto.class))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(personDtoList);
     }
 
     /**

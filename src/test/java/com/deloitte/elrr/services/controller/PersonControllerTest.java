@@ -110,7 +110,8 @@ public class PersonControllerTest extends CommonControllerTest {
     @Test
     void getAllPersonsTest() throws Exception {
 
-        Mockito.doReturn(getPersonList()).when(getPersonSvc()).findAll();
+        Mockito.doReturn(getPersonList()).when(getPersonSvc())
+                .findPersonsWithFilters(null, null);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(PERSON_API)
                 .accept(MediaType.APPLICATION_JSON)
@@ -135,7 +136,8 @@ public class PersonControllerTest extends CommonControllerTest {
     @Test
     void getAllPersonsEmptyListTest() throws Exception {
         // Mock empty list
-        Mockito.doReturn(new ArrayList<>()).when(getPersonSvc()).findAll();
+        Mockito.doReturn(new ArrayList<>()).when(getPersonSvc())
+                .findPersonsWithFilters(null, null);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(PERSON_API)
                 .accept(MediaType.APPLICATION_JSON)
@@ -191,8 +193,8 @@ public class PersonControllerTest extends CommonControllerTest {
     @Test
     void getPersonByIdParameterTest() throws Exception {
 
-        Mockito.doReturn(Optional.of(getTestPerson()))
-                .when(getPersonSvc()).get(PERSON_ID);
+        Mockito.doReturn(getPersonList()).when(getPersonSvc())
+                .findPersonsWithFilters(PERSON_ID, null);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(PERSON_API + "?id=" + PERSON_ID)
                 .accept(MediaType.APPLICATION_JSON)
