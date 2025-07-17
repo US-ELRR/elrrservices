@@ -136,21 +136,32 @@ public class PersonController {
         "Getting %s for Person with id: %s";
 
     /**
+     * Get all persons with optional filters.
      *
-     * @param personId
-     * @param ifi
+     * @param personId Optional person ID filter
+     * @param ifi Optional IFI (Inverse Functional Identifier) filter
+     * @param organizationId Optional organization ID filter
+     * @param organizationRelType Optional organization relationship type filter
      * @return ResponseEntity<List<PersonDto>>
      * @throws ResourceNotFoundException
      */
     @PreAuthorize("hasPermission('person', 'READ')")
     @GetMapping("/person")
     public ResponseEntity<List<PersonDto>> getAllPersons(
-            @RequestParam(value = "id", required = false) final UUID personId,
-            @RequestParam(value = "ifi", required = false) final String ifi) {
-        log.info("getting PersonDto with filters - id: {}, ifi: {}",
-                personId, ifi);
+            @RequestParam(value = "id", required = false)
+            final UUID personId,
+            @RequestParam(value = "ifi", required = false)
+            final String ifi,
+            @RequestParam(value = "organizationId", required = false)
+            final UUID organizationId,
+            @RequestParam(value = "organizationRelType", required = false)
+            final String organizationRelType) {
+        log.info("getting PersonDto with filters - id: {}, ifi: {}, "
+                + "organizationId: {}, organizationRelType: {}",
+                personId, ifi, organizationId, organizationRelType);
 
-        List<Person> persons = personSvc.findPersonsWithFilters(personId, ifi);
+        List<Person> persons = personSvc.findPersonsWithFilters(personId, ifi,
+                organizationId, organizationRelType);
 
         List<PersonDto> personDtoList = persons.stream()
                 .map(person -> mapper.map(person, PersonDto.class))
