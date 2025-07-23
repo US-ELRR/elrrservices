@@ -157,7 +157,7 @@ public class PersonController {
             @RequestParam(value = "organizationRelType", required = false)
             final String organizationRelType,
             @RequestParam(value = "hasExtension", required = false)
-            final List<String> hasExtension) {
+            final String[] hasExtension) {
         log.info("getting PersonDto with filters - id: {}, ifi: {}, "
                 + "organizationId: {}, organizationRelType: {}, hasExtension: {}",
                 personId, ifi, organizationId, organizationRelType, hasExtension);
