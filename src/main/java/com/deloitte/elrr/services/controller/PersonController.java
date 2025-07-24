@@ -155,13 +155,15 @@ public class PersonController {
             @RequestParam(value = "organizationId", required = false)
             final UUID organizationId,
             @RequestParam(value = "organizationRelType", required = false)
-            final String organizationRelType) {
+            final String organizationRelType,
+            @RequestParam(value = "hasExtension", required = false)
+            final String[] hasExtension) {
         log.info("getting PersonDto with filters - id: {}, ifi: {}, "
-                + "organizationId: {}, organizationRelType: {}",
-                personId, ifi, organizationId, organizationRelType);
-
+                + "organizationId: {}, organizationRelType: {}, hasExtension: {}",
+                personId, ifi, organizationId, organizationRelType, hasExtension);
+        
         List<Person> persons = personSvc.findPersonsWithFilters(personId, ifi,
-                organizationId, organizationRelType);
+                organizationId, organizationRelType, hasExtension);
 
         List<PersonDto> personDtoList = persons.stream()
                 .map(person -> mapper.map(person, PersonDto.class))
