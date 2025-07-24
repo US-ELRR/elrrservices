@@ -5,7 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 /**
  * A singleton wrapper for jackson.databind.ObjectMapper configured
- * for the serialization and deserialization of the xAPI Model.
+ * for the serialization and deserialization of objects.
  */
 public final class Mapper {
 
