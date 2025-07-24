@@ -142,6 +142,8 @@ public class PersonController {
      * @param ifi Optional IFI (Inverse Functional Identifier) filter
      * @param organizationId Optional organization ID filter
      * @param organizationRelType Optional organization relationship type filter
+     * @param hasExtension Optional filter for extension keys
+     * @param extensionPath Optional filter for JSONPath expressions
      * @return ResponseEntity<List<PersonDto>>
      * @throws ResourceNotFoundException
      */
@@ -157,13 +159,18 @@ public class PersonController {
             @RequestParam(value = "organizationRelType", required = false)
             final String organizationRelType,
             @RequestParam(value = "hasExtension", required = false)
-            final String[] hasExtension) {
+            final String[] hasExtension,
+            @RequestParam(value = "extensionPath", required = false)
+            final String[] extensionPath) {
         log.info("getting PersonDto with filters - id: {}, ifi: {}, "
-                + "organizationId: {}, organizationRelType: {}, hasExtension: {}",
-                personId, ifi, organizationId, organizationRelType, hasExtension);
-        
+                + "organizationId: {}, organizationRelType: {}, "
+                + "hasExtension: {}, extensionPath: {}",
+                personId, ifi, organizationId, organizationRelType,
+                hasExtension, extensionPath);
+
         List<Person> persons = personSvc.findPersonsWithFilters(personId, ifi,
-                organizationId, organizationRelType, hasExtension);
+                organizationId, organizationRelType,
+                hasExtension, extensionPath);
 
         List<PersonDto> personDtoList = persons.stream()
                 .map(person -> mapper.map(person, PersonDto.class))
