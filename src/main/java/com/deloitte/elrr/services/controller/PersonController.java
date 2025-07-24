@@ -154,7 +154,7 @@ public class PersonController {
             @RequestParam(value = "id", required = false)
             final UUID[] personId,
             @RequestParam(value = "ifi", required = false)
-            final String ifi,
+            final String[] ifi,
             @RequestParam(value = "organizationId", required = false)
             final UUID organizationId,
             @RequestParam(value = "organizationRelType", required = false)
