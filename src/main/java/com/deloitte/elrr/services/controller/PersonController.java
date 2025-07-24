@@ -156,7 +156,7 @@ public class PersonController {
             @RequestParam(value = "ifi", required = false)
             final String[] ifi,
             @RequestParam(value = "organizationId", required = false)
-            final UUID organizationId,
+            final UUID[] organizationId,
             @RequestParam(value = "organizationRelType", required = false)
             final String organizationRelType,
             @RequestParam(value = "hasExtension", required = false)

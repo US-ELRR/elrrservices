@@ -11,7 +11,7 @@ The GET /api/person endpoint supports the following optional query parameters fo
 - **ifi** (String[]): Filter by IFIs (Inverse Functional Identifiers)
 
 #### Organization Filters  
-- **organizationId** (UUID): Filter by organization ID (via association or employment)
+- **organizationId** (UUID[]): Filter by organization IDs (via association or employment)
 - **organizationRelType** (String): Specify organization relationship type
   - `Association` - Filter by organization associations (default)
   - `Employment` - Filter by employment relationships
