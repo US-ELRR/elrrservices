@@ -7,7 +7,7 @@
 The GET /api/person endpoint supports the following optional query parameters for filtering persons:
 
 #### Basic Filters
-- **id** (UUID): Filter by specific person ID
+- **id** (UUID[]): Filter by specific person IDs
 - **ifi** (String): Filter by IFI (Inverse Functional Identifier)
 
 #### Organization Filters  

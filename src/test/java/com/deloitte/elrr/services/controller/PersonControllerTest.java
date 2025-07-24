@@ -192,9 +192,8 @@ public class PersonControllerTest extends CommonControllerTest {
 
     @Test
     void getPersonByIdParameterTest() throws Exception {
-
         Mockito.doReturn(getPersonList()).when(getPersonSvc())
-                .findPersonsWithFilters(PERSON_ID, null, null, null, null, null, null);
+                .findPersonsWithFilters(new UUID[]{PERSON_ID}, null, null, null, null, null, null);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(PERSON_API + "?id=" + PERSON_ID)
                 .accept(MediaType.APPLICATION_JSON)

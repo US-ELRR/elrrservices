@@ -152,7 +152,7 @@ public class PersonController {
     @GetMapping("/person")
     public ResponseEntity<List<PersonDto>> getAllPersons(
             @RequestParam(value = "id", required = false)
-            final UUID personId,
+            final UUID[] personId,
             @RequestParam(value = "ifi", required = false)
             final String ifi,
             @RequestParam(value = "organizationId", required = false)
