@@ -12,10 +12,8 @@ The GET /api/person endpoint supports the following optional query parameters fo
 - **name** (String[]): Filter by Name, case-insensitive. The wildcard character `%` can be used like `% Smith`
 
 #### Organization Filters  
-- **organizationId** (UUID[]): Filter by organization IDs (via association or employment)
-- **organizationRelType** (String): Specify organization relationship type
-  - `Association` - Filter by organization associations (default)
-  - `Employment` - Filter by employment relationships
+- **associatedOrgId** (UUID[]): Filter by organization IDs via association relationships
+- **employerOrgId** (UUID[]): Filter by organization IDs via employment relationships
 
 #### Extension Filters
 - **hasExtension** (String[]): Filter for persons who have all specified extension keys present in their extensions JSON

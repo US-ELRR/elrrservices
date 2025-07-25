@@ -141,8 +141,8 @@ public class PersonController {
      *
      * @param personId Optional person ID filter
      * @param ifi Optional IFI (Inverse Functional Identifier) filter
-     * @param organizationId Optional organization ID filter
-     * @param organizationRelType Optional organization relationship type filter
+     * @param associatedOrgId Optional associated organization ID filter
+     * @param employerOrgId Optional employer organization ID filter
      * @param hasExtension Optional filter for extension keys
      * @param extensionPath Optional filter for JSONPath expressions
      * @param extensionPathMatch Optional filter for JSONPath predicates
@@ -157,10 +157,10 @@ public class PersonController {
             final UUID[] personId,
             @RequestParam(value = "ifi", required = false)
             final String[] ifi,
-            @RequestParam(value = "organizationId", required = false)
-            final UUID[] organizationId,
-            @RequestParam(value = "organizationRelType", required = false)
-            final String organizationRelType,
+            @RequestParam(value = "associatedOrgId", required = false)
+            final UUID[] associatedOrgId,
+            @RequestParam(value = "employerOrgId", required = false)
+            final UUID[] employerOrgId,
             @RequestParam(value = "hasExtension", required = false)
             final String[] hasExtension,
             @RequestParam(value = "extensionPath", required = false)
@@ -170,14 +170,14 @@ public class PersonController {
             @RequestParam(value = "name", required = false)
             final String[] name) {
         log.info("getting PersonDto with filters - id: {}, ifi: {}, "
-                + "organizationId: {}, organizationRelType: {}, "
+                + "associatedOrgId: {}, employerOrgId: {}, "
                 + "hasExtension: {}, extensionPath: {}, "
                 + "extensionPathMatch: {}, name: {}",
-                personId, ifi, organizationId, organizationRelType,
+                personId, ifi, associatedOrgId, employerOrgId,
                 hasExtension, extensionPath, extensionPathMatch, name);
 
         List<Person> persons = personSvc.findPersonsWithFilters(personId, ifi,
-                organizationId, organizationRelType,
+                associatedOrgId, employerOrgId,
                 hasExtension, extensionPath, extensionPathMatch,
                 name);
 
