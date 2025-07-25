@@ -75,6 +75,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("api")
 @Slf4j
+@SuppressWarnings("checkstyle:ParameterNumber")
 public class PersonController {
 
     @Autowired
@@ -145,6 +146,7 @@ public class PersonController {
      * @param hasExtension Optional filter for extension keys
      * @param extensionPath Optional filter for JSONPath expressions
      * @param extensionPathMatch Optional filter for JSONPath predicates
+     * @param name Optional filter for person names
      * @return ResponseEntity<List<PersonDto>>
      * @throws ResourceNotFoundException
      */
@@ -164,17 +166,20 @@ public class PersonController {
             @RequestParam(value = "extensionPath", required = false)
             final String[] extensionPath,
             @RequestParam(value = "extensionPathMatch", required = false)
-            final String[] extensionPathMatch) {
+            final String[] extensionPathMatch,
+            @RequestParam(value = "name", required = false)
+            final String[] name) {
         log.info("getting PersonDto with filters - id: {}, ifi: {}, "
                 + "organizationId: {}, organizationRelType: {}, "
                 + "hasExtension: {}, extensionPath: {}, "
-                + "extensionPathMatch: {}",
+                + "extensionPathMatch: {}, name: {}",
                 personId, ifi, organizationId, organizationRelType,
-                hasExtension, extensionPath, extensionPathMatch);
+                hasExtension, extensionPath, extensionPathMatch, name);
 
         List<Person> persons = personSvc.findPersonsWithFilters(personId, ifi,
                 organizationId, organizationRelType,
-                hasExtension, extensionPath, extensionPathMatch);
+                hasExtension, extensionPath, extensionPathMatch,
+                name);
 
         List<PersonDto> personDtoList = persons.stream()
                 .map(person -> mapper.map(person, PersonDto.class))
