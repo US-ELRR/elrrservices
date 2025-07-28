@@ -10,6 +10,7 @@ The GET /api/person endpoint supports the following optional query parameters fo
 - **id** (UUID[]): Filter by specific person IDs
 - **ifi** (String[]): Filter by IFIs (Inverse Functional Identifiers)
 - **name** (String[]): Filter by Name, case-insensitive. The wildcard character `%` can be used like `% Smith`
+- **emailAddress** (String[]): Filter by email addresses, case-insensitive. The wildcard character `%` can be used like `%@example.com`.
 
 #### Organization Filters  
 - **associatedOrgId** (UUID[]): Filter by organization IDs via association relationships
