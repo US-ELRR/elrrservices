@@ -149,6 +149,7 @@ public class PersonController {
      * @param name Optional filter for person names
      * @param locationId Optional location ID filter for any location field
      * @param emailAddress Optional filter for email addresses
+     * @param phoneNumber Optional filter for phone numbers (normalized search)
      * @return ResponseEntity<List<PersonDto>>
      * @throws ResourceNotFoundException
      */
@@ -174,20 +175,22 @@ public class PersonController {
             @RequestParam(value = "locationId", required = false)
             final UUID[] locationId,
             @RequestParam(value = "emailAddress", required = false)
-            final String[] emailAddress) {
+            final String[] emailAddress,
+            @RequestParam(value = "phoneNumber", required = false)
+            final String[] phoneNumber) {
         log.info("getting PersonDto with filters - id: {}, ifi: {}, "
                 + "associatedOrgId: {}, employerOrgId: {}, "
                 + "hasExtension: {}, extensionPath: {}, "
                 + "extensionPathMatch: {}, name: {}, locationId: {}, "
-                + "emailAddress: {}",
+                + "emailAddress: {}, phoneNumber: {}",
                 personId, ifi, associatedOrgId, employerOrgId,
                 hasExtension, extensionPath, extensionPathMatch, name,
-                locationId, emailAddress);
+                locationId, emailAddress, phoneNumber);
 
         List<Person> persons = personSvc.findPersonsWithFilters(personId, ifi,
                 associatedOrgId, employerOrgId,
                 hasExtension, extensionPath, extensionPathMatch,
-                name, locationId, emailAddress);
+                name, locationId, emailAddress, phoneNumber);
 
         List<PersonDto> personDtoList = persons.stream()
                 .map(person -> mapper.map(person, PersonDto.class))
