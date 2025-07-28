@@ -118,5 +118,8 @@ public class PersonDto extends ExtensibleDto {
     private LocationDto birthplaceAddress;
 
     @Valid
+    private Set<EmailDto> emailAddresses;
+
+    @Valid
     private Set<PhoneDto> phones;
 }
