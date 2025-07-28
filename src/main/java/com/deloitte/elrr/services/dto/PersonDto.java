@@ -121,5 +121,5 @@ public class PersonDto extends ExtensibleDto {
     private Set<EmailDto> emailAddresses;
 
     @Valid
-    private Set<PhoneDto> phones;
+    private Set<PhoneDto> phoneNumbers;
 }
