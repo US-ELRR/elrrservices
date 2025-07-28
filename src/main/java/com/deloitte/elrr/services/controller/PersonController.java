@@ -147,6 +147,7 @@ public class PersonController {
      * @param extensionPath Optional filter for JSONPath expressions
      * @param extensionPathMatch Optional filter for JSONPath predicates
      * @param name Optional filter for person names
+     * @param locationId Optional location ID filter for any location field
      * @return ResponseEntity<List<PersonDto>>
      * @throws ResourceNotFoundException
      */
@@ -168,18 +169,21 @@ public class PersonController {
             @RequestParam(value = "extensionPathMatch", required = false)
             final String[] extensionPathMatch,
             @RequestParam(value = "name", required = false)
-            final String[] name) {
+            final String[] name,
+            @RequestParam(value = "locationId", required = false)
+            final UUID[] locationId) {
         log.info("getting PersonDto with filters - id: {}, ifi: {}, "
                 + "associatedOrgId: {}, employerOrgId: {}, "
                 + "hasExtension: {}, extensionPath: {}, "
-                + "extensionPathMatch: {}, name: {}",
+                + "extensionPathMatch: {}, name: {}, locationId: {}",
                 personId, ifi, associatedOrgId, employerOrgId,
-                hasExtension, extensionPath, extensionPathMatch, name);
+                hasExtension, extensionPath, extensionPathMatch, name,
+                locationId);
 
         List<Person> persons = personSvc.findPersonsWithFilters(personId, ifi,
                 associatedOrgId, employerOrgId,
                 hasExtension, extensionPath, extensionPathMatch,
-                name);
+                name, locationId);
 
         List<PersonDto> personDtoList = persons.stream()
                 .map(person -> mapper.map(person, PersonDto.class))

@@ -15,6 +15,10 @@ The GET /api/person endpoint supports the following optional query parameters fo
 - **associatedOrgId** (UUID[]): Filter by organization IDs via association relationships
 - **employerOrgId** (UUID[]): Filter by organization IDs via employment relationships
 
+#### Location Filters
+- **locationId** (UUID[]): Filter by location IDs present in any location field - returns persons who have any of the specified location IDs in any of their address or location relationships
+    - Searches across all location fields: mailing address, physical address, shipping address, billing address, on-campus address, off-campus address, temporary address, permanent student address, employment address, time of admission address, father address, mother address, guardian address, and birthplace
+
 #### Extension Filters
 - **hasExtension** (String[]): Filter for persons who have all specified extension keys present in their extensions JSON
 - **extensionPath** (String[]): Filter using JSONPath expressions with the `@?` operator - returns persons where all specified paths exist in their extensions JSON
