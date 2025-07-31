@@ -39,7 +39,6 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
     @Override
     public boolean hasPermission(Authentication authentication,
             Serializable targetId, String targetType, Object permission) {
-        JwtAuthenticationToken token = (JwtAuthenticationToken) authentication;
         throw new UnsupportedOperationException(
                 "hasPermission with targetId and targetType is not supported");
     }
