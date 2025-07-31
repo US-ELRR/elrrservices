@@ -17,7 +17,6 @@
     <properties>
         <java.version>17</java.version>
         <docker.image.prefix>elrrservices</docker.image.prefix>
-        <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <start-class>com.deloitte.elrr.ElrrServicesApplication</start-class>
@@ -25,9 +24,10 @@
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>resuseReports</sonar.dynamicAnalysis>
         <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
-        <sona.lauguage>java</sona.lauguage>
-        <spring-security.version>6.4.5</spring-security.version>
+        <sonar.language>java</sonar.language>
+        <spring-security.version>6.4.6</spring-security.version>
         <lombok.version>1.18.36</lombok.version>
+        <tomcat.version>10.1.43</tomcat.version>
     </properties>
     <dependencies>
         <dependency>
@@ -117,6 +117,16 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>6.2.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>6.2.9</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.18.0</version>
@@ -125,6 +135,17 @@
             <groupId>commons-validator</groupId>
             <artifactId>commons-validator</artifactId>
             <version>1.7</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-beanutils</groupId>
+                    <artifactId>commons-beanutils</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.11.0</version>
         </dependency>
         <dependency>
             <groupId>fr.spacefox</groupId>
@@ -186,7 +207,7 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.16.0</version>
-            </dependency>
+        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-joda</artifactId>
@@ -224,7 +245,7 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.10.1</version>
+            <version>2.12.0</version>
         </dependency>
         <dependency>
             <groupId>javax.mail</groupId>
@@ -264,7 +285,7 @@
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcutil-jdk18on</artifactId>
-            <version>1.74</version> 
+            <version>1.74</version>
         </dependency>
     </dependencies>
     <build>
@@ -414,7 +435,7 @@
                         <!-- disable autorun because download size -->
                         <id>default</id>
                         <phase>none</phase>
-                    </execution> 
+                    </execution>
                 </executions>
             </plugin>
         </plugins>

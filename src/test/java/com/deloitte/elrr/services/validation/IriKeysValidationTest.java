@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +37,7 @@ class IriKeysValidationTest {
     @Test
     void testValidIriKeys() {
         TestExtensibleDto dto = new TestExtensibleDto();
-        Map<URI, Object> extensions = new HashMap<>();
+        Map<URI, Serializable> extensions = new HashMap<>();
         
         // Add valid IRIs (all absolute with schemes)
         extensions.put(URI.create("https://example.com/property1"), "value1");
@@ -53,7 +54,7 @@ class IriKeysValidationTest {
     @Test
     void testInvalidIriKey_SimpleWord() {
         TestExtensibleDto dto = new TestExtensibleDto();
-        Map<URI, Object> extensions = new HashMap<>();
+        Map<URI, Serializable> extensions = new HashMap<>();
         
         try {
             // "foo" gets through URI.create() but should be rejected by our validator
@@ -73,7 +74,7 @@ class IriKeysValidationTest {
     @Test
     void testInvalidIriKey_EmptyString() {
         TestExtensibleDto dto = new TestExtensibleDto();
-        Map<URI, Object> extensions = new HashMap<>();
+        Map<URI, Serializable> extensions = new HashMap<>();
         
         try {
             extensions.put(URI.create(""), "value1");
