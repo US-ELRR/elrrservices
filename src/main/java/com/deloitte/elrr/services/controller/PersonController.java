@@ -1,6 +1,5 @@
 package com.deloitte.elrr.services.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -76,6 +75,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("api")
 @Slf4j
+@SuppressWarnings("checkstyle:ParameterNumber")
 public class PersonController {
 
     @Autowired
@@ -137,41 +137,75 @@ public class PersonController {
         "Getting %s for Person with id: %s";
 
     /**
+     * Get all persons with optional filters.
      *
-     * @param personId
-     * @param ifi
+     * @param personId Optional person ID filter
+     * @param ifi Optional IFI (Inverse Functional Identifier) filter
+     * @param associatedOrgId Optional associated organization ID filter
+     * @param employerOrgId Optional employer organization ID filter
+     * @param hasExtension Optional filter for extension keys
+     * @param extensionPath Optional filter for JSONPath expressions
+     * @param extensionPathMatch Optional filter for JSONPath predicates
+     * @param name Optional filter for person names
+     * @param locationId Optional location ID filter for any location field
+     * @param emailAddress Optional filter for email addresses
+     * @param phoneNumber Optional filter for phone numbers (normalized search)
+     * @param competencyId Optional competency ID filter
+     * @param credentialId Optional credential ID filter
      * @return ResponseEntity<List<PersonDto>>
      * @throws ResourceNotFoundException
      */
     @PreAuthorize("hasPermission('person', 'READ')")
     @GetMapping("/person")
     public ResponseEntity<List<PersonDto>> getAllPersons(
-            @RequestParam(value = "id", required = false) final UUID personId,
-            @RequestParam(value = "ifi", required = false) final String ifi) {
-        log.info("getting  PersonDto:.........");
-        log.info("getting Person id:........." + personId);
-        List<PersonDto> persontoList = new ArrayList<>();
-        if (personId != null) {
-            personSvc.get(personId).ifPresent(person -> {
-                PersonDto personDto = mapper.map(person, PersonDto.class);
-                persontoList.add(personDto);
-            });
-        } else if (ifi != null) {
-            Identity ifiIdentity = identitySvc.getByIfi(ifi);
-            if (ifiIdentity != null) {
-                Person person = ifiIdentity.getPerson();
-                persontoList.add(mapper.map(person, PersonDto.class));
-            }
-        } else {
-            Iterable<Person> persons = personSvc.findAll();
+            @RequestParam(value = "id", required = false)
+            final UUID[] personId,
+            @RequestParam(value = "ifi", required = false)
+            final String[] ifi,
+            @RequestParam(value = "associatedOrgId", required = false)
+            final UUID[] associatedOrgId,
+            @RequestParam(value = "employerOrgId", required = false)
+            final UUID[] employerOrgId,
+            @RequestParam(value = "hasExtension", required = false)
+            final String[] hasExtension,
+            @RequestParam(value = "extensionPath", required = false)
+            final String[] extensionPath,
+            @RequestParam(value = "extensionPathMatch", required = false)
+            final String[] extensionPathMatch,
+            @RequestParam(value = "name", required = false)
+            final String[] name,
+            @RequestParam(value = "locationId", required = false)
+            final UUID[] locationId,
+            @RequestParam(value = "emailAddress", required = false)
+            final String[] emailAddress,
+            @RequestParam(value = "phoneNumber", required = false)
+            final String[] phoneNumber,
+            @RequestParam(value = "competencyId", required = false)
+            final UUID[] competencyId,
+            @RequestParam(value = "credentialId", required = false)
+            final UUID[] credentialId) {
+        log.info("getting PersonDto with filters - id: {}, ifi: {}, "
+                + "associatedOrgId: {}, employerOrgId: {}, "
+                + "hasExtension: {}, extensionPath: {}, "
+                + "extensionPathMatch: {}, name: {}, locationId: {}, "
+                + "emailAddress: {}, phoneNumber: {}, competencyId: {}, "
+                + "credentialId: {}",
+                personId, ifi, associatedOrgId, employerOrgId,
+                hasExtension, extensionPath, extensionPathMatch, name,
+                locationId, emailAddress, phoneNumber, competencyId,
+                credentialId);
 
-            for (Person person : persons) {
-                PersonDto personDto = mapper.map(person, PersonDto.class);
-                persontoList.add(personDto);
-            }
-        }
+        List<Person> persons = personSvc.findPersonsWithFilters(personId, ifi,
+                associatedOrgId, employerOrgId,
+                hasExtension, extensionPath, extensionPathMatch,
+                name, locationId, emailAddress, phoneNumber, competencyId,
+                credentialId);
 
-        return ResponseEntity.ok(persontoList);
+        List<PersonDto> personDtoList = persons.stream()
+                .map(person -> mapper.map(person, PersonDto.class))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(personDtoList);
     }
 
     /**
