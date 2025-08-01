@@ -151,6 +151,7 @@ public class PersonController {
      * @param emailAddress Optional filter for email addresses
      * @param phoneNumber Optional filter for phone numbers (normalized search)
      * @param competencyId Optional competency ID filter
+     * @param credentialId Optional credential ID filter
      * @return ResponseEntity<List<PersonDto>>
      * @throws ResourceNotFoundException
      */
@@ -180,20 +181,25 @@ public class PersonController {
             @RequestParam(value = "phoneNumber", required = false)
             final String[] phoneNumber,
             @RequestParam(value = "competencyId", required = false)
-            final UUID[] competencyId) {
+            final UUID[] competencyId,
+            @RequestParam(value = "credentialId", required = false)
+            final UUID[] credentialId) {
         log.info("getting PersonDto with filters - id: {}, ifi: {}, "
                 + "associatedOrgId: {}, employerOrgId: {}, "
                 + "hasExtension: {}, extensionPath: {}, "
                 + "extensionPathMatch: {}, name: {}, locationId: {}, "
-                + "emailAddress: {}, phoneNumber: {}, competencyId: {}",
+                + "emailAddress: {}, phoneNumber: {}, competencyId: {}, "
+                + "credentialId: {}",
                 personId, ifi, associatedOrgId, employerOrgId,
                 hasExtension, extensionPath, extensionPathMatch, name,
-                locationId, emailAddress, phoneNumber, competencyId);
+                locationId, emailAddress, phoneNumber, competencyId,
+                credentialId);
 
         List<Person> persons = personSvc.findPersonsWithFilters(personId, ifi,
                 associatedOrgId, employerOrgId,
                 hasExtension, extensionPath, extensionPathMatch,
-                name, locationId, emailAddress, phoneNumber, competencyId);
+                name, locationId, emailAddress, phoneNumber, competencyId,
+                credentialId);
 
         List<PersonDto> personDtoList = persons.stream()
                 .map(person -> mapper.map(person, PersonDto.class))
