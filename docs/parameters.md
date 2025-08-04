@@ -33,3 +33,8 @@ The GET /api/person endpoint supports the following optional query parameters fo
     - Example: `$."https://example.net/person/birthDate" > "1990-01-01"`
     - Example: `$."https://example.org/openbadges/evidence".status == "verified"`
     - Example: `$."https://example.com/clr/creditsEarned" >= 30`
+
+#### Relation Filters
+- **competencyId** (UUID[]): Filter by competency IDs via qualification relationships
+- **credentialId** (UUID[]): Filter by credential IDs via qualification relationships
+- **learningResourceId** (UUID[]): Filter by learning resource IDs via learning record relationships
