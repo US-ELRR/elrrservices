@@ -12,12 +12,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.deloitte.elrr.entity.Association;
@@ -58,6 +58,7 @@ import com.deloitte.elrr.services.dto.IdentityDto;
 import com.deloitte.elrr.services.dto.LearningRecordDto;
 import com.deloitte.elrr.services.dto.LocationDto;
 import com.deloitte.elrr.services.dto.PersonDto;
+import com.deloitte.elrr.services.dto.PersonFilterDto;
 import com.deloitte.elrr.services.dto.PersonalQualificationDto;
 import com.deloitte.elrr.services.dto.PhoneDto;
 import com.deloitte.elrr.services.exception.ResourceNotFoundException;
@@ -75,7 +76,6 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("api")
 @Slf4j
-@SuppressWarnings("checkstyle:ParameterNumber")
 public class PersonController {
 
     @Autowired
@@ -139,70 +139,50 @@ public class PersonController {
     /**
      * Get all persons with optional filters.
      *
-     * @param personId Optional person ID filter
-     * @param ifi Optional IFI (Inverse Functional Identifier) filter
-     * @param associatedOrgId Optional associated organization ID filter
-     * @param employerOrgId Optional employer organization ID filter
-     * @param hasExtension Optional filter for extension keys
-     * @param extensionPath Optional filter for JSONPath expressions
-     * @param extensionPathMatch Optional filter for JSONPath predicates
-     * @param name Optional filter for person names
-     * @param locationId Optional location ID filter for any location field
-     * @param emailAddress Optional filter for email addresses
-     * @param phoneNumber Optional filter for phone numbers (normalized search)
-     * @param competencyId Optional competency ID filter
-     * @param credentialId Optional credential ID filter
-     * @param learningResourceId Optional learning resource ID filter
+     * @param filters Optional filters for person search
      * @return ResponseEntity<List<PersonDto>>
      * @throws ResourceNotFoundException
      */
     @PreAuthorize("hasPermission('person', 'READ')")
     @GetMapping("/person")
     public ResponseEntity<List<PersonDto>> getAllPersons(
-            @RequestParam(value = "id", required = false)
-            final UUID[] personId,
-            @RequestParam(value = "ifi", required = false)
-            final String[] ifi,
-            @RequestParam(value = "associatedOrgId", required = false)
-            final UUID[] associatedOrgId,
-            @RequestParam(value = "employerOrgId", required = false)
-            final UUID[] employerOrgId,
-            @RequestParam(value = "hasExtension", required = false)
-            final String[] hasExtension,
-            @RequestParam(value = "extensionPath", required = false)
-            final String[] extensionPath,
-            @RequestParam(value = "extensionPathMatch", required = false)
-            final String[] extensionPathMatch,
-            @RequestParam(value = "name", required = false)
-            final String[] name,
-            @RequestParam(value = "locationId", required = false)
-            final UUID[] locationId,
-            @RequestParam(value = "emailAddress", required = false)
-            final String[] emailAddress,
-            @RequestParam(value = "phoneNumber", required = false)
-            final String[] phoneNumber,
-            @RequestParam(value = "competencyId", required = false)
-            final UUID[] competencyId,
-            @RequestParam(value = "credentialId", required = false)
-            final UUID[] credentialId,
-            @RequestParam(value = "learningResourceId", required = false)
-            final String[] learningResourceId) {
+            @ModelAttribute final PersonFilterDto filters) {
         log.info("getting PersonDto with filters - id: {}, ifi: {}, "
                 + "associatedOrgId: {}, employerOrgId: {}, "
                 + "hasExtension: {}, extensionPath: {}, "
                 + "extensionPathMatch: {}, name: {}, locationId: {}, "
                 + "emailAddress: {}, phoneNumber: {}, competencyId: {}, "
                 + "credentialId: {}, learningResourceId: {}",
-                personId, ifi, associatedOrgId, employerOrgId,
-                hasExtension, extensionPath, extensionPathMatch, name,
-                locationId, emailAddress, phoneNumber, competencyId,
-                credentialId, learningResourceId);
+                filters.getId(),
+                filters.getIfi(),
+                filters.getAssociatedOrgId(),
+                filters.getEmployerOrgId(),
+                filters.getHasExtension(),
+                filters.getExtensionPath(),
+                filters.getExtensionPathMatch(),
+                filters.getName(),
+                filters.getLocationId(),
+                filters.getEmailAddress(),
+                filters.getPhoneNumber(),
+                filters.getCompetencyId(),
+                filters.getCredentialId(),
+                filters.getLearningResourceId());
 
-        List<Person> persons = personSvc.findPersonsWithFilters(personId, ifi,
-                associatedOrgId, employerOrgId,
-                hasExtension, extensionPath, extensionPathMatch,
-                name, locationId, emailAddress, phoneNumber, competencyId,
-                credentialId, learningResourceId);
+        List<Person> persons = personSvc.findPersonsWithFilters(
+                filters.getId(),
+                filters.getIfi(),
+                filters.getAssociatedOrgId(),
+                filters.getEmployerOrgId(),
+                filters.getHasExtension(),
+                filters.getExtensionPath(),
+                filters.getExtensionPathMatch(),
+                filters.getName(),
+                filters.getLocationId(),
+                filters.getEmailAddress(),
+                filters.getPhoneNumber(),
+                filters.getCompetencyId(),
+                filters.getCredentialId(),
+                filters.getLearningResourceId());
 
         List<PersonDto> personDtoList = persons.stream()
                 .map(person -> mapper.map(person, PersonDto.class))
