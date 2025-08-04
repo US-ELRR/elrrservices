@@ -152,6 +152,7 @@ public class PersonController {
      * @param phoneNumber Optional filter for phone numbers (normalized search)
      * @param competencyId Optional competency ID filter
      * @param credentialId Optional credential ID filter
+     * @param learningResourceId Optional learning resource ID filter
      * @return ResponseEntity<List<PersonDto>>
      * @throws ResourceNotFoundException
      */
@@ -183,23 +184,25 @@ public class PersonController {
             @RequestParam(value = "competencyId", required = false)
             final UUID[] competencyId,
             @RequestParam(value = "credentialId", required = false)
-            final UUID[] credentialId) {
+            final UUID[] credentialId,
+            @RequestParam(value = "learningResourceId", required = false)
+            final String[] learningResourceId) {
         log.info("getting PersonDto with filters - id: {}, ifi: {}, "
                 + "associatedOrgId: {}, employerOrgId: {}, "
                 + "hasExtension: {}, extensionPath: {}, "
                 + "extensionPathMatch: {}, name: {}, locationId: {}, "
                 + "emailAddress: {}, phoneNumber: {}, competencyId: {}, "
-                + "credentialId: {}",
+                + "credentialId: {}, learningResourceId: {}",
                 personId, ifi, associatedOrgId, employerOrgId,
                 hasExtension, extensionPath, extensionPathMatch, name,
                 locationId, emailAddress, phoneNumber, competencyId,
-                credentialId);
+                credentialId, learningResourceId);
 
         List<Person> persons = personSvc.findPersonsWithFilters(personId, ifi,
                 associatedOrgId, employerOrgId,
                 hasExtension, extensionPath, extensionPathMatch,
                 name, locationId, emailAddress, phoneNumber, competencyId,
-                credentialId);
+                credentialId, learningResourceId);
 
         List<PersonDto> personDtoList = persons.stream()
                 .map(person -> mapper.map(person, PersonDto.class))
