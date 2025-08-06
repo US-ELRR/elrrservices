@@ -58,7 +58,6 @@ import com.deloitte.elrr.services.dto.IdentityDto;
 import com.deloitte.elrr.services.dto.LearningRecordDto;
 import com.deloitte.elrr.services.dto.LocationDto;
 import com.deloitte.elrr.services.dto.PersonDto;
-import com.deloitte.elrr.services.dto.PersonFilterDto;
 import com.deloitte.elrr.services.dto.PersonalQualificationDto;
 import com.deloitte.elrr.services.dto.PhoneDto;
 import com.deloitte.elrr.services.exception.ResourceNotFoundException;
@@ -146,7 +145,7 @@ public class PersonController {
     @PreAuthorize("hasPermission('person', 'READ')")
     @GetMapping("/person")
     public ResponseEntity<List<PersonDto>> getAllPersons(
-            @ModelAttribute final PersonFilterDto filters) {
+            @ModelAttribute final Person.Filter filters) {
         log.info("getting PersonDto with filters - id: {}, ifi: {}, "
                 + "associatedOrgId: {}, employerOrgId: {}, "
                 + "hasExtension: {}, extensionPath: {}, "
@@ -168,21 +167,7 @@ public class PersonController {
                 filters.getCredentialId(),
                 filters.getLearningResourceId());
 
-        List<Person> persons = personSvc.findPersonsWithFilters(
-                filters.getId(),
-                filters.getIfi(),
-                filters.getAssociatedOrgId(),
-                filters.getEmployerOrgId(),
-                filters.getHasExtension(),
-                filters.getExtensionPath(),
-                filters.getExtensionPathMatch(),
-                filters.getName(),
-                filters.getLocationId(),
-                filters.getEmailAddress(),
-                filters.getPhoneNumber(),
-                filters.getCompetencyId(),
-                filters.getCredentialId(),
-                filters.getLearningResourceId());
+        List<Person> persons = personSvc.findPersonsWithFilters(filters);
 
         List<PersonDto> personDtoList = persons.stream()
                 .map(person -> mapper.map(person, PersonDto.class))
