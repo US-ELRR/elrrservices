@@ -18,7 +18,7 @@ import com.deloitte.elrr.services.model.Action;
 public class CustomPermissionEvaluator implements PermissionEvaluator {
 
     @Value("${client.admin-api-override}")
-    private Boolean adminApiOverride;
+    private boolean adminApiOverride;
 
     @Override
     public boolean hasPermission(Authentication authentication, Object resource,
