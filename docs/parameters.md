@@ -98,3 +98,18 @@ The GET /api/facility endpoint supports the following optional query parameters:
 - **hasExtension** (String[]): Facilities that contain all specified extension keys
 - **extensionPath** (String[]): All JSONPath expressions must resolve to at least one value in the extensions JSON
 - **extensionPathMatch** (String[]): All JSONPath predicate expressions must evaluate true
+
+
+## Goal
+
+### GET /api/goal
+
+The GET /api/goal endpoint supports the following optional query parameters:
+
+#### Basic Filters
+- **id** (UUID[]): Filter by specific goal IDs
+
+#### Extension Filters
+- **hasExtension** (String[]): Goals that contain all specified extension keys
+- **extensionPath** (String[]): All JSONPath expressions must resolve to at least one value in the extensions JSON
+- **extensionPathMatch** (String[]): All JSONPath predicate expressions must evaluate true
