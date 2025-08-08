@@ -1,8 +1,8 @@
 package com.deloitte.elrr.services.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.deloitte.elrr.entity.Competency;
 import com.deloitte.elrr.jpa.svc.CompetencySvc;
@@ -49,28 +49,21 @@ public class CompetencyController {
 
     /**
      *
-     * @param competencyId
+     * @param filters
      * @return ResponseEntity<List<CompetencyDto>>
      */
     @PreAuthorize("hasPermission('competency', 'READ')")
     @GetMapping("/competency")
     public ResponseEntity<List<CompetencyDto>> getAllCompetencies(
-            @RequestParam(value = "id", required = false)
-            final UUID competencyId) {
-        log.debug("Get Competency id:........." + competencyId);
-        List<CompetencyDto> competencyList = new ArrayList<>();
-        if (competencyId == null) {
-            competencySvc.findAll().forEach(comp -> competencyList.add(
-                    mapper.map(comp, CompetencyDto.class)));
-        } else {
-            competencySvc.get(competencyId).ifPresent(competency -> {
-                CompetencyDto competencyDto = mapper.map(competency,
-                        CompetencyDto.class);
-                competencyList.add(competencyDto);
-            });
-        }
+            @ModelAttribute final Competency.Filter filters) {
+        List<Competency> competencies = competencySvc
+                .findCompetenciesWithFilters(filters);
 
-        return ResponseEntity.ok(competencyList);
+        List<CompetencyDto> competencyDtos = competencies.stream()
+                .map(competency -> mapper.map(competency, CompetencyDto.class))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(competencyDtos);
     }
 
     /**

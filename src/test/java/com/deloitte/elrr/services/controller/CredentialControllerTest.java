@@ -71,7 +71,7 @@ public class CredentialControllerTest extends CommonControllerTest {
     void getAllCredentialsTest() throws Exception {
 
         Mockito.doReturn(getCredentialList()).when(getCredentialSvc())
-                .findAll();
+                .findCredentialsWithFilters(any(Credential.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(CRED_API)
                 .accept(MediaType.APPLICATION_JSON)
@@ -96,7 +96,7 @@ public class CredentialControllerTest extends CommonControllerTest {
     @Test
     void getAllCredentialsEmptyListTest() throws Exception {
         // Mock empty list
-        Mockito.doReturn(new ArrayList<>()).when(getCredentialSvc()).findAll();
+        Mockito.doReturn(new ArrayList<>()).when(getCredentialSvc()).findCredentialsWithFilters(any(Credential.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(CRED_API)
                 .accept(MediaType.APPLICATION_JSON)
@@ -153,8 +153,8 @@ public class CredentialControllerTest extends CommonControllerTest {
     @Test
     void getCredentialByIdParameterTest() throws Exception {
 
-        Mockito.doReturn(Optional.of(getCredentialList().iterator().next()))
-                .when(getCredentialSvc()).get(CREDENTIAL_ID);
+        Mockito.doReturn(getCredentialList()).when(getCredentialSvc())
+                .findCredentialsWithFilters(any(Credential.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(CRED_API + "?id=" + CREDENTIAL_ID)
                 .accept(MediaType.APPLICATION_JSON)

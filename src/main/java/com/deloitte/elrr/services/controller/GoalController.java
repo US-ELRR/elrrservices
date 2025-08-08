@@ -1,8 +1,8 @@
 package com.deloitte.elrr.services.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.deloitte.elrr.entity.Goal;
@@ -57,29 +57,19 @@ public class GoalController {
     private ModelMapper mapper;
 
     /**
-     * Get all Goals or a specific Goal by ID.
-     *
-     * @param goalId the Goal ID (optional)
-     * @return ResponseEntity<List<GoalDto>>
-     * @throws ResourceNotFoundException
+     * Get goals with optional filtering by id and extensions.
+     * @param filters filter criteria (ids, extension filters)
+     * @return list of GoalDto
      */
     @PreAuthorize("hasPermission('goal', 'READ')")
     @GetMapping("/goal")
     public ResponseEntity<List<GoalDto>> getAllGoals(
-            @RequestParam(value = "id", required = false) final UUID goalId) {
-        log.debug("Get Goal id: {}", goalId);
-        List<GoalDto> goalList = new ArrayList<>();
-        if (goalId == null) {
-            goalSvc.findAll().forEach(goal -> goalList.add(
-                    mapper.map(goal, GoalDto.class)));
-        } else {
-            goalSvc.get(goalId).ifPresent(goal -> {
-                GoalDto goalDto = mapper.map(goal, GoalDto.class);
-                goalList.add(goalDto);
-            });
-        }
-
-        return ResponseEntity.ok(goalList);
+                    @ModelAttribute final Goal.Filter filters) {
+        List<Goal> goals = goalSvc.findGoalsWithFilters(filters);
+        List<GoalDto> goalDtos = goals.stream()
+                        .map(goal -> mapper.map(goal, GoalDto.class))
+                        .collect(Collectors.toList());
+        return ResponseEntity.ok(goalDtos);
     }
 
     /**

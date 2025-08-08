@@ -70,7 +70,7 @@ public class LocationControllerTest extends CommonControllerTest {
     @Test
     void getAllLocationsTest() throws Exception {
 
-        Mockito.doReturn(getLocationList()).when(getLocationSvc()).findAll();
+        Mockito.doReturn(getLocationList()).when(getLocationSvc()).findLocationsWithFilters(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(LOCATION_API)
                 .accept(MediaType.APPLICATION_JSON)
@@ -95,7 +95,7 @@ public class LocationControllerTest extends CommonControllerTest {
     @Test
     void getAllLocationsEmptyListTest() throws Exception {
         // Mock empty list
-        Mockito.doReturn(new ArrayList<>()).when(getLocationSvc()).findAll();
+        Mockito.doReturn(new ArrayList<>()).when(getLocationSvc()).findLocationsWithFilters(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(LOCATION_API)
                 .accept(MediaType.APPLICATION_JSON)
@@ -152,8 +152,8 @@ public class LocationControllerTest extends CommonControllerTest {
     @Test
     void getLocationByIdParameterTest() throws Exception {
 
-        Mockito.doReturn(Optional.of(getLocationList().iterator().next()))
-                .when(getLocationSvc()).get(LOCATION_ID);
+        Mockito.doReturn(getLocationList())
+                .when(getLocationSvc()).findLocationsWithFilters(any());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(LOCATION_API + "?id=" + LOCATION_ID)
                 .accept(MediaType.APPLICATION_JSON)

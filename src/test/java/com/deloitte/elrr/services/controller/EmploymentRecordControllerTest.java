@@ -71,7 +71,8 @@ public class EmploymentRecordControllerTest extends CommonControllerTest {
     void getAllEmploymentRecordsTest() throws Exception {
 
         Mockito.doReturn(getEmploymentRecordList())
-                .when(getEmploymentRecordSvc()).findAll();
+                .when(getEmploymentRecordSvc())
+                .findEmploymentRecordsWithFilters(any(EmploymentRecord.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(EMPLOYMENT_RECORD_API)
                 .accept(MediaType.APPLICATION_JSON)
@@ -96,7 +97,8 @@ public class EmploymentRecordControllerTest extends CommonControllerTest {
     @Test
     void getAllEmploymentRecordsEmptyListTest() throws Exception {
         // Mock empty list
-        Mockito.doReturn(new ArrayList<>()).when(getEmploymentRecordSvc()).findAll();
+        Mockito.doReturn(new ArrayList<>()).when(getEmploymentRecordSvc())
+                .findEmploymentRecordsWithFilters(any(EmploymentRecord.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(EMPLOYMENT_RECORD_API)
                 .accept(MediaType.APPLICATION_JSON)
@@ -154,9 +156,9 @@ public class EmploymentRecordControllerTest extends CommonControllerTest {
     @Test
     void getEmploymentRecordByIdParameterTest() throws Exception {
 
-        Mockito.doReturn(
-                Optional.of(getEmploymentRecordList().iterator().next()))
-                .when(getEmploymentRecordSvc()).get(EMPLOYMENT_RECORD_ID);
+        Mockito.doReturn(getEmploymentRecordList())
+                .when(getEmploymentRecordSvc())
+                .findEmploymentRecordsWithFilters(any(EmploymentRecord.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(EMPLOYMENT_RECORD_API + "?id=" + EMPLOYMENT_RECORD_ID)
                 .accept(MediaType.APPLICATION_JSON)

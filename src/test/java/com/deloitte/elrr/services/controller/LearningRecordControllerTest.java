@@ -69,9 +69,8 @@ public class LearningRecordControllerTest extends CommonControllerTest {
      */
     @Test
     void getAllLearningRecordsTest() throws Exception {
-
         Mockito.doReturn(getLearningRecordList()).when(getLearningRecordSvc())
-                .findAll();
+                .findLearningRecordsWithFilters(any(LearningRecord.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(LEARNING_RECORD_API)
                 .accept(MediaType.APPLICATION_JSON)
@@ -96,7 +95,8 @@ public class LearningRecordControllerTest extends CommonControllerTest {
     @Test
     void getAllLearningRecordsEmptyListTest() throws Exception {
         // Mock empty list
-        Mockito.doReturn(new ArrayList<>()).when(getLearningRecordSvc()).findAll();
+                Mockito.doReturn(new ArrayList<>()).when(getLearningRecordSvc())
+                        .findLearningRecordsWithFilters(any(LearningRecord.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(LEARNING_RECORD_API)
                 .accept(MediaType.APPLICATION_JSON)
@@ -151,9 +151,8 @@ public class LearningRecordControllerTest extends CommonControllerTest {
 
     @Test
     void getLearningRecordByIdParameterTest() throws Exception {
-
-        Mockito.doReturn(Optional.of(getLearningRecordList().iterator().next()))
-                .when(getLearningRecordSvc()).get(LEARNING_RECORD_ID);
+                Mockito.doReturn(getLearningRecordList()).when(getLearningRecordSvc())
+                        .findLearningRecordsWithFilters(any(LearningRecord.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(LEARNING_RECORD_API + "?id=" + LEARNING_RECORD_ID)
                 .accept(MediaType.APPLICATION_JSON)

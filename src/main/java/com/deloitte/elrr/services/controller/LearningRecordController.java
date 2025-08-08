@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -48,32 +48,21 @@ public class LearningRecordController {
     @Autowired
     private ModelMapper mapper;
 
-    /**
-     *
-     * @param learningRecordId
-     * @return ResponseEntity<List<LearningRecordDto>>
-     */
+   /**
+    * Retrieve learning records optionally filtered by id or
+    * extension criteria.
+    *
+    * @param filters filter object populated from query parameters
+    * @return ResponseEntity containing list of LearningRecordDto
+    */
     @PreAuthorize("hasPermission('learningrecord', 'READ')")
     @GetMapping("/learningrecord")
-    public ResponseEntity<List<LearningRecordDto>> getAllLearningRecords(
-            @RequestParam(value = "id", required = false)
-            final UUID learningRecordId) {
-        log.debug("Get LearningRecord id:........." + learningRecordId);
+        public ResponseEntity<List<LearningRecordDto>> getAllLearningRecords(
+                        @ModelAttribute final LearningRecord.Filter filters) {
         List<LearningRecordDto> learningRecordList = new ArrayList<>();
-        if (learningRecordId == null) {
-            learningRecordSvc.findAll()
-                    .forEach(loc -> learningRecordList.add(
-                            mapper.map(loc, LearningRecordDto.class)));
-        } else {
-            learningRecordSvc.get(learningRecordId)
-                    .ifPresent(learningRecord -> {
-                        LearningRecordDto learningRecordDto = mapper
-                        .map(learningRecord,
-                                LearningRecordDto.class);
-                        learningRecordList.add(learningRecordDto);
-                    });
-        }
-
+        learningRecordSvc.findLearningRecordsWithFilters(filters)
+                .forEach(lr -> learningRecordList.add(
+                        mapper.map(lr, LearningRecordDto.class)));
         return ResponseEntity.ok(learningRecordList);
     }
 

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -48,31 +48,20 @@ public class LearningResourceController {
     private ModelMapper mapper;
 
     /**
+     * Retrieve learning resources optionally filtered by id or
+     * extension criteria.
      *
-     * @param learningResourceId
-     * @return ResponseEntity<List<LearningResourceDto>>
-     * @throws ResourceNotFoundException
+     * @param filters filter object populated from query parameters
+     * @return ResponseEntity containing list of LearningResourceDto
      */
     @PreAuthorize("hasPermission('learningresource', 'READ')")
     @GetMapping("/learningresource")
     public ResponseEntity<List<LearningResourceDto>> getAllLearningResources(
-            @RequestParam(value = "id", required = false)
-            final UUID learningResourceId) {
-        log.debug("Get LearningResource id:........." + learningResourceId);
+            @ModelAttribute final LearningResource.Filter filters) {
         List<LearningResourceDto> learningResourceList = new ArrayList<>();
-        if (learningResourceId == null) {
-            learningResourceSvc.findAll()
-                .forEach(loc -> learningResourceList.add(
-                    mapper.map(loc, LearningResourceDto.class)));
-        } else {
-            learningResourceSvc.get(learningResourceId)
-            .ifPresent(learningResource -> {
-                LearningResourceDto learningResourceDto = mapper.map(
-                        learningResource, LearningResourceDto.class);
-                learningResourceList.add(learningResourceDto);
-            });
-        }
-
+        learningResourceSvc.findLearningResourcesWithFilters(filters)
+            .forEach(lr -> learningResourceList.add(
+                    mapper.map(lr, LearningResourceDto.class)));
         return ResponseEntity.ok(learningResourceList);
     }
 

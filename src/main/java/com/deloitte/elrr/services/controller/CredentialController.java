@@ -1,8 +1,8 @@
 package com.deloitte.elrr.services.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.deloitte.elrr.entity.Credential;
 import com.deloitte.elrr.jpa.svc.CredentialSvc;
@@ -49,29 +49,21 @@ public class CredentialController {
 
     /**
      *
-     * @param credentialId
+     * @param filters
      * @return ResponseEntity<List<CredentialDto>>
-     * @throws ResourceNotFoundException
      */
     @PreAuthorize("hasPermission('credential', 'READ')")
     @GetMapping("/credential")
     public ResponseEntity<List<CredentialDto>> getAllCredentials(
-            @RequestParam(value = "id", required = false)
-            final UUID credentialId) {
-        log.debug("Get Credential id:........." + credentialId);
-        List<CredentialDto> credentialList = new ArrayList<>();
-        if (credentialId == null) {
-            credentialSvc.findAll().forEach(cred -> credentialList.add(
-                    mapper.map(cred, CredentialDto.class)));
-        } else {
-            credentialSvc.get(credentialId).ifPresent(credential -> {
-                CredentialDto credentialDto = mapper.map(credential,
-                        CredentialDto.class);
-                credentialList.add(credentialDto);
-            });
-        }
+            @ModelAttribute final Credential.Filter filters) {
+        List<Credential> credentials = credentialSvc
+                .findCredentialsWithFilters(filters);
 
-        return ResponseEntity.ok(credentialList);
+        List<CredentialDto> credentialDtos = credentials.stream()
+                .map(credential -> mapper.map(credential, CredentialDto.class))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(credentialDtos);
     }
 
     /**

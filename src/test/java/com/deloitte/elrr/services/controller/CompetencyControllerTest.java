@@ -72,7 +72,7 @@ public class CompetencyControllerTest extends CommonControllerTest {
     void getAllCompetenciesTest() throws Exception {
 
         Mockito.doReturn(getCompetencyList()).when(getCompetencySvc())
-                .findAll();
+                .findCompetenciesWithFilters(any(Competency.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(COMP_API)
                 .accept(MediaType.APPLICATION_JSON)
@@ -154,8 +154,8 @@ public class CompetencyControllerTest extends CommonControllerTest {
     @Test
     void getCompetencyByIdParameterTest() throws Exception {
 
-        Mockito.doReturn(Optional.of(getCompetencyList().iterator().next()))
-                .when(getCompetencySvc()).get(COMPETENCY_ID);
+        Mockito.doReturn(getCompetencyList()).when(getCompetencySvc())
+                .findCompetenciesWithFilters(any(Competency.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(COMP_API + "?id=" + COMPETENCY_ID)
                 .accept(MediaType.APPLICATION_JSON)
