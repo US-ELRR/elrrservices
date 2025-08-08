@@ -1,5 +1,6 @@
 package com.deloitte.elrr.services.validation;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ import jakarta.validation.ConstraintValidatorContext;
  * Identifiers).
  */
 public class IriKeysValidator
-        implements ConstraintValidator<ValidIriKeys, Map<URI, Object>> {
+        implements ConstraintValidator<ValidIriKeys, Map<URI, Serializable>> {
 
     @Override
     public void initialize(ValidIriKeys constraintAnnotation) {
@@ -20,7 +21,7 @@ public class IriKeysValidator
     }
 
     @Override
-    public boolean isValid(Map<URI, Object> map,
+    public boolean isValid(Map<URI, Serializable> map,
             ConstraintValidatorContext context) {
         if (map == null) {
             return true; // null values are considered valid

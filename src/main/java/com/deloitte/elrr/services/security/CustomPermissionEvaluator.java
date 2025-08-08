@@ -3,6 +3,7 @@ package com.deloitte.elrr.services.security;
 import java.io.Serializable;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -16,9 +17,15 @@ import com.deloitte.elrr.services.model.Action;
 @Component
 public class CustomPermissionEvaluator implements PermissionEvaluator {
 
+    @Value("${client.admin-api-override}")
+    private boolean adminApiOverride;
+
     @Override
     public boolean hasPermission(Authentication authentication, Object resource,
             Object action) {
+        if (authentication instanceof AdminJwtAuthenticationToken)
+            return adminApiOverride;
+
         JwtAuthenticationToken token = (JwtAuthenticationToken) authentication;
 
         // get permissions from token
@@ -39,7 +46,6 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
     @Override
     public boolean hasPermission(Authentication authentication,
             Serializable targetId, String targetType, Object permission) {
-        JwtAuthenticationToken token = (JwtAuthenticationToken) authentication;
         throw new UnsupportedOperationException(
                 "hasPermission with targetId and targetType is not supported");
     }

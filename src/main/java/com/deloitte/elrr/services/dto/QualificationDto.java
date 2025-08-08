@@ -1,6 +1,7 @@
 package com.deloitte.elrr.services.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -25,9 +26,9 @@ public class QualificationDto extends ExtensibleDto {
     @Size(max = 100)
     private String taxonomyId;
 
-    private LocalDate validStartDate;
+    private LocalDateTime validStartDate;
 
-    private LocalDate validEndDate;
+    private LocalDateTime validEndDate;
 
     @Size(max = 100)
     private String parentId;
