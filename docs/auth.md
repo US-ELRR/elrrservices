@@ -127,3 +127,9 @@ Connection: close
 [{"id":"0197fa29-957f-7d48-825a-e0f0973000b4","insertedDate":"2025-07-11T11:45:18.721718","updatedBy":null
 ...
 ```
+
+## Admin API Override Mode
+
+In this mode (enabled by setting property `client.admin-api-override` or env `ELRR_ADMIN_API_OVERRIDE` to true), the Admin JWT which normally can only request an API token is able to perform all API calls as a bearer token.
+
+**DANGER**: This is not recommended for production deployments and proper API tokens should be created instead.
