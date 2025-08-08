@@ -55,6 +55,21 @@ The GET /api/location endpoint supports the following optional query parameters:
 - **extensionPathMatch** (String[]): All JSONPath predicate expressions must evaluate true (uses `@@` operator semantics)
 
 
+## Organization
+
+### GET /api/organization
+
+The GET /api/organization endpoint supports the following optional query parameters:
+
+#### Basic Filters
+- **id** (UUID[]): Filter by specific organization IDs
+
+#### Extension Filters
+- **hasExtension** (String[]): Organizations that contain all specified extension keys
+- **extensionPath** (String[]): All JSONPath expressions must resolve to at least one value in the extensions JSON (uses `@?` operator semantics)
+- **extensionPathMatch** (String[]): All JSONPath predicate expressions must evaluate true (uses `@@` operator semantics)
+
+
 ## Competency
 
 ### GET /api/competency
