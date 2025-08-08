@@ -52,15 +52,15 @@ public class LearningRecordController {
     * Retrieve learning records optionally filtered by id or
     * extension criteria.
     *
-    * @param filter filter object populated from query parameters
+    * @param filters filter object populated from query parameters
     * @return ResponseEntity containing list of LearningRecordDto
     */
     @PreAuthorize("hasPermission('learningrecord', 'READ')")
     @GetMapping("/learningrecord")
         public ResponseEntity<List<LearningRecordDto>> getAllLearningRecords(
-                        @ModelAttribute final LearningRecord.Filter filter) {
+                        @ModelAttribute final LearningRecord.Filter filters) {
         List<LearningRecordDto> learningRecordList = new ArrayList<>();
-        learningRecordSvc.findLearningRecordsWithFilters(filter)
+        learningRecordSvc.findLearningRecordsWithFilters(filters)
                 .forEach(lr -> learningRecordList.add(
                         mapper.map(lr, LearningRecordDto.class)));
         return ResponseEntity.ok(learningRecordList);
