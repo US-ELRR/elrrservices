@@ -40,6 +40,21 @@ The GET /api/person endpoint supports the following optional query parameters fo
 - **learningResourceId** (UUID[]): Filter by learning resource IDs via learning record relationships
 
 
+## Location
+
+### GET /api/location
+
+The GET /api/location endpoint supports the following optional query parameters:
+
+#### Basic Filters
+- **id** (UUID[]): Filter by specific location IDs
+
+#### Extension Filters
+- **hasExtension** (String[]): Locations that contain all specified extension keys
+- **extensionPath** (String[]): All JSONPath expressions must resolve to at least one value in the extensions JSON (uses `@?` operator semantics)
+- **extensionPathMatch** (String[]): All JSONPath predicate expressions must evaluate true (uses `@@` operator semantics)
+
+
 ## Competency
 
 ### GET /api/competency

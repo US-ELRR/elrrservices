@@ -1,8 +1,8 @@
 package com.deloitte.elrr.services.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -48,30 +48,22 @@ public class LocationController {
     private ModelMapper mapper;
 
     /**
-     *
-     * @param locationId
-     * @return ResponseEntity<List<LocationDto>>
-     * @throws ResourceNotFoundException
+     * Get locations with optional filtering by id and extensions.
+     * @param filters filter criteria (ids, extension filters)
+     * @return ResponseEntity containing list of LocationDto
      */
     @PreAuthorize("hasPermission('location', 'READ')")
     @GetMapping("/location")
     public ResponseEntity<List<LocationDto>> getAllLocations(
-            @RequestParam(value = "id",
-            required = false) final UUID locationId) {
-        log.debug("Get Location id:........." + locationId);
-        List<LocationDto> locationList = new ArrayList<>();
-        if (locationId == null) {
-            locationSvc.findAll().forEach(loc -> locationList.add(
-                    mapper.map(loc, LocationDto.class)));
-        } else {
-            locationSvc.get(locationId).ifPresent(location -> {
-                LocationDto locationDto = mapper.map(location,
-                        LocationDto.class);
-                locationList.add(locationDto);
-            });
-        }
+            @ModelAttribute final Location.Filter filters) {
+        List<Location> locations = locationSvc
+                .findLocationsWithFilters(filters);
 
-        return ResponseEntity.ok(locationList);
+        List<LocationDto> locationDtos = locations.stream()
+                .map(location -> mapper.map(location, LocationDto.class))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(locationDtos);
     }
 
     /**
