@@ -113,3 +113,18 @@ The GET /api/goal endpoint supports the following optional query parameters:
 - **hasExtension** (String[]): Goals that contain all specified extension keys
 - **extensionPath** (String[]): All JSONPath expressions must resolve to at least one value in the extensions JSON
 - **extensionPathMatch** (String[]): All JSONPath predicate expressions must evaluate true
+
+
+## Learning Record
+
+### GET /api/learningrecord
+
+The GET /api/learningrecord endpoint supports the following optional query parameters:
+
+#### Basic Filters
+- **id** (UUID[]): Filter by specific learning record IDs
+
+#### Extension Filters
+- **hasExtension** (String[]): Learning records that contain all specified extension keys
+- **extensionPath** (String[]): All JSONPath expressions must resolve to at least one value in the extensions JSON
+- **extensionPathMatch** (String[]): All JSONPath predicate expressions must evaluate true
