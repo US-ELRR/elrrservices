@@ -128,3 +128,17 @@ The GET /api/learningrecord endpoint supports the following optional query param
 - **hasExtension** (String[]): Learning records that contain all specified extension keys
 - **extensionPath** (String[]): All JSONPath expressions must resolve to at least one value in the extensions JSON
 - **extensionPathMatch** (String[]): All JSONPath predicate expressions must evaluate true
+
+## Learning Resource
+
+### GET /api/learningresource
+
+The GET /api/learningresource endpoint supports the following optional query parameters:
+
+#### Basic Filters
+- **id** (UUID[]): Filter by specific learning resource IDs
+
+#### Extension Filters
+- **hasExtension** (String[]): Learning resources that contain all specified extension keys
+- **extensionPath** (String[]): All JSONPath expressions must resolve to at least one value in the extensions JSON
+- **extensionPathMatch** (String[]): All JSONPath predicate expressions must evaluate true

@@ -71,7 +71,7 @@ public class LearningResourceControllerTest extends CommonControllerTest {
     void getAllLearningResourcesTest() throws Exception {
 
         Mockito.doReturn(getLearningResourceList())
-                .when(getLearningResourceSvc()).findAll();
+                .when(getLearningResourceSvc()).findLearningResourcesWithFilters(any(LearningResource.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(LEARNING_RESOURCE_API)
                 .accept(MediaType.APPLICATION_JSON)
@@ -96,7 +96,9 @@ public class LearningResourceControllerTest extends CommonControllerTest {
     @Test
     void getAllLearningResourcesEmptyListTest() throws Exception {
         // Mock empty list
-        Mockito.doReturn(new ArrayList<>()).when(getLearningResourceSvc()).findAll();
+                Mockito.doReturn(new ArrayList<>())
+                        .when(getLearningResourceSvc())
+                        .findLearningResourcesWithFilters(any(LearningResource.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(LEARNING_RESOURCE_API)
                 .accept(MediaType.APPLICATION_JSON)
@@ -154,9 +156,8 @@ public class LearningResourceControllerTest extends CommonControllerTest {
     @Test
     void getLearningResourceByIdParameterTest() throws Exception {
 
-        Mockito.doReturn(
-                Optional.of(getLearningResourceList().iterator().next()))
-                .when(getLearningResourceSvc()).get(LEARNING_RESOURCE_ID);
+        Mockito.doReturn(getLearningResourceList())
+                .when(getLearningResourceSvc()).findLearningResourcesWithFilters(any(LearningResource.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(LEARNING_RESOURCE_API + "?id=" + LEARNING_RESOURCE_ID)
                 .accept(MediaType.APPLICATION_JSON)
