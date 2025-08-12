@@ -2,8 +2,8 @@ package com.deloitte.elrr.services.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.any;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -73,8 +73,9 @@ public class GoalControllerTest extends CommonControllerTest {
      * @throws Exception
      */
     @Test
-    void getAllGoalsTest() throws Exception {
-        Mockito.doReturn(getGoalList()).when(getGoalSvc()).findAll();
+        void getAllGoalsTest() throws Exception {
+                Mockito.doReturn(getGoalList()).when(getGoalSvc())
+                                .findGoalsWithFilters(any(com.deloitte.elrr.entity.Goal.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(GOAL_API)
                 .accept(MediaType.APPLICATION_JSON)
@@ -98,9 +99,10 @@ public class GoalControllerTest extends CommonControllerTest {
      * @throws Exception
      */
     @Test
-    void getAllGoalsByIdTest() throws Exception {
-        // Internally goalSvc.get is used so we mock that
-        Mockito.doReturn(Optional.of(getGoal())).when(getGoalSvc()).get(GOAL_ID);
+        void getAllGoalsByIdTest() throws Exception {
+                // Controller now uses filter method, return single list element
+                Mockito.doReturn(List.of(getGoal())).when(getGoalSvc())
+                                .findGoalsWithFilters(any(com.deloitte.elrr.entity.Goal.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(GOAL_API + "?id=" + GOAL_ID)
                 .accept(MediaType.APPLICATION_JSON)
@@ -125,8 +127,9 @@ public class GoalControllerTest extends CommonControllerTest {
      * @throws Exception
      */
     @Test
-    void getAllGoalsByIdNotFoundTest() throws Exception {
-        // We don't need to mock get here since it will return an empty list
+        void getAllGoalsByIdNotFoundTest() throws Exception {
+                Mockito.doReturn(new ArrayList<>()).when(getGoalSvc())
+                                .findGoalsWithFilters(any(com.deloitte.elrr.entity.Goal.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(GOAL_API + "?id=" + GOAL_ID)
                 .accept(MediaType.APPLICATION_JSON)
@@ -300,9 +303,9 @@ public class GoalControllerTest extends CommonControllerTest {
      * @throws Exception
      */
     @Test
-    void getAllGoalsEmptyListTest() throws Exception {
-        // Mock empty list
-        Mockito.doReturn(new ArrayList<>()).when(getGoalSvc()).findAll();
+        void getAllGoalsEmptyListTest() throws Exception {
+                Mockito.doReturn(new ArrayList<>()).when(getGoalSvc())
+                                .findGoalsWithFilters(any(com.deloitte.elrr.entity.Goal.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(GOAL_API)
                 .accept(MediaType.APPLICATION_JSON)

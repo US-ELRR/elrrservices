@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.deloitte.elrr.entity.Facility;
+import com.deloitte.elrr.entity.Facility.Filter;
 import com.deloitte.elrr.services.TestAppConfig;
 import com.deloitte.elrr.services.dto.FacilityDto;
 import com.deloitte.elrr.services.security.MethodSecurityConfig;
@@ -70,7 +71,8 @@ public class FacilityControllerTest extends CommonControllerTest {
     @Test
     void getAllFacilitysTest() throws Exception {
 
-        Mockito.doReturn(getFacilityList()).when(getFacilitySvc()).findAll();
+        Mockito.doReturn((List<Facility>) getFacilityList())
+                .when(getFacilitySvc()).findFacilitiesWithFilters(any(Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(FACILITY_API)
                 .accept(MediaType.APPLICATION_JSON)
@@ -95,7 +97,8 @@ public class FacilityControllerTest extends CommonControllerTest {
     @Test
     void getAllFacilitiesEmptyListTest() throws Exception {
         // Mock empty list
-        Mockito.doReturn(new ArrayList<>()).when(getFacilitySvc()).findAll();
+        Mockito.doReturn(new ArrayList<>())
+                .when(getFacilitySvc()).findFacilitiesWithFilters(any(Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(FACILITY_API)
                 .accept(MediaType.APPLICATION_JSON)
@@ -150,9 +153,8 @@ public class FacilityControllerTest extends CommonControllerTest {
 
     @Test
     void getFacilityByIdParameterTest() throws Exception {
-
-        Mockito.doReturn(Optional.of(getFacilityList().iterator().next()))
-                .when(getFacilitySvc()).get(FACILITY_ID);
+        Mockito.doReturn((List<Facility>) getFacilityList())
+                .when(getFacilitySvc()).findFacilitiesWithFilters(any(Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(FACILITY_API + "?id=" + FACILITY_ID)
                 .accept(MediaType.APPLICATION_JSON)

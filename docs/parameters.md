@@ -38,3 +38,137 @@ The GET /api/person endpoint supports the following optional query parameters fo
 - **competencyId** (UUID[]): Filter by competency IDs via qualification relationships
 - **credentialId** (UUID[]): Filter by credential IDs via qualification relationships
 - **learningResourceId** (UUID[]): Filter by learning resource IDs via learning record relationships
+
+
+## Location
+
+### GET /api/location
+
+The GET /api/location endpoint supports the following optional query parameters:
+
+#### Basic Filters
+- **id** (UUID[]): Filter by specific location IDs
+
+#### Extension Filters
+- **hasExtension** (String[]): Locations that contain all specified extension keys
+- **extensionPath** (String[]): All JSONPath expressions must resolve to at least one value in the extensions JSON (uses `@?` operator semantics)
+- **extensionPathMatch** (String[]): All JSONPath predicate expressions must evaluate true (uses `@@` operator semantics)
+
+
+## Organization
+
+### GET /api/organization
+
+The GET /api/organization endpoint supports the following optional query parameters:
+
+#### Basic Filters
+- **id** (UUID[]): Filter by specific organization IDs
+
+#### Extension Filters
+- **hasExtension** (String[]): Organizations that contain all specified extension keys
+- **extensionPath** (String[]): All JSONPath expressions must resolve to at least one value in the extensions JSON (uses `@?` operator semantics)
+- **extensionPathMatch** (String[]): All JSONPath predicate expressions must evaluate true (uses `@@` operator semantics)
+
+
+## Competency
+
+### GET /api/competency
+
+The GET /api/competency endpoint supports the following optional query parameters:
+
+#### Basic Filters
+- **id** (UUID[]): Filter by specific competency IDs
+
+#### Extension Filters
+- **hasExtension** (String[]): Competencies that contain all specified extension keys
+- **extensionPath** (String[]): All JSONPath expressions must resolve to at least one value in the extensions JSON (uses `@?` operator semantics)
+- **extensionPathMatch** (String[]): All JSONPath predicate expressions must evaluate true (uses `@@` operator semantics)
+
+
+## Credential
+
+### GET /api/credential
+
+The GET /api/credential endpoint supports the following optional query parameters:
+
+#### Basic Filters
+- **id** (UUID[]): Filter by specific credential IDs
+
+#### Extension Filters
+- **hasExtension** (String[]): Credentials that contain all specified extension keys
+- **extensionPath** (String[]): All JSONPath expressions must resolve to at least one value in the extensions JSON
+- **extensionPathMatch** (String[]): All JSONPath predicate expressions must evaluate true
+
+
+## Employment Record
+
+### GET /api/employmentrecord
+
+The GET /api/employmentrecord endpoint supports the following optional query parameters:
+
+#### Basic Filters
+- **id** (UUID[]): Filter by specific employment record IDs
+
+#### Extension Filters
+- **hasExtension** (String[]): Employment records that contain all specified extension keys
+- **extensionPath** (String[]): All JSONPath expressions must resolve to at least one value in the extensions JSON
+- **extensionPathMatch** (String[]): All JSONPath predicate expressions must evaluate true
+
+
+## Facility
+
+### GET /api/facility
+
+The GET /api/facility endpoint supports the following optional query parameters:
+
+#### Basic Filters
+- **id** (UUID[]): Filter by specific facility IDs
+
+#### Extension Filters
+- **hasExtension** (String[]): Facilities that contain all specified extension keys
+- **extensionPath** (String[]): All JSONPath expressions must resolve to at least one value in the extensions JSON
+- **extensionPathMatch** (String[]): All JSONPath predicate expressions must evaluate true
+
+
+## Goal
+
+### GET /api/goal
+
+The GET /api/goal endpoint supports the following optional query parameters:
+
+#### Basic Filters
+- **id** (UUID[]): Filter by specific goal IDs
+
+#### Extension Filters
+- **hasExtension** (String[]): Goals that contain all specified extension keys
+- **extensionPath** (String[]): All JSONPath expressions must resolve to at least one value in the extensions JSON
+- **extensionPathMatch** (String[]): All JSONPath predicate expressions must evaluate true
+
+
+## Learning Record
+
+### GET /api/learningrecord
+
+The GET /api/learningrecord endpoint supports the following optional query parameters:
+
+#### Basic Filters
+- **id** (UUID[]): Filter by specific learning record IDs
+
+#### Extension Filters
+- **hasExtension** (String[]): Learning records that contain all specified extension keys
+- **extensionPath** (String[]): All JSONPath expressions must resolve to at least one value in the extensions JSON
+- **extensionPathMatch** (String[]): All JSONPath predicate expressions must evaluate true
+
+## Learning Resource
+
+### GET /api/learningresource
+
+The GET /api/learningresource endpoint supports the following optional query parameters:
+
+#### Basic Filters
+- **id** (UUID[]): Filter by specific learning resource IDs
+
+#### Extension Filters
+- **hasExtension** (String[]): Learning resources that contain all specified extension keys
+- **extensionPath** (String[]): All JSONPath expressions must resolve to at least one value in the extensions JSON
+- **extensionPathMatch** (String[]): All JSONPath predicate expressions must evaluate true
