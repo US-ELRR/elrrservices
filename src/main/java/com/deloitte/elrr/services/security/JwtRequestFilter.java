@@ -55,15 +55,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 if (jwtUtil.getAdminIssuerWhitelist()
                         .contains(jwt.getIssuer())) {
                     // Admin user JWT - skip verification
-                    List<String> roles = jwt.getClaim(jwtUtil.getAdminRoleKey())
-                            .asList(String.class);
-                    if (roles.contains(jwtUtil.getAdminRole())) {
-                        authList.add(
-                                new SystemAuthority(SystemRole.ROLE_ADMIN));
-                        SecurityContextHolder.getContext().setAuthentication(
-                                new AdminJwtAuthenticationToken(authList, jwt,
-                                        jwtUtil.getAdminUserIdKey()));
-                    }
+                    handleAdminUserJwt(jwt);
+
                 } else {
                     // Not on whitelist - verify the token
                     jwt = jwtUtil.verify(jwtStr);
@@ -72,7 +65,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                         response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                         "Invalid Token Issuer");
                         return;
-                        }
+                    }
                     // verify that the token exists in the database
                     if (!clientTokenSvc
                             .existsByJwtId(UUID.fromString(jwt.getId()))) {
@@ -93,5 +86,18 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
         }
         chain.doFilter(request, response);
+    }
+
+    private void handleAdminUserJwt(DecodedJWT jwt) {
+        List<String> roles = jwt.getClaim(jwtUtil.getAdminRoleKey())
+                .asList(String.class);
+        if (roles.contains(jwtUtil.getAdminRole())) {
+            List<SystemAuthority> authList = new ArrayList<SystemAuthority>();
+            authList.add(
+                    new SystemAuthority(SystemRole.ROLE_ADMIN));
+            SecurityContextHolder.getContext().setAuthentication(
+                    new AdminJwtAuthenticationToken(authList, jwt,
+                            jwtUtil.getAdminUserIdKey()));
+        }
     }
 }

@@ -75,18 +75,20 @@ public class GoalControllerTest extends CommonControllerTest {
      */
     @Test
     void getAllGoalsTest() throws Exception {
-        Mockito.doReturn(getGoalList()).when(getGoalSvc()).findAll();
+        Mockito.doReturn(getGoalList()).when(getGoalSvc()).findGoalsWithFilters(
+                any(com.deloitte.elrr.entity.Goal.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get(GOAL_API).accept(MediaType.APPLICATION_JSON).contentType(
-                        MediaType.APPLICATION_JSON).headers(getHeaders(
-                                "goal|READ"));
+                .get(GOAL_API).accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("goal|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertEquals(200, mvcResult.getResponse().getStatus());
         assertNotNull(mvcResult.getResponse().getContentAsString());
 
-        List<GoalDto> results = resultsAsObject(mvcResult.getResponse()
-                .getContentAsString(), new TypeReference<List<GoalDto>>() {
+        List<GoalDto> results = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<GoalDto>>() {
                 });
 
         assertEquals(2, results.size());
@@ -99,21 +101,23 @@ public class GoalControllerTest extends CommonControllerTest {
      */
     @Test
     void getAllGoalsByIdTest() throws Exception {
-        // Internally goalSvc.get is used so we mock that
-        Mockito.doReturn(Optional.of(getGoal())).when(getGoalSvc()).get(
-                GOAL_ID);
+        // Controller now uses filter method, return single list element
+        Mockito.doReturn(List.of(getGoal())).when(getGoalSvc())
+                .findGoalsWithFilters(
+                        any(com.deloitte.elrr.entity.Goal.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get(GOAL_API + "?id=" + GOAL_ID).accept(
-                        MediaType.APPLICATION_JSON).contentType(
-                                MediaType.APPLICATION_JSON).headers(getHeaders(
-                                        "goal|READ"));
+                .get(GOAL_API + "?id=" + GOAL_ID)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("goal|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertEquals(200, mvcResult.getResponse().getStatus());
         assertNotNull(mvcResult.getResponse().getContentAsString());
 
-        List<GoalDto> results = resultsAsObject(mvcResult.getResponse()
-                .getContentAsString(), new TypeReference<List<GoalDto>>() {
+        List<GoalDto> results = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<GoalDto>>() {
                 });
 
         assertEquals(1, results.size());
@@ -127,12 +131,14 @@ public class GoalControllerTest extends CommonControllerTest {
      */
     @Test
     void getAllGoalsByIdNotFoundTest() throws Exception {
-        // We don't need to mock get here since it will return an empty list
+        Mockito.doReturn(new ArrayList<>()).when(getGoalSvc())
+                .findGoalsWithFilters(
+                        any(com.deloitte.elrr.entity.Goal.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get(GOAL_API + "?id=" + GOAL_ID).accept(
-                        MediaType.APPLICATION_JSON).contentType(
-                                MediaType.APPLICATION_JSON).headers(getHeaders(
-                                        "goal|READ"));
+                .get(GOAL_API + "?id=" + GOAL_ID)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("goal|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
         assertEquals(200, mvcResult.getResponse().getStatus());
         assertNotNull(mvcResult.getResponse().getContentAsString());
@@ -145,20 +151,21 @@ public class GoalControllerTest extends CommonControllerTest {
      */
     @Test
     void getGoalByIdTest() throws Exception {
-        Mockito.doReturn(Optional.of(getGoal())).when(getGoalSvc()).get(
-                GOAL_ID);
+        Mockito.doReturn(Optional.of(getGoal())).when(getGoalSvc())
+                .get(GOAL_ID);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get(GOAL_API + "/" + GOAL_ID).accept(
-                        MediaType.APPLICATION_JSON).contentType(
-                                MediaType.APPLICATION_JSON).headers(getHeaders(
-                                        "goal|READ"));
+                .get(GOAL_API + "/" + GOAL_ID)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("goal|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertEquals(200, mvcResult.getResponse().getStatus());
         assertNotNull(mvcResult.getResponse().getContentAsString());
 
-        GoalDto result = resultsAsObject(mvcResult.getResponse()
-                .getContentAsString(), new TypeReference<GoalDto>() {
+        GoalDto result = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<GoalDto>() {
                 });
 
         assertEquals(GOAL_ID, result.getId());
@@ -177,27 +184,28 @@ public class GoalControllerTest extends CommonControllerTest {
         Goal savedGoal = getGoal();
 
         // Mock the setXXXFromIds methods to return the goal unchanged
-        Mockito.doReturn(savedGoal).when(getGoalSvc()).setCompetenciesFromIds(
-                any(Goal.class), any());
-        Mockito.doReturn(savedGoal).when(getGoalSvc()).setCredentialsFromIds(
-                any(Goal.class), any());
+        Mockito.doReturn(savedGoal).when(getGoalSvc())
+                .setCompetenciesFromIds(any(Goal.class), any());
+        Mockito.doReturn(savedGoal).when(getGoalSvc())
+                .setCredentialsFromIds(any(Goal.class), any());
         Mockito.doReturn(savedGoal).when(getGoalSvc())
                 .setLearningResourcesFromIds(any(Goal.class), any());
         Mockito.doReturn(savedGoal).when(getGoalSvc()).save(any(Goal.class));
 
         // Act
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post(GOAL_API).content(asJsonString(goalDto)).accept(
-                        MediaType.APPLICATION_JSON).contentType(
-                                MediaType.APPLICATION_JSON).headers(getHeaders(
-                                        "goal|CREATE"));
+                .post(GOAL_API).content(asJsonString(goalDto))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("goal|CREATE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
         // Assert
         assertEquals(201, mvcResult.getResponse().getStatus());
         assertNotNull(mvcResult.getResponse().getContentAsString());
 
-        GoalDto result = resultsAsObject(mvcResult.getResponse()
-                .getContentAsString(), new TypeReference<GoalDto>() {
+        GoalDto result = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<GoalDto>() {
                 });
 
         assertEquals("Test Goal", result.getName());
@@ -229,28 +237,29 @@ public class GoalControllerTest extends CommonControllerTest {
         updatedGoal.setName("Updated Goal");
 
         // Mock the setXXXFromIds methods to return the goal unchanged
-        Mockito.doReturn(updatedGoal).when(getGoalSvc()).setCompetenciesFromIds(
-                any(Goal.class), any());
-        Mockito.doReturn(updatedGoal).when(getGoalSvc()).setCredentialsFromIds(
-                any(Goal.class), any());
+        Mockito.doReturn(updatedGoal).when(getGoalSvc())
+                .setCompetenciesFromIds(any(Goal.class), any());
+        Mockito.doReturn(updatedGoal).when(getGoalSvc())
+                .setCredentialsFromIds(any(Goal.class), any());
         Mockito.doReturn(updatedGoal).when(getGoalSvc())
                 .setLearningResourcesFromIds(any(Goal.class), any());
-        Mockito.doReturn(Optional.of(existingGoal)).when(getGoalSvc()).get(
-                GOAL_ID);
+        Mockito.doReturn(Optional.of(existingGoal)).when(getGoalSvc())
+                .get(GOAL_ID);
         Mockito.doReturn(updatedGoal).when(getGoalSvc()).save(any(Goal.class));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put(GOAL_API + "/" + GOAL_ID).content(asJsonString(goalDto))
-                .accept(MediaType.APPLICATION_JSON).contentType(
-                        MediaType.APPLICATION_JSON).headers(getHeaders(
-                                "goal|UPDATE"));
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("goal|UPDATE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertEquals(200, mvcResult.getResponse().getStatus());
         assertNotNull(mvcResult.getResponse().getContentAsString());
 
-        GoalDto result = resultsAsObject(mvcResult.getResponse()
-                .getContentAsString(), new TypeReference<GoalDto>() {
+        GoalDto result = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<GoalDto>() {
                 });
 
         assertEquals("Updated Goal", result.getName());
@@ -271,15 +280,15 @@ public class GoalControllerTest extends CommonControllerTest {
      */
     @Test
     void deleteGoalTest() throws Exception {
-        Mockito.doReturn(Optional.of(getGoal())).when(getGoalSvc()).get(
-                GOAL_ID);
+        Mockito.doReturn(Optional.of(getGoal())).when(getGoalSvc())
+                .get(GOAL_ID);
         Mockito.doNothing().when(getGoalSvc()).delete(GOAL_ID);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete(GOAL_API + "/" + GOAL_ID).accept(
-                        MediaType.APPLICATION_JSON).contentType(
-                                MediaType.APPLICATION_JSON).headers(getHeaders(
-                                        "goal|DELETE"));
+                .delete(GOAL_API + "/" + GOAL_ID)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("goal|DELETE"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertEquals(204, mvcResult.getResponse().getStatus());
@@ -295,10 +304,10 @@ public class GoalControllerTest extends CommonControllerTest {
         Mockito.doReturn(Optional.empty()).when(getGoalSvc()).get(GOAL_ID);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get(GOAL_API + "/" + GOAL_ID).accept(
-                        MediaType.APPLICATION_JSON).contentType(
-                                MediaType.APPLICATION_JSON).headers(getHeaders(
-                                        "goal|READ"));
+                .get(GOAL_API + "/" + GOAL_ID)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("goal|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertEquals(404, mvcResult.getResponse().getStatus());
@@ -312,20 +321,22 @@ public class GoalControllerTest extends CommonControllerTest {
      */
     @Test
     void getAllGoalsEmptyListTest() throws Exception {
-        // Mock empty list
-        Mockito.doReturn(new ArrayList<>()).when(getGoalSvc()).findAll();
+        Mockito.doReturn(new ArrayList<>()).when(getGoalSvc())
+                .findGoalsWithFilters(
+                        any(com.deloitte.elrr.entity.Goal.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get(GOAL_API).accept(MediaType.APPLICATION_JSON).contentType(
-                        MediaType.APPLICATION_JSON).headers(getHeaders(
-                                "goal|READ"));
+                .get(GOAL_API).accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(getHeaders("goal|READ"));
         MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
         assertEquals(200, mvcResult.getResponse().getStatus());
         assertNotNull(mvcResult.getResponse().getContentAsString());
 
         // Verify empty array is returned
-        List<GoalDto> results = resultsAsObject(mvcResult.getResponse()
-                .getContentAsString(), new TypeReference<List<GoalDto>>() {
+        List<GoalDto> results = resultsAsObject(
+                mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<GoalDto>>() {
                 });
         assertEquals(0, results.size());
     }
@@ -364,8 +375,8 @@ public class GoalControllerTest extends CommonControllerTest {
         goalDto.setAchievedByDate(LocalDateTime.now().plusMonths(6));
         goalDto.setCompetencyIds(new HashSet<>(List.of(UUID.randomUUID())));
         goalDto.setCredentialIds(new HashSet<>(List.of(UUID.randomUUID())));
-        goalDto.setLearningResourceIds(new HashSet<>(List.of(UUID
-                .randomUUID())));
+        goalDto.setLearningResourceIds(
+                new HashSet<>(List.of(UUID.randomUUID())));
         return goalDto;
     }
 

@@ -11,6 +11,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.lang.reflect.Constructor;
+import java.io.Serializable;
 import com.deloitte.elrr.services.dto.ExtensibleDto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -75,7 +76,7 @@ public final class ValueObjectTestUtility {
             ExtensibleDto dto = (ExtensibleDto) constructor.newInstance();
 
             // Create sample extensions
-            Map<URI, Object> extensions = new HashMap<>();
+            Map<URI, Serializable> extensions = new HashMap<>();
             extensions.put(URI.create("https://example.org/schema#socialSecurityNumber"), "123-45-6789");
             extensions.put(URI.create("https://example.org/schema#preferredName"), "Mike");
             extensions.put(URI.create("https://example.org/schema#customField"), "test value");

@@ -3,6 +3,7 @@ package com.deloitte.elrr.services.security;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -22,6 +23,9 @@ class CustomPermissionEvaluatorTest {
 
     @Mock
     private JwtAuthenticationToken mockToken;
+
+    @Mock
+    private AdminJwtAuthenticationToken mockAdminToken;
 
     @BeforeEach
     void setUp() {
@@ -91,6 +95,35 @@ class CustomPermissionEvaluatorTest {
         // Act
         boolean result = permissionEvaluator.hasPermission(
             mockToken, "anyResource", "READ");
+
+        // Assert
+        assertTrue(result);
+    }
+
+    @Test
+    void adminToken_WithOverrideFalse_ReturnsFalse() {
+
+        // Act
+        boolean result = permissionEvaluator.hasPermission(
+            mockAdminToken, "anyResource", "READ");
+
+        // Assert
+        assertFalse(result);
+    }
+
+    @Test
+    void adminToken_WithOverrideTrue_ReturnsTrue()
+        throws NoSuchFieldException, SecurityException,
+        IllegalArgumentException, IllegalAccessException {
+
+        Field field = CustomPermissionEvaluator.class
+            .getDeclaredField("adminApiOverride");
+        field.setAccessible(true);
+        field.set(permissionEvaluator, true);
+
+        // Act
+        boolean result = permissionEvaluator.hasPermission(
+            mockAdminToken, "anyResource", "READ");
 
         // Assert
         assertTrue(result);

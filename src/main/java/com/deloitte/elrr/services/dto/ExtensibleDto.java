@@ -1,5 +1,6 @@
 package com.deloitte.elrr.services.dto;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.Map;
 
@@ -16,6 +17,6 @@ import lombok.RequiredArgsConstructor;
 public abstract class ExtensibleDto extends AuditableDto {
 
     @ValidIriKeys
-    private Map<URI, Object> extensions;
+    private Map<URI, Serializable> extensions;
 
 }
