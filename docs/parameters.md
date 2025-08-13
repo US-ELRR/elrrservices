@@ -165,6 +165,7 @@ The GET /api/learningrecord endpoint supports the following optional query param
 
 #### Basic Filters
 - **id** (UUID[]): Filter by specific learning record IDs
+- **recordStatus** (String[]): Filter by specific record statuses
 
 #### Learning Resource Filters
 - **learningResourceId** (UUID[]): Filter by specific learning resource IDs
