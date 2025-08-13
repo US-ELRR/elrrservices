@@ -184,6 +184,8 @@ The GET /api/learningresource endpoint supports the following optional query par
 #### Basic Filters
 - **id** (UUID[]): Filter by specific learning resource IDs
 - **iri** (String[]): Filter by specific IRIs
+- **title** (String[]): Filter by title, case-insensitive
+- **subjectMatter** (String[]): Filter by subject matter, case-insensitive
 
 #### Extension Filters
 - **hasExtension** (String[]): Learning resources that contain all specified extension keys
