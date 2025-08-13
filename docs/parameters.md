@@ -114,6 +114,9 @@ The GET /api/employmentrecord endpoint supports the following optional query par
 
 #### Basic Filters
 - **id** (UUID[]): Filter by specific employment record IDs
+- **position** (String[]): Filter by position, case-insensitive
+- **positionTitle** (String[]): Filter by position title, case-insensitive
+- **positionDescription** (String[]): Filter by position description, case-insensitive
 
 #### Organization Filters
 - **employerOrgId** (UUID[]): Filter by specific employer organization IDs
