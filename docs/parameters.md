@@ -80,6 +80,7 @@ The GET /api/competency endpoint supports the following optional query parameter
 - **id** (UUID[]): Filter by specific competency IDs
 - **identifier** (String[]): Filter by competency identifiers
 - **identifierUrl** (String[]): Filter by competency identifier URLs
+- **code** (String[]): Filter by competency codes
 
 #### Extension Filters
 - **hasExtension** (String[]): Competencies that contain all specified extension keys
@@ -97,6 +98,7 @@ The GET /api/credential endpoint supports the following optional query parameter
 - **id** (UUID[]): Filter by specific credential IDs
 - **identifier** (String[]): Filter by credential identifiers
 - **identifierUrl** (String[]): Filter by competency identifier URLs
+- **code** (String[]): Filter by credential codes
 
 #### Extension Filters
 - **hasExtension** (String[]): Credentials that contain all specified extension keys
