@@ -63,6 +63,8 @@ The GET /api/organization endpoint supports the following optional query paramet
 
 #### Basic Filters
 - **id** (UUID[]): Filter by specific organization IDs
+- **name** (String[]): Filter by organization name, case-insensitive
+- **description** (String[]): Filter by organization description, case-insensitive
 
 #### Extension Filters
 - **hasExtension** (String[]): Organizations that contain all specified extension keys
