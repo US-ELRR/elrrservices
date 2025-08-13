@@ -166,6 +166,9 @@ The GET /api/learningrecord endpoint supports the following optional query param
 #### Basic Filters
 - **id** (UUID[]): Filter by specific learning record IDs
 
+#### Learning Resource Filters
+- **learningResourceId** (UUID[]): Filter by specific learning resource IDs
+
 #### Extension Filters
 - **hasExtension** (String[]): Learning records that contain all specified extension keys
 - **extensionPath** (String[]): All JSONPath expressions must resolve to at least one value in the extensions JSON
