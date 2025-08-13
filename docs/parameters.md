@@ -115,6 +115,9 @@ The GET /api/employmentrecord endpoint supports the following optional query par
 #### Basic Filters
 - **id** (UUID[]): Filter by specific employment record IDs
 
+#### Organization Filters
+- **employerOrgId** (UUID[]): Filter by specific employer organization IDs
+
 #### Extension Filters
 - **hasExtension** (String[]): Employment records that contain all specified extension keys
 - **extensionPath** (String[]): All JSONPath expressions must resolve to at least one value in the extensions JSON
