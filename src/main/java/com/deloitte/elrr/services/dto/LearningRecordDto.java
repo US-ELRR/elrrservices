@@ -1,6 +1,6 @@
 package com.deloitte.elrr.services.dto;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import com.deloitte.elrr.entity.types.LearningStatus;
 
@@ -20,13 +20,13 @@ public class LearningRecordDto extends ExtensibleDto {
     @Valid
     private LearningResourceDto learningResource;
 
-    private LocalDateTime enrollmentDate;
+    private ZonedDateTime enrollmentDate;
 
     private LearningStatus recordStatus;
 
     @Size(max = 50)
     private String academicGrade;
 
-    private LocalDateTime eventTime;
+    private ZonedDateTime eventTime;
 
 }
