@@ -1,8 +1,10 @@
 package com.deloitte.elrr.services.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
+
+import com.deloitte.elrr.entity.types.GoalType;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,8 +13,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-
-import com.deloitte.elrr.entity.types.GoalType;
 
 @RequiredArgsConstructor
 @AllArgsConstructor
@@ -32,11 +32,11 @@ public class GoalDto extends ExtensibleDto {
     @Size(max = 65535)
     private String description;
 
-    private LocalDate startDate;
+    private LocalDateTime startDate;
 
-    private LocalDate achievedByDate;
+    private LocalDateTime achievedByDate;
 
-    private LocalDate expirationDate;
+    private LocalDateTime expirationDate;
 
     private Set<UUID> competencyIds;
 
