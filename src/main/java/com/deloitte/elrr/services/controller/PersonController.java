@@ -1,6 +1,5 @@
 package com.deloitte.elrr.services.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -13,12 +12,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.deloitte.elrr.entity.Association;
@@ -137,41 +136,44 @@ public class PersonController {
         "Getting %s for Person with id: %s";
 
     /**
+     * Get all persons with optional filters.
      *
-     * @param personId
-     * @param ifi
+     * @param filters Optional filters for person search
      * @return ResponseEntity<List<PersonDto>>
      * @throws ResourceNotFoundException
      */
     @PreAuthorize("hasPermission('person', 'READ')")
     @GetMapping("/person")
     public ResponseEntity<List<PersonDto>> getAllPersons(
-            @RequestParam(value = "id", required = false) final UUID personId,
-            @RequestParam(value = "ifi", required = false) final String ifi) {
-        log.info("getting  PersonDto:.........");
-        log.info("getting Person id:........." + personId);
-        List<PersonDto> persontoList = new ArrayList<>();
-        if (personId != null) {
-            personSvc.get(personId).ifPresent(person -> {
-                PersonDto personDto = mapper.map(person, PersonDto.class);
-                persontoList.add(personDto);
-            });
-        } else if (ifi != null) {
-            Identity ifiIdentity = identitySvc.getByIfi(ifi);
-            if (ifiIdentity != null) {
-                Person person = ifiIdentity.getPerson();
-                persontoList.add(mapper.map(person, PersonDto.class));
-            }
-        } else {
-            Iterable<Person> persons = personSvc.findAll();
+            @ModelAttribute final Person.Filter filters) {
+        log.info("getting PersonDto with filters - id: {}, ifi: {}, "
+                + "associatedOrgId: {}, employerOrgId: {}, "
+                + "hasExtension: {}, extensionPath: {}, "
+                + "extensionPathMatch: {}, name: {}, locationId: {}, "
+                + "emailAddress: {}, phoneNumber: {}, competencyId: {}, "
+                + "credentialId: {}, learningResourceId: {}",
+                filters.getId(),
+                filters.getIfi(),
+                filters.getAssociatedOrgId(),
+                filters.getEmployerOrgId(),
+                filters.getHasExtension(),
+                filters.getExtensionPath(),
+                filters.getExtensionPathMatch(),
+                filters.getName(),
+                filters.getLocationId(),
+                filters.getEmailAddress(),
+                filters.getPhoneNumber(),
+                filters.getCompetencyId(),
+                filters.getCredentialId(),
+                filters.getLearningResourceId());
 
-            for (Person person : persons) {
-                PersonDto personDto = mapper.map(person, PersonDto.class);
-                persontoList.add(personDto);
-            }
-        }
+        List<Person> persons = personSvc.findPersonsWithFilters(filters);
 
-        return ResponseEntity.ok(persontoList);
+        List<PersonDto> personDtoList = persons.stream()
+                .map(person -> mapper.map(person, PersonDto.class))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(personDtoList);
     }
 
     /**

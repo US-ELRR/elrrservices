@@ -1,8 +1,8 @@
 package com.deloitte.elrr.services.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -45,30 +45,22 @@ public class FacilityController {
     private ModelMapper mapper;
 
     /**
-     *
-     * @param facilityId
-     * @return ResponseEntity<List<FacilityDto>>
-     * @throws ResourceNotFoundException
+     * Get facilities with optional filtering by id and extensions.
+     * @param filters filter criteria (ids, extension filters)
+     * @return ResponseEntity containing list of FacilityDto
      */
     @PreAuthorize("hasPermission('facility', 'READ')")
     @GetMapping("/facility")
     public ResponseEntity<List<FacilityDto>> getAllFacilitys(
-            @RequestParam(value = "id",
-            required = false) final UUID facilityId) {
-        log.debug("Get Facility id:........." + facilityId);
-        List<FacilityDto> facilityList = new ArrayList<>();
-        if (facilityId == null) {
-            facilitySvc.findAll().forEach(fac -> facilityList.add(
-                    mapper.map(fac, FacilityDto.class)));
-        } else {
-            facilitySvc.get(facilityId).ifPresent(facility -> {
-                FacilityDto facilityDto = mapper.map(facility,
-                        FacilityDto.class);
-                facilityList.add(facilityDto);
-            });
-        }
+            @ModelAttribute final Facility.Filter filters) {
+        List<Facility> facilities = facilitySvc
+                .findFacilitiesWithFilters(filters);
 
-        return ResponseEntity.ok(facilityList);
+        List<FacilityDto> facilityDtos = facilities.stream()
+                .map(facility -> mapper.map(facility, FacilityDto.class))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(facilityDtos);
     }
 
     /**

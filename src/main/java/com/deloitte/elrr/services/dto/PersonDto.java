@@ -79,5 +79,47 @@ public class PersonDto extends ExtensibleDto {
     private LocationDto mailingAddress;
 
     @Valid
-    private Set<PhoneDto> phones;
+    private LocationDto physicalAddress;
+
+    @Valid
+    private LocationDto shippingAddress;
+
+    @Valid
+    private LocationDto billingAddress;
+
+    @Valid
+    private LocationDto onCampusAddress;
+
+    @Valid
+    private LocationDto offCampusAddress;
+
+    @Valid
+    private LocationDto temporaryAddress;
+
+    @Valid
+    private LocationDto permanentStudentAddress;
+
+    @Valid
+    private LocationDto employmentAddress;
+
+    @Valid
+    private LocationDto timeOfAdmissionAddress;
+
+    @Valid
+    private LocationDto fatherAddress;
+
+    @Valid
+    private LocationDto motherAddress;
+
+    @Valid
+    private LocationDto guardianAddress;
+
+    @Valid
+    private LocationDto birthplaceAddress;
+
+    @Valid
+    private Set<EmailDto> emailAddresses;
+
+    @Valid
+    private Set<PhoneDto> phoneNumbers;
 }

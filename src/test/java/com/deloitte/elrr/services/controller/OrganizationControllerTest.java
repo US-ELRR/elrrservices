@@ -71,7 +71,7 @@ public class OrganizationControllerTest extends CommonControllerTest {
     void getAllOrganizationsTest() throws Exception {
 
         Mockito.doReturn(getOrganizationList()).when(getOrganizationSvc())
-                .findAll();
+                .findOrganizationsWithFilters(any(Organization.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(ORGANIZATION_API)
                 .accept(MediaType.APPLICATION_JSON)
@@ -153,8 +153,8 @@ public class OrganizationControllerTest extends CommonControllerTest {
     @Test
     void getOrganizationByIdParameterTest() throws Exception {
 
-        Mockito.doReturn(Optional.of(getOrganizationList().iterator().next()))
-                .when(getOrganizationSvc()).get(ORGANIZATION_ID);
+        Mockito.doReturn(getOrganizationList()).when(getOrganizationSvc())
+                .findOrganizationsWithFilters(any(Organization.Filter.class));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(ORGANIZATION_API + "?id=" + ORGANIZATION_ID)
                 .accept(MediaType.APPLICATION_JSON)
