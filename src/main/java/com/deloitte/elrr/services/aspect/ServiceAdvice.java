@@ -10,7 +10,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.deloitte.elrr.entity.Auditable;
 import com.deloitte.elrr.entity.Entity;
 import com.deloitte.elrr.util.Mapper;
 
@@ -31,10 +30,6 @@ public class ServiceAdvice {
      */
     @Around(value = "execution(* com.deloitte.elrr.jpa.svc.*.save(..))")
     public Entity aroundSave(ProceedingJoinPoint pjp) throws Throwable {
-        // get entity
-        Auditable<String> input = (Auditable<String>) pjp.getArgs()[0];
-        // set username
-        setUpdatedByUsername(input, getUsername());
         // perform operation
         Entity output = (Entity) pjp.proceed();
         // log
@@ -54,11 +49,6 @@ public class ServiceAdvice {
     @Around(value = "execution(* com.deloitte.elrr.jpa.svc.*.saveAll(..))")
     public Collection<Entity> aroundSaveAll(ProceedingJoinPoint pjp)
             throws Throwable {
-        // get entities
-        Collection<Auditable<String>> inputs =
-        (Collection<Auditable<String>>) pjp.getArgs()[0];
-        // set username
-        inputs.forEach(input -> setUpdatedByUsername(input, getUsername()));
         // perform operation
         Collection<Entity> outputs = (Collection<Entity>) pjp.proceed();
         // log
@@ -74,17 +64,6 @@ public class ServiceAdvice {
     }
 
     /**
-     * Set entity updatedBy.
-     *
-     * @param input    the auditable entity
-     * @param username the username to set
-     */
-    private static void setUpdatedByUsername(Auditable<String> input,
-            String username) {
-        input.setUpdatedBy(username);
-    }
-
-    /**
      * Log entity information.
      *
      * @param output the entity to log
@@ -93,23 +72,23 @@ public class ServiceAdvice {
         String clazz = output.getClass().getName();
         UUID id = output.getId();
 
-        log.debug("Logging username: {}, entity: {}: {}", getUsername(), clazz,
+        String username = getCurrentUsername();
+        log.debug("Logging username: {}, entity: {}: {}", username, clazz,
                 id);
         String json = Mapper.getMapper().writeValueAsString(output);
         log.debug(json);
     }
 
     /**
-     * Get username from SecurityContext.
+     * Get username from SecurityContext, returning "unknown" if not available.
      *
-     * @return the username
+     * @return the username or "unknown"
      */
-    private static String getUsername() {
+    private static String getCurrentUsername() {
         Authentication authentication = SecurityContextHolder.getContext()
                 .getAuthentication();
-        if (authentication == null) {
-            throw new IllegalStateException(
-                    "No authentication found for auditing.");
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "unknown";
         }
         return authentication.getPrincipal().toString();
     }

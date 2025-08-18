@@ -3,6 +3,7 @@ package com.deloitte.elrr.services;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
+import com.deloitte.elrr.services.config.AuditorAwareImpl;
 import com.deloitte.elrr.services.security.CustomPermissionEvaluator;
 import com.deloitte.elrr.services.security.JwtUtil;
 
@@ -27,6 +28,16 @@ public class TestAppConfig {
     @Bean
     public CustomPermissionEvaluator permissionEvaluator() {
         return new CustomPermissionEvaluator();
+    }
+
+    /**
+     * Creates test AuditorAware Bean for use in tests.
+     * This is needed for JPA auditing in WebMvcTest contexts.
+     * @return AuditorAwareImpl for tests
+     */
+    @Bean
+    public AuditorAwareImpl auditorAwareImpl() {
+        return new AuditorAwareImpl();
     }
 
 }

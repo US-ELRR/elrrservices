@@ -3,7 +3,6 @@ package com.deloitte.elrr.services.aspect;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,9 +17,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,28 +31,28 @@ import com.deloitte.elrr.entity.Auditable;
 import com.deloitte.elrr.entity.Entity;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class ServiceAdviceTest {
 
     @InjectMocks
     private ServiceAdvice serviceAdvice;
 
     private MockedStatic<SecurityContextHolder> securityContextHolderMock;
+    
+    @Mock
     private SecurityContext securityContext;
+    
+    @Mock
     private Authentication authentication;
+    
+    @Mock
     private ProceedingJoinPoint proceedingJoinPoint;
 
     @BeforeEach
     void setUp() {
         securityContextHolderMock = Mockito.mockStatic(SecurityContextHolder.class);
-        securityContext = mock(SecurityContext.class);
-        authentication = mock(Authentication.class);
-        proceedingJoinPoint = mock(ProceedingJoinPoint.class);
-
         securityContextHolderMock.when(SecurityContextHolder::getContext)
                 .thenReturn(securityContext);
-        // Use lenient stubbing for the authentication setup that may not be used in all tests
-        Mockito.lenient().when(securityContext.getAuthentication()).thenReturn(authentication);
-        Mockito.lenient().when(authentication.getPrincipal()).thenReturn("testuser");
     }
 
     @AfterEach
@@ -61,7 +63,12 @@ class ServiceAdviceTest {
     }
 
     @Test
-    void aroundSave_ShouldSetUsernameAndLogEntity() throws Throwable {
+    void aroundSave_ShouldLogEntity() throws Throwable {
+        // Setup authentication for logging
+        Mockito.lenient().when(securityContext.getAuthentication()).thenReturn(authentication);
+        Mockito.lenient().when(authentication.isAuthenticated()).thenReturn(true);
+        Mockito.lenient().when(authentication.getPrincipal()).thenReturn("testuser");
+        
         // Arrange
         TestAuditableEntity inputEntity = new TestAuditableEntity();
         inputEntity.setId(UUID.randomUUID());
@@ -78,12 +85,16 @@ class ServiceAdviceTest {
         // Assert
         assertNotNull(result);
         assertEquals(outputEntity, result);
-        assertEquals("testuser", inputEntity.getUpdatedBy());
         verify(proceedingJoinPoint, times(1)).proceed();
     }
 
     @Test
-    void aroundSaveAll_ShouldSetUsernameForAllEntitiesAndLogThem() throws Throwable {
+    void aroundSaveAll_ShouldLogAllEntities() throws Throwable {
+        // Setup authentication for logging
+        Mockito.lenient().when(securityContext.getAuthentication()).thenReturn(authentication);
+        Mockito.lenient().when(authentication.isAuthenticated()).thenReturn(true);
+        Mockito.lenient().when(authentication.getPrincipal()).thenReturn("testuser");
+        
         // Arrange
         TestAuditableEntity inputEntity1 = new TestAuditableEntity();
         inputEntity1.setId(UUID.randomUUID());
@@ -106,13 +117,16 @@ class ServiceAdviceTest {
         // Assert
         assertNotNull(result);
         assertEquals(outputEntities, result);
-        assertEquals("testuser", inputEntity1.getUpdatedBy());
-        assertEquals("testuser", inputEntity2.getUpdatedBy());
         verify(proceedingJoinPoint, times(1)).proceed();
     }
 
     @Test
     void aroundSaveAll_ShouldHandleExceptionInLogging() throws Throwable {
+        // Setup authentication for logging (even though it may fail)
+        Mockito.lenient().when(securityContext.getAuthentication()).thenReturn(authentication);
+        Mockito.lenient().when(authentication.isAuthenticated()).thenReturn(true);
+        Mockito.lenient().when(authentication.getPrincipal()).thenReturn("testuser");
+        
         // Arrange
         TestAuditableEntity inputEntity = new TestAuditableEntity();
         inputEntity.setId(UUID.randomUUID());
@@ -132,45 +146,62 @@ class ServiceAdviceTest {
         // Assert
         assertNotNull(result);
         assertEquals(outputEntities, result);
-        assertEquals("testuser", inputEntity.getUpdatedBy());
         verify(proceedingJoinPoint, times(1)).proceed();
     }
 
     @Test
-    void aroundSave_ShouldThrowExceptionWhenNoAuthentication() throws Throwable {
-        // Arrange
-        when(securityContext.getAuthentication()).thenReturn(null);
+    void aroundSave_ShouldLogEvenWhenNoAuthentication() throws Throwable {
+        // Setup no authentication scenario
+        Mockito.lenient().when(securityContext.getAuthentication()).thenReturn(null);
         
         TestAuditableEntity inputEntity = new TestAuditableEntity();
-        when(proceedingJoinPoint.getArgs()).thenReturn(new Object[]{inputEntity});
-
-        // Act & Assert
-        IllegalStateException exception = assertThrows(IllegalStateException.class, 
-                () -> serviceAdvice.aroundSave(proceedingJoinPoint));
+        inputEntity.setId(UUID.randomUUID());
         
-        assertEquals("No authentication found for auditing.", exception.getMessage());
+        TestEntity outputEntity = new TestEntity();
+        outputEntity.setId(UUID.randomUUID());
+
+        when(proceedingJoinPoint.getArgs()).thenReturn(new Object[]{inputEntity});
+        when(proceedingJoinPoint.proceed()).thenReturn(outputEntity);
+
+        // Act
+        Entity result = serviceAdvice.aroundSave(proceedingJoinPoint);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(outputEntity, result);
+        verify(proceedingJoinPoint, times(1)).proceed();
     }
 
     @Test
-    void aroundSaveAll_ShouldThrowExceptionWhenNoAuthentication() throws Throwable {
-        // Arrange
-        when(securityContext.getAuthentication()).thenReturn(null);
+    void aroundSaveAll_ShouldLogEvenWhenNoAuthentication() throws Throwable {
+        // Setup no authentication scenario
+        Mockito.lenient().when(securityContext.getAuthentication()).thenReturn(null);
         
         TestAuditableEntity inputEntity = new TestAuditableEntity();
+        inputEntity.setId(UUID.randomUUID());
         Collection<Auditable<String>> inputEntities = List.of(inputEntity);
-        when(proceedingJoinPoint.getArgs()).thenReturn(new Object[]{inputEntities});
-
-        // Act & Assert
-        IllegalStateException exception = assertThrows(IllegalStateException.class, 
-                () -> serviceAdvice.aroundSaveAll(proceedingJoinPoint));
         
-        assertEquals("No authentication found for auditing.", exception.getMessage());
+        TestEntity outputEntity = new TestEntity();
+        outputEntity.setId(UUID.randomUUID());
+        Collection<Entity> outputEntities = List.of(outputEntity);
+
+        when(proceedingJoinPoint.getArgs()).thenReturn(new Object[]{inputEntities});
+        when(proceedingJoinPoint.proceed()).thenReturn(outputEntities);
+
+        // Act
+        Collection<Entity> result = serviceAdvice.aroundSaveAll(proceedingJoinPoint);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(outputEntities, result);
+        verify(proceedingJoinPoint, times(1)).proceed();
     }
 
     @Test
     void aroundSave_ShouldPropagateExceptionFromProceed() throws Throwable {
-        // Arrange
+        // Arrange - no authentication setup needed since exception is thrown before logging
         TestAuditableEntity inputEntity = new TestAuditableEntity();
+        inputEntity.setId(UUID.randomUUID());
         when(proceedingJoinPoint.getArgs()).thenReturn(new Object[]{inputEntity});
         
         RuntimeException expectedException = new RuntimeException("Test exception");
@@ -181,13 +212,13 @@ class ServiceAdviceTest {
                 () -> serviceAdvice.aroundSave(proceedingJoinPoint));
         
         assertEquals("Test exception", exception.getMessage());
-        assertEquals("testuser", inputEntity.getUpdatedBy());
     }
 
     @Test
     void aroundSaveAll_ShouldPropagateExceptionFromProceed() throws Throwable {
-        // Arrange
+        // Arrange - no authentication setup needed since exception is thrown before logging
         TestAuditableEntity inputEntity = new TestAuditableEntity();
+        inputEntity.setId(UUID.randomUUID());
         Collection<Auditable<String>> inputEntities = List.of(inputEntity);
         when(proceedingJoinPoint.getArgs()).thenReturn(new Object[]{inputEntities});
         
@@ -199,7 +230,6 @@ class ServiceAdviceTest {
                 () -> serviceAdvice.aroundSaveAll(proceedingJoinPoint));
         
         assertEquals("Test exception", exception.getMessage());
-        assertEquals("testuser", inputEntity.getUpdatedBy());
     }
 
     // Test helper classes
@@ -213,6 +243,7 @@ class ServiceAdviceTest {
 
     private static class ProblematicEntity extends Entity {
         // This entity will cause issues during JSON serialization
+        
         @Override
         public String toString() {
             throw new RuntimeException("Serialization error");
