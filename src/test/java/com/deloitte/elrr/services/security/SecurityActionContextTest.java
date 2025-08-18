@@ -24,82 +24,82 @@ class SecurityActionContextTest {
 
     @Test
     void testSetAndGetCurrentAction() {
-        // Given
+        // Arrange
         String expectedAction = "CREATE";
         String expectedResource = "person";
 
-        // When
+        // Act
         securityActionContext.setCurrentContext(expectedAction, expectedResource);
 
-        // Then
+        // Assert
         assertEquals(expectedAction, securityActionContext.getCurrentAction());
         assertEquals(expectedResource, securityActionContext.getCurrentResource());
     }
 
     @Test
     void testGetCurrentActionWhenNotSet() {
-        // When
+        // Act
         String result = securityActionContext.getCurrentAction();
 
-        // Then
+        // Assert
         assertNull(result);
     }
 
     @Test
     void testGetCurrentResourceWhenNotSet() {
-        // When
+        // Act
         String result = securityActionContext.getCurrentResource();
 
-        // Then
+        // Assert
         assertNull(result);
     }
 
     @Test
     void testSetCurrentContextOverwritesPrevious() {
-        // Given
+        // Arrange
         securityActionContext.setCurrentContext("CREATE", "person");
 
-        // When
+        // Act
         securityActionContext.setCurrentContext("UPDATE", "organization");
 
-        // Then
+        // Assert
         assertEquals("UPDATE", securityActionContext.getCurrentAction());
         assertEquals("organization", securityActionContext.getCurrentResource());
     }
 
     @Test
     void testSetCurrentContextWithNulls() {
-        // Given
+        // Arrange
         securityActionContext.setCurrentContext("DELETE", "credential");
 
-        // When
+        // Act
         securityActionContext.setCurrentContext(null, null);
 
-        // Then
+        // Assert
         assertNull(securityActionContext.getCurrentAction());
         assertNull(securityActionContext.getCurrentResource());
     }
 
     @Test
     void testSetCurrentContextWithMixedNulls() {
-        // When
+        // Arrange
         securityActionContext.setCurrentContext("READ", null);
 
-        // Then
+        // Assert
         assertEquals("READ", securityActionContext.getCurrentAction());
         assertNull(securityActionContext.getCurrentResource());
 
-        // When
+        // Act
         securityActionContext.setCurrentContext(null, "facility");
 
-        // Then
+        // Assert
         assertNull(securityActionContext.getCurrentAction());
         assertEquals("facility", securityActionContext.getCurrentResource());
     }
 
     @Test
     void testMultipleContextChanges() {
-        // Given/When/Then
+        // Act/Assert
         securityActionContext.setCurrentContext("CREATE", "person");
         assertEquals("CREATE", securityActionContext.getCurrentAction());
         assertEquals("person", securityActionContext.getCurrentResource());
@@ -115,11 +115,11 @@ class SecurityActionContextTest {
 
     @Test
     void testGetRequestIdGeneratesUniqueId() {
-        // When
+        // Act
         UUID requestId1 = securityActionContext.getRequestId();
         UUID requestId2 = securityActionContext.getRequestId();
 
-        // Then
+        // Assert
         assertNotNull(requestId1);
         assertNotNull(requestId2);
         assertEquals(requestId1, requestId2); // Same instance should return same ID
@@ -127,27 +127,27 @@ class SecurityActionContextTest {
 
     @Test
     void testRequestIdConsistentAcrossContextChanges() {
-        // Given
+        // Arrange
         UUID initialRequestId = securityActionContext.getRequestId();
 
-        // When
+        // Act
         securityActionContext.setCurrentContext("CREATE", "person");
         UUID requestIdAfterSet = securityActionContext.getRequestId();
 
         securityActionContext.setCurrentContext("UPDATE", "organization");
         UUID requestIdAfterUpdate = securityActionContext.getRequestId();
 
-        // Then
+        // Assert
         assertEquals(initialRequestId, requestIdAfterSet);
         assertEquals(initialRequestId, requestIdAfterUpdate);
     }
 
     @Test
     void testRequestIdIsTimeBasedUuid() {
-        // When
+        // Arrange
         UUID requestId = securityActionContext.getRequestId();
 
-        // Then
+        // Assert
         assertNotNull(requestId);
         // Time-based UUIDs typically have version 7 in the most significant bits
         // But we'll just verify it's a valid UUID and not null
