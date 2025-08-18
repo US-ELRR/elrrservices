@@ -81,8 +81,10 @@ public class ServiceAdvice {
         String username = getCurrentUsername();
         String action = securityActionContext.getCurrentAction();
         String resource = securityActionContext.getCurrentResource();
-        log.info("Logging username: {}, action: {}, resource: {}, "
-                + "entity: {}: {}", username, action, resource, clazz, id);
+        UUID requestId = securityActionContext.getRequestId();
+        log.info("Logging requestId: {}, username: {}, action: {}, "
+                + "resource: {}, entity: {}: {}", requestId, username, action,
+                resource, clazz, id);
         String json = Mapper.getMapper().writeValueAsString(output);
         log.debug(json);
     }

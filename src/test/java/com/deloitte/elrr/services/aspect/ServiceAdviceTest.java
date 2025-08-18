@@ -61,6 +61,7 @@ class ServiceAdviceTest {
         // Setup default mock behavior for SecurityActionContext
         Mockito.lenient().when(securityActionContext.getCurrentAction()).thenReturn("TEST_ACTION");
         Mockito.lenient().when(securityActionContext.getCurrentResource()).thenReturn("test_resource");
+        Mockito.lenient().when(securityActionContext.getRequestId()).thenReturn(UUID.randomUUID());
     }
 
     @AfterEach

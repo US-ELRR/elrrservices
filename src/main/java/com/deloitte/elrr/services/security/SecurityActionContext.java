@@ -1,15 +1,19 @@
 package com.deloitte.elrr.services.security;
 
+import java.util.UUID;
+
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.uuid.Generators;
+
 /**
  * Request-scoped bean for storing the current security action and resource
  * being evaluated. This allows aspects and other components to access
  * the action and resource that triggered a permission check within the same
- * request.
+ * request. Also provides a unique request ID for grouping audit log entries.
  */
 @Component
 @Scope(value = WebApplicationContext.SCOPE_REQUEST,
@@ -18,6 +22,7 @@ public class SecurityActionContext {
 
     private String currentAction;
     private String currentResource;
+    private UUID requestId;
 
     /**
      * Set the current action and resource for this request.
@@ -46,5 +51,20 @@ public class SecurityActionContext {
      */
     public String getCurrentResource() {
         return this.currentResource;
+    }
+
+    /**
+     * Get the unique request ID for this request. This ID is generated
+     * the first time it's accessed and remains consistent for the duration
+     * of the request.
+     *
+     * @return the unique request ID
+     */
+    public UUID getRequestId() {
+        if (this.requestId == null) {
+            this.requestId = Generators.timeBasedEpochRandomGenerator()
+                    .generate();
+        }
+        return this.requestId;
     }
 }

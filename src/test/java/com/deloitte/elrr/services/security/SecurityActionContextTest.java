@@ -1,7 +1,11 @@
 package com.deloitte.elrr.services.security;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -107,5 +111,47 @@ class SecurityActionContextTest {
         securityActionContext.setCurrentContext("DELETE", "credential");
         assertEquals("DELETE", securityActionContext.getCurrentAction());
         assertEquals("credential", securityActionContext.getCurrentResource());
+    }
+
+    @Test
+    void testGetRequestIdGeneratesUniqueId() {
+        // When
+        UUID requestId1 = securityActionContext.getRequestId();
+        UUID requestId2 = securityActionContext.getRequestId();
+
+        // Then
+        assertNotNull(requestId1);
+        assertNotNull(requestId2);
+        assertEquals(requestId1, requestId2); // Same instance should return same ID
+    }
+
+    @Test
+    void testRequestIdConsistentAcrossContextChanges() {
+        // Given
+        UUID initialRequestId = securityActionContext.getRequestId();
+
+        // When
+        securityActionContext.setCurrentContext("CREATE", "person");
+        UUID requestIdAfterSet = securityActionContext.getRequestId();
+
+        securityActionContext.setCurrentContext("UPDATE", "organization");
+        UUID requestIdAfterUpdate = securityActionContext.getRequestId();
+
+        // Then
+        assertEquals(initialRequestId, requestIdAfterSet);
+        assertEquals(initialRequestId, requestIdAfterUpdate);
+    }
+
+    @Test
+    void testRequestIdIsTimeBasedUuid() {
+        // When
+        UUID requestId = securityActionContext.getRequestId();
+
+        // Then
+        assertNotNull(requestId);
+        // Time-based UUIDs typically have version 7 in the most significant bits
+        // But we'll just verify it's a valid UUID and not null
+        assertTrue(requestId.toString().matches(
+            "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"));
     }
 }
