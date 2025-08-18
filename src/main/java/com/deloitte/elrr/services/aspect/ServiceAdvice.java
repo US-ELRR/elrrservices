@@ -93,10 +93,10 @@ public class ServiceAdvice {
         String clazz = output.getClass().getName();
         UUID id = output.getId();
 
-        log.info("Logging username: {}, entity: {}: {}", getUsername(), clazz,
+        log.debug("Logging username: {}, entity: {}: {}", getUsername(), clazz,
                 id);
         String json = Mapper.getMapper().writeValueAsString(output);
-        log.info(json);
+        log.debug(json);
     }
 
     /**
