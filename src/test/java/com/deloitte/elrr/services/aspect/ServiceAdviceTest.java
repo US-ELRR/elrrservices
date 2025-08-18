@@ -29,6 +29,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.deloitte.elrr.entity.Auditable;
 import com.deloitte.elrr.entity.Entity;
+import com.deloitte.elrr.services.security.SecurityActionContext;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -36,6 +37,9 @@ class ServiceAdviceTest {
 
     @InjectMocks
     private ServiceAdvice serviceAdvice;
+
+    @Mock
+    private SecurityActionContext securityActionContext;
 
     private MockedStatic<SecurityContextHolder> securityContextHolderMock;
     
@@ -53,6 +57,10 @@ class ServiceAdviceTest {
         securityContextHolderMock = Mockito.mockStatic(SecurityContextHolder.class);
         securityContextHolderMock.when(SecurityContextHolder::getContext)
                 .thenReturn(securityContext);
+        
+        // Setup default mock behavior for SecurityActionContext
+        Mockito.lenient().when(securityActionContext.getCurrentAction()).thenReturn("TEST_ACTION");
+        Mockito.lenient().when(securityActionContext.getCurrentResource()).thenReturn("test_resource");
     }
 
     @AfterEach
@@ -68,6 +76,10 @@ class ServiceAdviceTest {
         Mockito.lenient().when(securityContext.getAuthentication()).thenReturn(authentication);
         Mockito.lenient().when(authentication.isAuthenticated()).thenReturn(true);
         Mockito.lenient().when(authentication.getPrincipal()).thenReturn("testuser");
+        
+        // Setup security action context
+        Mockito.lenient().when(securityActionContext.getCurrentAction()).thenReturn("CREATE");
+        Mockito.lenient().when(securityActionContext.getCurrentResource()).thenReturn("person");
         
         // Arrange
         TestAuditableEntity inputEntity = new TestAuditableEntity();
@@ -153,6 +165,10 @@ class ServiceAdviceTest {
     void aroundSave_ShouldLogEvenWhenNoAuthentication() throws Throwable {
         // Setup no authentication scenario
         Mockito.lenient().when(securityContext.getAuthentication()).thenReturn(null);
+        
+        // Setup security action context
+        Mockito.lenient().when(securityActionContext.getCurrentAction()).thenReturn("UPDATE");
+        Mockito.lenient().when(securityActionContext.getCurrentResource()).thenReturn("organization");
         
         TestAuditableEntity inputEntity = new TestAuditableEntity();
         inputEntity.setId(UUID.randomUUID());

@@ -3,6 +3,7 @@ package com.deloitte.elrr.services.security;
 import java.io.Serializable;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
@@ -20,9 +21,16 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
     @Value("${client.admin-api-override}")
     private boolean adminApiOverride;
 
+    @Autowired
+    private SecurityActionContext securityActionContext;
+
     @Override
     public boolean hasPermission(Authentication authentication, Object resource,
             Object action) {
+        // Store action and resource in request-scoped context for aspects
+        securityActionContext.setCurrentContext((String) action,
+                (String) resource);
+
         if (authentication instanceof AdminJwtAuthenticationToken)
             return adminApiOverride;
 

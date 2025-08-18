@@ -6,12 +6,14 @@ import java.util.Collection;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.deloitte.elrr.entity.Entity;
 import com.deloitte.elrr.util.Mapper;
+import com.deloitte.elrr.services.security.SecurityActionContext;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,6 +21,9 @@ import lombok.extern.slf4j.Slf4j;
 @Aspect
 @Slf4j
 public class ServiceAdvice {
+
+    @Autowired
+    private SecurityActionContext securityActionContext;
 
     /**
      * Intercept Service Save calls and log the change.
@@ -46,6 +51,7 @@ public class ServiceAdvice {
      * @throws Throwable
      * @return Collection of entities being returned
      */
+    @SuppressWarnings("unchecked")
     @Around(value = "execution(* com.deloitte.elrr.jpa.svc.*.saveAll(..))")
     public Collection<Entity> aroundSaveAll(ProceedingJoinPoint pjp)
             throws Throwable {
@@ -68,13 +74,15 @@ public class ServiceAdvice {
      *
      * @param output the entity to log
      */
-    private static void logEntityInfo(Entity output) throws Throwable {
+    private void logEntityInfo(Entity output) throws Throwable {
         String clazz = output.getClass().getName();
         UUID id = output.getId();
 
         String username = getCurrentUsername();
-        log.debug("Logging username: {}, entity: {}: {}", username, clazz,
-                id);
+        String action = securityActionContext.getCurrentAction();
+        String resource = securityActionContext.getCurrentResource();
+        log.info("Logging username: {}, action: {}, resource: {}, "
+                + "entity: {}: {}", username, action, resource, clazz, id);
         String json = Mapper.getMapper().writeValueAsString(output);
         log.debug(json);
     }

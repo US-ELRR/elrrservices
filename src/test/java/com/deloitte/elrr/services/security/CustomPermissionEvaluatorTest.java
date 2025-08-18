@@ -27,9 +27,18 @@ class CustomPermissionEvaluatorTest {
     @Mock
     private AdminJwtAuthenticationToken mockAdminToken;
 
+    @Mock
+    private SecurityActionContext mockSecurityActionContext;
+
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         permissionEvaluator = new CustomPermissionEvaluator();
+        
+        // Inject the mock SecurityActionContext into the permissionEvaluator
+        Field securityActionContextField = CustomPermissionEvaluator.class
+                .getDeclaredField("securityActionContext");
+        securityActionContextField.setAccessible(true);
+        securityActionContextField.set(permissionEvaluator, mockSecurityActionContext);
     }
 
     @Test
