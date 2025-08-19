@@ -70,6 +70,26 @@ public class ServiceAdvice {
     }
 
     /**
+     * Intercept Service Delete calls and log the deletion.
+     *
+     * @param pjp
+     * @return
+     * @throws Throwable
+     */
+    @Around(value = "execution(* com.deloitte.elrr.jpa.svc.*.delete(..))")
+    public void aroundDelete(ProceedingJoinPoint pjp) throws Throwable {
+        // get the ID being deleted before the operation
+        Object[] args = pjp.getArgs();
+        if (args != null && args.length > 0) {
+            Object id = args[0];
+            logDeleteInfo(id, pjp.getTarget().getClass().getSimpleName());
+        }
+
+        // perform operation
+        pjp.proceed();
+    }
+
+    /**
      * Log entity information.
      *
      * @param output the entity to log
@@ -87,6 +107,23 @@ public class ServiceAdvice {
                 resource, clazz, id);
         String json = Mapper.getMapper().writeValueAsString(output);
         log.debug(json);
+    }
+
+    /**
+     * Log delete operation information.
+     *
+     * @param id the ID of the entity being deleted
+     * @param serviceClass the service class performing the deletion
+     */
+    private void logDeleteInfo(Object id, String serviceClass)
+            throws Throwable {
+        String username = getCurrentUsername();
+        String action = securityActionContext.getCurrentAction();
+        String resource = securityActionContext.getCurrentResource();
+        UUID requestId = securityActionContext.getRequestId();
+        log.info("Logging requestId: {}, username: {}, action: {}, "
+                + "resource: {}, service: {}, deleting entity with id: {}",
+                requestId, username, action, resource, serviceClass, id);
     }
 
     /**

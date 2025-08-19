@@ -249,6 +249,69 @@ class ServiceAdviceTest {
         assertEquals("Test exception", exception.getMessage());
     }
 
+    @Test
+    void aroundDelete_ShouldLogDeletion() throws Throwable {
+        // Setup authentication for logging
+        Mockito.lenient().when(securityContext.getAuthentication()).thenReturn(authentication);
+        Mockito.lenient().when(authentication.isAuthenticated()).thenReturn(true);
+        Mockito.lenient().when(authentication.getPrincipal()).thenReturn("testuser");
+        
+        // Setup security action context
+        Mockito.lenient().when(securityActionContext.getCurrentAction()).thenReturn("DELETE");
+        Mockito.lenient().when(securityActionContext.getCurrentResource()).thenReturn("person");
+        
+        // Arrange
+        UUID entityId = UUID.randomUUID();
+        Object mockTarget = new Object(); // Simple mock target for the service
+        
+        when(proceedingJoinPoint.getArgs()).thenReturn(new Object[]{entityId});
+        when(proceedingJoinPoint.getTarget()).thenReturn(mockTarget);
+        when(proceedingJoinPoint.proceed()).thenReturn(null); // void method
+
+        // Act
+        serviceAdvice.aroundDelete(proceedingJoinPoint);
+
+        // Assert
+        verify(proceedingJoinPoint, times(1)).proceed();
+    }
+
+    @Test
+    void aroundDelete_ShouldHandleNullArgs() throws Throwable {
+        // Setup authentication for logging
+        Mockito.lenient().when(securityContext.getAuthentication()).thenReturn(authentication);
+        Mockito.lenient().when(authentication.isAuthenticated()).thenReturn(true);
+        Mockito.lenient().when(authentication.getPrincipal()).thenReturn("testuser");
+        
+        // Arrange
+        when(proceedingJoinPoint.getArgs()).thenReturn(null);
+        when(proceedingJoinPoint.proceed()).thenReturn(null); // void method
+
+        // Act
+        serviceAdvice.aroundDelete(proceedingJoinPoint);
+
+        // Assert
+        verify(proceedingJoinPoint, times(1)).proceed();
+    }
+
+    @Test
+    void aroundDelete_ShouldPropagateExceptionFromProceed() throws Throwable {
+        // Arrange
+        UUID entityId = UUID.randomUUID();
+        Object mockTarget = new Object();
+        
+        when(proceedingJoinPoint.getArgs()).thenReturn(new Object[]{entityId});
+        when(proceedingJoinPoint.getTarget()).thenReturn(mockTarget);
+        
+        RuntimeException expectedException = new RuntimeException("Delete exception");
+        when(proceedingJoinPoint.proceed()).thenThrow(expectedException);
+
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class, 
+                () -> serviceAdvice.aroundDelete(proceedingJoinPoint));
+        
+        assertEquals("Delete exception", exception.getMessage());
+    }
+
     // Test helper classes
     private static class TestAuditableEntity extends Auditable<String> {
         // Test implementation of Auditable
