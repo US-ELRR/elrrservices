@@ -90,6 +90,22 @@ public class ServiceAdvice {
     }
 
     /**
+     * Intercept Service DeleteAll calls and log the deletion.
+     *
+     * @param pjp
+     * @return
+     * @throws Throwable
+     */
+    @Around(value = "execution(* com.deloitte.elrr.jpa.svc.*.deleteAll(..))")
+    public void aroundDeleteAll(ProceedingJoinPoint pjp) throws Throwable {
+        // log deleteAll operation
+        logDeleteAllInfo(pjp.getTarget().getClass().getSimpleName());
+
+        // perform operation
+        pjp.proceed();
+    }
+
+    /**
      * Log entity information.
      *
      * @param output the entity to log
@@ -124,6 +140,21 @@ public class ServiceAdvice {
         log.info("Logging requestId: {}, username: {}, action: {}, "
                 + "resource: {}, service: {}, deleting entity with id: {}",
                 requestId, username, action, resource, serviceClass, id);
+    }
+
+    /**
+     * Log deleteAll operation information.
+     *
+     * @param serviceClass the service class performing the deletion
+     */
+    private void logDeleteAllInfo(String serviceClass) throws Throwable {
+        String username = getCurrentUsername();
+        String action = securityActionContext.getCurrentAction();
+        String resource = securityActionContext.getCurrentResource();
+        UUID requestId = securityActionContext.getRequestId();
+        log.info("Logging requestId: {}, username: {}, action: {}, "
+                + "resource: {}, service: {}, deleting ALL entities",
+                requestId, username, action, resource, serviceClass);
     }
 
     /**

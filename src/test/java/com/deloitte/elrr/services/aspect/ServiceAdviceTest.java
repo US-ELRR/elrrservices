@@ -312,6 +312,47 @@ class ServiceAdviceTest {
         assertEquals("Delete exception", exception.getMessage());
     }
 
+    @Test
+    void aroundDeleteAll_ShouldLogDeletion() throws Throwable {
+        // Setup authentication for logging
+        Mockito.lenient().when(securityContext.getAuthentication()).thenReturn(authentication);
+        Mockito.lenient().when(authentication.isAuthenticated()).thenReturn(true);
+        Mockito.lenient().when(authentication.getPrincipal()).thenReturn("testuser");
+        
+        // Setup security action context
+        Mockito.lenient().when(securityActionContext.getCurrentAction()).thenReturn("DELETE_ALL");
+        Mockito.lenient().when(securityActionContext.getCurrentResource()).thenReturn("person");
+        
+        // Arrange
+        Object mockTarget = new Object(); // Simple mock target for the service
+        
+        when(proceedingJoinPoint.getTarget()).thenReturn(mockTarget);
+        when(proceedingJoinPoint.proceed()).thenReturn(null); // void method
+
+        // Act
+        serviceAdvice.aroundDeleteAll(proceedingJoinPoint);
+
+        // Assert
+        verify(proceedingJoinPoint, times(1)).proceed();
+    }
+
+    @Test
+    void aroundDeleteAll_ShouldPropagateExceptionFromProceed() throws Throwable {
+        // Arrange
+        Object mockTarget = new Object();
+        
+        when(proceedingJoinPoint.getTarget()).thenReturn(mockTarget);
+        
+        RuntimeException expectedException = new RuntimeException("DeleteAll exception");
+        when(proceedingJoinPoint.proceed()).thenThrow(expectedException);
+
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class, 
+                () -> serviceAdvice.aroundDeleteAll(proceedingJoinPoint));
+        
+        assertEquals("DeleteAll exception", exception.getMessage());
+    }
+
     // Test helper classes
     private static class TestAuditableEntity extends Auditable<String> {
         // Test implementation of Auditable
