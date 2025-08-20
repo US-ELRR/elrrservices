@@ -164,6 +164,7 @@ public class ServiceAdvice {
         ActionType action = securityActionContext.getCurrentAction();
         String resource = securityActionContext.getCurrentResource();
         UUID requestId = securityActionContext.getRequestId();
+        UUID jwtId = securityActionContext.getJwtId();
         Boolean isApiUser = isApiUser();
 
         AuditLog auditLog = new AuditLog();
@@ -176,6 +177,7 @@ public class ServiceAdvice {
         auditLog.setRequestId(requestId);
         auditLog.setIsApiUser(isApiUser);
         auditLog.setSvcMethod(svcMethod);
+        auditLog.setJwtId(jwtId);
 
         try {
             auditLogSvc.save(auditLog);

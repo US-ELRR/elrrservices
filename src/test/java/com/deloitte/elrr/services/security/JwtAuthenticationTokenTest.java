@@ -118,4 +118,15 @@ class JwtAuthenticationTokenTest {
         // Act & Assert
         assertTrue(jwtAuthToken.isAuthenticated());
     }
+
+    @Test
+    void testGetJwtId() {
+        // Act
+        UUID jwtId = jwtAuthToken.getJwtId();
+
+        // Assert
+        assertNotNull(jwtId);
+        // The JWT ID should match what's in the token
+        assertEquals(jwt.getId(), jwtId.toString());
+    }
 }

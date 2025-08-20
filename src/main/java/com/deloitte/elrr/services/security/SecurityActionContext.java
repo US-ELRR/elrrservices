@@ -24,20 +24,26 @@ public class SecurityActionContext {
     private ActionType currentAction;
     private String currentResource;
     private UUID requestId;
+    private UUID jwtId;
 
     /**
      * Set the current action and resource for this request.
      *
      * @param action the action being performed
      * @param resource the resource being accessed
+     * @param tokenId the JWT ID for this request
      */
-    public void setCurrentContext(String action, String resource) {
+    public void setCurrentContext(
+        String action,
+        String resource,
+        UUID tokenId) {
         if (action != null) {
             this.currentAction = ActionType.valueOf(action);
         } else {
             this.currentAction = ActionType.ADMIN;
         }
         this.currentResource = resource;
+        this.jwtId = tokenId;
     }
 
     /**
@@ -79,4 +85,13 @@ public class SecurityActionContext {
         }
         return this.requestId;
     }
+    /**
+     * Get the JWT ID for this request.
+     *
+     * @return the JWT ID
+     */
+    public UUID getJwtId() {
+        return this.jwtId;
+    }
+
 }

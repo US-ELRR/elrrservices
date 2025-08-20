@@ -2,6 +2,7 @@ package com.deloitte.elrr.services.security;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,9 +28,17 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
     @Override
     public boolean hasPermission(Authentication authentication, Object resource,
             Object action) {
-        // Store action and resource in request-scoped context for aspects
+        UUID jwtId;
+        if (authentication instanceof JwtAuthenticationToken) {
+            JwtAuthenticationToken token =
+                (JwtAuthenticationToken) authentication;
+            jwtId = token.getJwtId();
+        } else {
+            jwtId = null;
+        }
+        // Store data in request-scoped context for aspects
         securityActionContext.setCurrentContext((String) action,
-                (String) resource);
+                (String) resource, jwtId);
 
         if (authentication instanceof AdminJwtAuthenticationToken)
             return adminApiOverride;

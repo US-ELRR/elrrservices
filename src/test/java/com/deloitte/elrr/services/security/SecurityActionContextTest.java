@@ -29,13 +29,15 @@ class SecurityActionContextTest {
         // Arrange
         ActionType expectedAction = ActionType.CREATE;
         String expectedResource = "person";
+        UUID expectedJwtId = UUID.randomUUID();
 
         // Act
-        securityActionContext.setCurrentContext(expectedAction.toString(), expectedResource);
+        securityActionContext.setCurrentContext(expectedAction.toString(), expectedResource, expectedJwtId);
 
         // Assert
         assertEquals(expectedAction, securityActionContext.getCurrentAction());
         assertEquals(expectedResource, securityActionContext.getCurrentResource());
+        assertEquals(expectedJwtId, securityActionContext.getJwtId());
     }
 
     @Test
@@ -59,60 +61,75 @@ class SecurityActionContextTest {
     @Test
     void testSetCurrentContextOverwritesPrevious() {
         // Arrange
-        securityActionContext.setCurrentContext("CREATE", "person");
+        UUID jwtId1 = UUID.randomUUID();
+        UUID jwtId2 = UUID.randomUUID();
+        securityActionContext.setCurrentContext("CREATE", "person", jwtId1);
 
         // Act
-        securityActionContext.setCurrentContext("UPDATE", "organization");
+        securityActionContext.setCurrentContext("UPDATE", "organization", jwtId2);
 
         // Assert
         assertEquals(ActionType.UPDATE, securityActionContext.getCurrentAction());
         assertEquals("organization", securityActionContext.getCurrentResource());
+        assertEquals(jwtId2, securityActionContext.getJwtId());
     }
 
     @Test
     void testSetCurrentContextWithNulls() {
         // Arrange
-        securityActionContext.setCurrentContext("DELETE", "credential");
+        UUID jwtId = UUID.randomUUID();
+        securityActionContext.setCurrentContext("DELETE", "credential", jwtId);
 
         // Act
-        securityActionContext.setCurrentContext(null, null);
+        securityActionContext.setCurrentContext(null, null, null);
 
         // Assert
         assertEquals(ActionType.ADMIN, securityActionContext.getCurrentAction());
         assertEquals("token", securityActionContext.getCurrentResource());
+        assertNull(securityActionContext.getJwtId());
     }
 
     @Test
     void testSetCurrentContextWithMixedNulls() {
         // Arrange
-        securityActionContext.setCurrentContext("READ", null);
+        UUID jwtId = UUID.randomUUID();
+        securityActionContext.setCurrentContext("READ", null, jwtId);
 
         // Assert
         assertEquals(ActionType.READ, securityActionContext.getCurrentAction());
         assertEquals("token", securityActionContext.getCurrentResource());
+        assertEquals(jwtId, securityActionContext.getJwtId());
 
         // Act
-        securityActionContext.setCurrentContext(null, "facility");
+        securityActionContext.setCurrentContext(null, "facility", null);
 
         // Assert
         assertEquals(ActionType.ADMIN, securityActionContext.getCurrentAction());
         assertEquals("facility", securityActionContext.getCurrentResource());
+        assertNull(securityActionContext.getJwtId());
     }
 
     @Test
     void testMultipleContextChanges() {
         // Act/Assert
-        securityActionContext.setCurrentContext("CREATE", "person");
+        UUID jwtId1 = UUID.randomUUID();
+        UUID jwtId2 = UUID.randomUUID();
+        UUID jwtId3 = UUID.randomUUID();
+        
+        securityActionContext.setCurrentContext("CREATE", "person", jwtId1);
         assertEquals(ActionType.CREATE, securityActionContext.getCurrentAction());
         assertEquals("person", securityActionContext.getCurrentResource());
+        assertEquals(jwtId1, securityActionContext.getJwtId());
 
-        securityActionContext.setCurrentContext("UPDATE", "organization");
+        securityActionContext.setCurrentContext("UPDATE", "organization", jwtId2);
         assertEquals(ActionType.UPDATE, securityActionContext.getCurrentAction());
         assertEquals("organization", securityActionContext.getCurrentResource());
+        assertEquals(jwtId2, securityActionContext.getJwtId());
 
-        securityActionContext.setCurrentContext("DELETE", "credential");
+        securityActionContext.setCurrentContext("DELETE", "credential", jwtId3);
         assertEquals(ActionType.DELETE, securityActionContext.getCurrentAction());
         assertEquals("credential", securityActionContext.getCurrentResource());
+        assertEquals(jwtId3, securityActionContext.getJwtId());
     }
 
     @Test
@@ -131,12 +148,14 @@ class SecurityActionContextTest {
     void testRequestIdConsistentAcrossContextChanges() {
         // Arrange
         UUID initialRequestId = securityActionContext.getRequestId();
+        UUID jwtId1 = UUID.randomUUID();
+        UUID jwtId2 = UUID.randomUUID();
 
         // Act
-        securityActionContext.setCurrentContext("CREATE", "person");
+        securityActionContext.setCurrentContext("CREATE", "person", jwtId1);
         UUID requestIdAfterSet = securityActionContext.getRequestId();
 
-        securityActionContext.setCurrentContext("UPDATE", "organization");
+        securityActionContext.setCurrentContext("UPDATE", "organization", jwtId2);
         UUID requestIdAfterUpdate = securityActionContext.getRequestId();
 
         // Assert
@@ -155,5 +174,53 @@ class SecurityActionContextTest {
         // But we'll just verify it's a valid UUID and not null
         assertTrue(requestId.toString().matches(
             "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"));
+    }
+
+    @Test
+    void testGetJwtIdWhenNotSet() {
+        // Act
+        UUID result = securityActionContext.getJwtId();
+
+        // Assert
+        assertNull(result);
+    }
+
+    @Test
+    void testSetAndGetJwtId() {
+        // Arrange
+        UUID expectedJwtId = UUID.randomUUID();
+
+        // Act
+        securityActionContext.setCurrentContext("CREATE", "person", expectedJwtId);
+
+        // Assert
+        assertEquals(expectedJwtId, securityActionContext.getJwtId());
+    }
+
+    @Test
+    void testJwtIdOverwritesPrevious() {
+        // Arrange
+        UUID jwtId1 = UUID.randomUUID();
+        UUID jwtId2 = UUID.randomUUID();
+        securityActionContext.setCurrentContext("CREATE", "person", jwtId1);
+
+        // Act
+        securityActionContext.setCurrentContext("UPDATE", "organization", jwtId2);
+
+        // Assert
+        assertEquals(jwtId2, securityActionContext.getJwtId());
+    }
+
+    @Test
+    void testJwtIdCanBeSetToNull() {
+        // Arrange
+        UUID jwtId = UUID.randomUUID();
+        securityActionContext.setCurrentContext("CREATE", "person", jwtId);
+
+        // Act
+        securityActionContext.setCurrentContext("UPDATE", "organization", null);
+
+        // Assert
+        assertNull(securityActionContext.getJwtId());
     }
 }
