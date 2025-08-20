@@ -7,6 +7,7 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.deloitte.elrr.entity.types.ActionType;
 import com.fasterxml.uuid.Generators;
 
 /**
@@ -20,7 +21,7 @@ import com.fasterxml.uuid.Generators;
         proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class SecurityActionContext {
 
-    private String currentAction;
+    private ActionType currentAction;
     private String currentResource;
     private UUID requestId;
 
@@ -31,7 +32,11 @@ public class SecurityActionContext {
      * @param resource the resource being accessed
      */
     public void setCurrentContext(String action, String resource) {
-        this.currentAction = action;
+        if (action != null) {
+            this.currentAction = ActionType.valueOf(action);
+        } else {
+            this.currentAction = ActionType.ADMIN;
+        }
         this.currentResource = resource;
     }
 
@@ -40,7 +45,10 @@ public class SecurityActionContext {
      *
      * @return the current action, or null if none is set
      */
-    public String getCurrentAction() {
+    public ActionType getCurrentAction() {
+        if (this.currentAction == null) {
+            this.currentAction = ActionType.ADMIN;
+        }
         return this.currentAction;
     }
 
@@ -50,6 +58,10 @@ public class SecurityActionContext {
      * @return the current resource, or null if none is set
      */
     public String getCurrentResource() {
+        if (this.currentResource == null) {
+            // token retrieval is the only resource not specified
+            this.currentResource = "token";
+        }
         return this.currentResource;
     }
 

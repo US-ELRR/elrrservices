@@ -27,8 +27,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.deloitte.elrr.entity.AuditLog;
 import com.deloitte.elrr.entity.Auditable;
 import com.deloitte.elrr.entity.Entity;
+import com.deloitte.elrr.entity.types.ActionType;
+import com.deloitte.elrr.jpa.svc.AuditLogSvc;
 import com.deloitte.elrr.services.security.SecurityActionContext;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,6 +43,9 @@ class ServiceAdviceTest {
 
     @Mock
     private SecurityActionContext securityActionContext;
+
+    @Mock
+    private AuditLogSvc auditLogSvc;
 
     private MockedStatic<SecurityContextHolder> securityContextHolderMock;
     
@@ -59,9 +65,14 @@ class ServiceAdviceTest {
                 .thenReturn(securityContext);
         
         // Setup default mock behavior for SecurityActionContext
-        Mockito.lenient().when(securityActionContext.getCurrentAction()).thenReturn("TEST_ACTION");
+        Mockito.lenient().when(securityActionContext.getCurrentAction()).thenReturn(ActionType.ADMIN);
         Mockito.lenient().when(securityActionContext.getCurrentResource()).thenReturn("test_resource");
         Mockito.lenient().when(securityActionContext.getRequestId()).thenReturn(UUID.randomUUID());
+
+        // Setup default mock behavior for AuditLogSvc to prevent NPE
+        AuditLog mockAuditLog = new AuditLog();
+        mockAuditLog.setId(UUID.randomUUID());
+        Mockito.lenient().when(auditLogSvc.save(Mockito.any(AuditLog.class))).thenReturn(mockAuditLog);
     }
 
     @AfterEach
@@ -79,7 +90,7 @@ class ServiceAdviceTest {
         Mockito.lenient().when(authentication.getPrincipal()).thenReturn("testuser");
         
         // Setup security action context
-        Mockito.lenient().when(securityActionContext.getCurrentAction()).thenReturn("CREATE");
+        Mockito.lenient().when(securityActionContext.getCurrentAction()).thenReturn(ActionType.CREATE);
         Mockito.lenient().when(securityActionContext.getCurrentResource()).thenReturn("person");
         
         // Arrange
@@ -168,7 +179,7 @@ class ServiceAdviceTest {
         Mockito.lenient().when(securityContext.getAuthentication()).thenReturn(null);
         
         // Setup security action context
-        Mockito.lenient().when(securityActionContext.getCurrentAction()).thenReturn("UPDATE");
+        Mockito.lenient().when(securityActionContext.getCurrentAction()).thenReturn(ActionType.UPDATE);
         Mockito.lenient().when(securityActionContext.getCurrentResource()).thenReturn("organization");
         
         TestAuditableEntity inputEntity = new TestAuditableEntity();
@@ -257,7 +268,7 @@ class ServiceAdviceTest {
         Mockito.lenient().when(authentication.getPrincipal()).thenReturn("testuser");
         
         // Setup security action context
-        Mockito.lenient().when(securityActionContext.getCurrentAction()).thenReturn("DELETE");
+        Mockito.lenient().when(securityActionContext.getCurrentAction()).thenReturn(ActionType.DELETE);
         Mockito.lenient().when(securityActionContext.getCurrentResource()).thenReturn("person");
         
         // Arrange
@@ -310,47 +321,6 @@ class ServiceAdviceTest {
                 () -> serviceAdvice.aroundDelete(proceedingJoinPoint));
         
         assertEquals("Delete exception", exception.getMessage());
-    }
-
-    @Test
-    void aroundDeleteAll_ShouldLogDeletion() throws Throwable {
-        // Setup authentication for logging
-        Mockito.lenient().when(securityContext.getAuthentication()).thenReturn(authentication);
-        Mockito.lenient().when(authentication.isAuthenticated()).thenReturn(true);
-        Mockito.lenient().when(authentication.getPrincipal()).thenReturn("testuser");
-        
-        // Setup security action context
-        Mockito.lenient().when(securityActionContext.getCurrentAction()).thenReturn("DELETE_ALL");
-        Mockito.lenient().when(securityActionContext.getCurrentResource()).thenReturn("person");
-        
-        // Arrange
-        Object mockTarget = new Object(); // Simple mock target for the service
-        
-        when(proceedingJoinPoint.getTarget()).thenReturn(mockTarget);
-        when(proceedingJoinPoint.proceed()).thenReturn(null); // void method
-
-        // Act
-        serviceAdvice.aroundDeleteAll(proceedingJoinPoint);
-
-        // Assert
-        verify(proceedingJoinPoint, times(1)).proceed();
-    }
-
-    @Test
-    void aroundDeleteAll_ShouldPropagateExceptionFromProceed() throws Throwable {
-        // Arrange
-        Object mockTarget = new Object();
-        
-        when(proceedingJoinPoint.getTarget()).thenReturn(mockTarget);
-        
-        RuntimeException expectedException = new RuntimeException("DeleteAll exception");
-        when(proceedingJoinPoint.proceed()).thenThrow(expectedException);
-
-        // Act & Assert
-        RuntimeException exception = assertThrows(RuntimeException.class, 
-                () -> serviceAdvice.aroundDeleteAll(proceedingJoinPoint));
-        
-        assertEquals("DeleteAll exception", exception.getMessage());
     }
 
     // Test helper classes

@@ -10,6 +10,8 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.deloitte.elrr.entity.types.ActionType;
+
 /**
  * Test class for SecurityActionContext.
  */
@@ -25,11 +27,11 @@ class SecurityActionContextTest {
     @Test
     void testSetAndGetCurrentAction() {
         // Arrange
-        String expectedAction = "CREATE";
+        ActionType expectedAction = ActionType.CREATE;
         String expectedResource = "person";
 
         // Act
-        securityActionContext.setCurrentContext(expectedAction, expectedResource);
+        securityActionContext.setCurrentContext(expectedAction.toString(), expectedResource);
 
         // Assert
         assertEquals(expectedAction, securityActionContext.getCurrentAction());
@@ -39,10 +41,10 @@ class SecurityActionContextTest {
     @Test
     void testGetCurrentActionWhenNotSet() {
         // Act
-        String result = securityActionContext.getCurrentAction();
+        ActionType result = securityActionContext.getCurrentAction();
 
         // Assert
-        assertNull(result);
+        assertEquals(ActionType.ADMIN, result);
     }
 
     @Test
@@ -51,7 +53,7 @@ class SecurityActionContextTest {
         String result = securityActionContext.getCurrentResource();
 
         // Assert
-        assertNull(result);
+        assertEquals("token", result);
     }
 
     @Test
@@ -63,7 +65,7 @@ class SecurityActionContextTest {
         securityActionContext.setCurrentContext("UPDATE", "organization");
 
         // Assert
-        assertEquals("UPDATE", securityActionContext.getCurrentAction());
+        assertEquals(ActionType.UPDATE, securityActionContext.getCurrentAction());
         assertEquals("organization", securityActionContext.getCurrentResource());
     }
 
@@ -76,8 +78,8 @@ class SecurityActionContextTest {
         securityActionContext.setCurrentContext(null, null);
 
         // Assert
-        assertNull(securityActionContext.getCurrentAction());
-        assertNull(securityActionContext.getCurrentResource());
+        assertEquals(ActionType.ADMIN, securityActionContext.getCurrentAction());
+        assertEquals("token", securityActionContext.getCurrentResource());
     }
 
     @Test
@@ -86,14 +88,14 @@ class SecurityActionContextTest {
         securityActionContext.setCurrentContext("READ", null);
 
         // Assert
-        assertEquals("READ", securityActionContext.getCurrentAction());
-        assertNull(securityActionContext.getCurrentResource());
+        assertEquals(ActionType.READ, securityActionContext.getCurrentAction());
+        assertEquals("token", securityActionContext.getCurrentResource());
 
         // Act
         securityActionContext.setCurrentContext(null, "facility");
 
         // Assert
-        assertNull(securityActionContext.getCurrentAction());
+        assertEquals(ActionType.ADMIN, securityActionContext.getCurrentAction());
         assertEquals("facility", securityActionContext.getCurrentResource());
     }
 
@@ -101,15 +103,15 @@ class SecurityActionContextTest {
     void testMultipleContextChanges() {
         // Act/Assert
         securityActionContext.setCurrentContext("CREATE", "person");
-        assertEquals("CREATE", securityActionContext.getCurrentAction());
+        assertEquals(ActionType.CREATE, securityActionContext.getCurrentAction());
         assertEquals("person", securityActionContext.getCurrentResource());
 
         securityActionContext.setCurrentContext("UPDATE", "organization");
-        assertEquals("UPDATE", securityActionContext.getCurrentAction());
+        assertEquals(ActionType.UPDATE, securityActionContext.getCurrentAction());
         assertEquals("organization", securityActionContext.getCurrentResource());
 
         securityActionContext.setCurrentContext("DELETE", "credential");
-        assertEquals("DELETE", securityActionContext.getCurrentAction());
+        assertEquals(ActionType.DELETE, securityActionContext.getCurrentAction());
         assertEquals("credential", securityActionContext.getCurrentResource());
     }
 
