@@ -124,7 +124,7 @@ class ServiceAdviceTest {
         inputEntity1.setId(UUID.randomUUID());
         TestAuditableEntity inputEntity2 = new TestAuditableEntity();
         inputEntity2.setId(UUID.randomUUID());
-        Collection<Auditable<String>> inputEntities = List.of(inputEntity1, inputEntity2);
+        Collection<Auditable> inputEntities = List.of(inputEntity1, inputEntity2);
 
         TestEntity outputEntity1 = new TestEntity();
         outputEntity1.setId(UUID.randomUUID());
@@ -154,7 +154,7 @@ class ServiceAdviceTest {
         // Arrange
         TestAuditableEntity inputEntity = new TestAuditableEntity();
         inputEntity.setId(UUID.randomUUID());
-        Collection<Auditable<String>> inputEntities = List.of(inputEntity);
+        Collection<Auditable> inputEntities = List.of(inputEntity);
 
         // Create a problematic entity that will cause logging to fail
         ProblematicEntity problematicEntity = new ProblematicEntity();
@@ -207,7 +207,7 @@ class ServiceAdviceTest {
         
         TestAuditableEntity inputEntity = new TestAuditableEntity();
         inputEntity.setId(UUID.randomUUID());
-        Collection<Auditable<String>> inputEntities = List.of(inputEntity);
+        Collection<Auditable> inputEntities = List.of(inputEntity);
         
         TestEntity outputEntity = new TestEntity();
         outputEntity.setId(UUID.randomUUID());
@@ -247,7 +247,7 @@ class ServiceAdviceTest {
         // Arrange - no authentication setup needed since exception is thrown before logging
         TestAuditableEntity inputEntity = new TestAuditableEntity();
         inputEntity.setId(UUID.randomUUID());
-        Collection<Auditable<String>> inputEntities = List.of(inputEntity);
+        Collection<Auditable> inputEntities = List.of(inputEntity);
         when(proceedingJoinPoint.getArgs()).thenReturn(new Object[]{inputEntities});
         
         RuntimeException expectedException = new RuntimeException("Test exception");
@@ -324,7 +324,7 @@ class ServiceAdviceTest {
     }
 
     // Test helper classes
-    private static class TestAuditableEntity extends Auditable<String> {
+    private static class TestAuditableEntity extends Auditable {
         // Test implementation of Auditable
     }
 
