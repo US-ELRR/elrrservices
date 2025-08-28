@@ -3,7 +3,7 @@ package com.deloitte.elrr.services.aspect;
 import java.util.UUID;
 import java.util.Collection;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -168,7 +168,7 @@ public class ServiceAdvice {
         Boolean isApiUser = isApiUser();
 
         AuditLog auditLog = new AuditLog();
-        auditLog.setTimestamp(LocalDateTime.now());
+        auditLog.setTimestamp(ZonedDateTime.now());
         auditLog.setEntityId(entityId);
         auditLog.setEntityType(entityType);
         auditLog.setUsername(username);
