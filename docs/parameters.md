@@ -63,6 +63,8 @@ The GET /api/organization endpoint supports the following optional query paramet
 
 #### Basic Filters
 - **id** (UUID[]): Filter by specific organization IDs
+- **name** (String[]): Filter by organization name, case-insensitive
+- **description** (String[]): Filter by organization description, case-insensitive
 
 #### Extension Filters
 - **hasExtension** (String[]): Organizations that contain all specified extension keys
@@ -78,6 +80,9 @@ The GET /api/competency endpoint supports the following optional query parameter
 
 #### Basic Filters
 - **id** (UUID[]): Filter by specific competency IDs
+- **identifier** (String[]): Filter by competency identifiers
+- **identifierUrl** (String[]): Filter by competency identifier URLs
+- **code** (String[]): Filter by competency codes
 
 #### Extension Filters
 - **hasExtension** (String[]): Competencies that contain all specified extension keys
@@ -93,6 +98,9 @@ The GET /api/credential endpoint supports the following optional query parameter
 
 #### Basic Filters
 - **id** (UUID[]): Filter by specific credential IDs
+- **identifier** (String[]): Filter by credential identifiers
+- **identifierUrl** (String[]): Filter by competency identifier URLs
+- **code** (String[]): Filter by credential codes
 
 #### Extension Filters
 - **hasExtension** (String[]): Credentials that contain all specified extension keys
@@ -108,6 +116,12 @@ The GET /api/employmentrecord endpoint supports the following optional query par
 
 #### Basic Filters
 - **id** (UUID[]): Filter by specific employment record IDs
+- **position** (String[]): Filter by position, case-insensitive
+- **positionTitle** (String[]): Filter by position title, case-insensitive
+- **positionDescription** (String[]): Filter by position description, case-insensitive
+
+#### Organization Filters
+- **employerOrgId** (UUID[]): Filter by specific employer organization IDs
 
 #### Extension Filters
 - **hasExtension** (String[]): Employment records that contain all specified extension keys
@@ -153,6 +167,10 @@ The GET /api/learningrecord endpoint supports the following optional query param
 
 #### Basic Filters
 - **id** (UUID[]): Filter by specific learning record IDs
+- **recordStatus** (String[]): Filter by specific record statuses
+
+#### Learning Resource Filters
+- **learningResourceId** (UUID[]): Filter by specific learning resource IDs
 
 #### Extension Filters
 - **hasExtension** (String[]): Learning records that contain all specified extension keys
@@ -167,6 +185,9 @@ The GET /api/learningresource endpoint supports the following optional query par
 
 #### Basic Filters
 - **id** (UUID[]): Filter by specific learning resource IDs
+- **iri** (String[]): Filter by specific IRIs
+- **title** (String[]): Filter by title, case-insensitive
+- **subjectMatter** (String[]): Filter by subject matter, case-insensitive
 
 #### Extension Filters
 - **hasExtension** (String[]): Learning resources that contain all specified extension keys
