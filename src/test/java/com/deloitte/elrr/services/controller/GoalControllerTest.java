@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -352,8 +353,8 @@ public class GoalControllerTest extends CommonControllerTest {
         goal.setName("Test Goal");
         goal.setDescription("Test Description");
         goal.setType(GoalType.SELF);
-        goal.setStartDate(LocalDateTime.now());
-        goal.setAchievedByDate(LocalDateTime.now().plusMonths(6));
+        goal.setStartDate(ZonedDateTime.now());
+        goal.setAchievedByDate(ZonedDateTime.now().plusMonths(6));
         goal.setCompetencies(new HashSet<>());
         goal.setCredentials(new HashSet<>());
         goal.setLearningResources(new HashSet<>());
@@ -396,8 +397,8 @@ public class GoalControllerTest extends CommonControllerTest {
         goal2.setName("Second Goal");
         goal2.setDescription("Second Description");
         goal2.setType(GoalType.ASSIGNED);
-        goal2.setStartDate(LocalDateTime.now());
-        goal2.setAchievedByDate(LocalDateTime.now().plusMonths(3));
+        goal2.setStartDate(ZonedDateTime.now());
+        goal2.setAchievedByDate(ZonedDateTime.now().plusMonths(3));
         goal2.setCompetencies(new HashSet<>());
         goal2.setCredentials(new HashSet<>());
         goal2.setLearningResources(new HashSet<>());
